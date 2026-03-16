@@ -3,7 +3,9 @@
     "allow": [
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
