@@ -52,12 +52,12 @@ Source: Derived from existing auth page patterns (`p-6`, `gap-4`, `py-8`, `max-w
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 14px (text-sm) | 400 (regular) | 1.5 |
-| Label | 14px (text-sm) | 500 (medium) | 1.4 |
+| Label | 14px (text-sm) | 600 (semibold) | 1.4 |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 |
 | Helper / muted | 14px (text-sm) | 400 (regular) | 1.5 |
 
 Notes:
-- Body and label share 14px; label is medium weight to differentiate.
+- Body and label share 14px; label is semibold weight to differentiate.
 - Heading size 20px (text-xl) matches existing `h1` in login/register pages.
 - No display-size text in Phase 1 (no hero, no marketing copy).
 - Line heights follow shadcn new-york defaults.
