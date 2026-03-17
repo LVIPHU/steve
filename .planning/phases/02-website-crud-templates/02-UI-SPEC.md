@@ -57,18 +57,18 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Token / Class | Source |
 |------|------|--------|-------------|---------------|--------|
+| Badge | 12px | 400 (regular) | 1.4 | `text-xs` | Status badges |
 | Body | 14px | 400 (regular) | 1.5 | `text-sm` | shadcn default |
-| Label | 14px | 500 (medium) | 1.4 | `text-sm font-medium` | label.tsx pattern |
-| Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` | Page-level h1 (websites list, /new form) |
-| Display | 28px | 600 (semibold) | 1.2 | `text-2xl font-semibold` | Not used in Phase 2 — reserved |
+| Label | 14px | 600 (semibold) | 1.4 | `text-sm font-semibold` | label.tsx pattern |
+| Heading | 20px | 600 (semibold) | 1.2 | `text-xl font-semibold` | Page-level h1 and empty state heading |
 
 Specific applications:
 - Website card title: `text-sm font-semibold` (CardTitle uses `leading-none font-semibold` — inherits card's text-sm)
-- Status badge text: `text-xs font-medium` (12px, 500 weight)
-- Template card name: `text-sm font-medium` (14px, 500 weight)
-- Tab labels in /new form: `text-sm font-medium` (14px, 500 weight)
+- Status badge text: `text-xs` (12px, 400 weight)
+- Template card name: `text-sm font-semibold` (14px, 600 weight)
+- Tab labels in /new form: `text-sm font-semibold` (14px, 600 weight)
 - Page section heading ("/dashboard/websites"): `text-xl font-semibold` (20px, 600 weight)
-- Empty state heading: `text-lg font-semibold` (18px, 600 weight)
+- Empty state heading: `text-xl font-semibold` (20px, 600 weight)
 - Empty state body: `text-sm text-muted-foreground` (14px, 400 weight)
 - Input placeholder: `text-sm text-muted-foreground` (14px, 400 weight) — input.tsx default
 
@@ -226,11 +226,11 @@ Delete confirm: inline panel within card (not a modal). Shows below card content
 
 Template section placement: below the tabbed input section, within the same form card. Source: CONTEXT.md "Claude's Discretion" — template position left to researcher judgment. Placing below tabs is most logical — user first identifies their note source, then picks a template.
 
-Template grid: 3 columns, `gap-3` (12px — exception to scale, justified by compact card size). Each template card: `cursor-pointer rounded-lg border p-4 flex flex-col items-center gap-2`. Selected state: `ring-2 ring-primary border-primary`. Unselected: `border-border hover:border-border/60 hover:bg-muted/50`.
+Template grid: 3 columns, `gap-4` (16px — matches md token). Each template card: `cursor-pointer rounded-lg border p-4 flex flex-col items-center gap-2`. Selected state: `ring-2 ring-primary border-primary`. Unselected: `border-border hover:border-border/60 hover:bg-muted/50`.
 
-Template card content: emoji (text-2xl, 32px) + template name (text-sm font-medium).
+Template card content: emoji (text-2xl, 32px) + template name (text-sm font-semibold).
 
-Template suggestion banner: `bg-muted rounded-lg px-4 py-2 flex items-center justify-between text-sm mb-3`. Dismiss button: `Button variant="ghost" size="icon-xs"` with X icon.
+Template suggestion banner: `bg-muted rounded-lg px-4 py-2 flex items-center justify-between text-sm mb-4`. Dismiss button: `Button variant="ghost" size="icon-xs"` with X icon.
 
 Loading state during create: "Tao" button shows `disabled` + spinner icon (Loader2 from lucide-react, `animate-spin`) while Server Action is in flight.
 
