@@ -23,9 +23,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 3 — ai-generation-publish (In Progress)
-**Current Plan:** 03-03
-**Next action:** Dashboard detail page — "use client" + generate/preview/publish UX (03-03)
+**Phase:** 3 — ai-generation-publish (COMPLETE)
+**Current Plan:** 03-03 (DONE)
+**Next action:** Phase 4 — Visual editor, dnd-kit, image upload
 
 ## What's Built
 
@@ -48,6 +48,7 @@ progress:
 | WebsiteCard with hover menu + inline CRUD | Done | Plan 02-03 complete |
 | Section components (6) + SectionRenderer | Done | Plan 03-02 complete |
 | Template layouts (5) + TemplateRenderer | Done | Plan 03-02 complete |
+| Website detail generate/preview/publish flow | Done | Plan 03-03 complete |
 | Public SSR route /[username]/[slug] | Done | Plan 03-04 complete |
 | OG image endpoint 1200x630 | Done | Plan 03-04 complete |
 
@@ -132,6 +133,14 @@ progress:
 - Custom dropdown (no library) — simple enough for 3 menu items
 - Status sub-menu uses onMouseEnter/Leave for flicker-free hover behavior
 - Card body wrapped in Link; interactive elements use e.stopPropagation() + e.preventDefault()
+
+## Key Decisions (03-03)
+
+- StatusBadge defined at module scope in client component (not inline) to avoid re-render instability
+- Slug conflict returns 409 from PATCH; client shows "URL already taken" message without exposing internal error code
+- Note fetch failure degrades gracefully — generation continues without note content rather than blocking the user
+- After successful generation, setSlug called with data.content.seo.slug to pre-fill slug from AI output
+- Website detail page now fully interactive: generate -> inline SectionRenderer preview -> slug edit -> publish flow
 
 ## Last Session
 
