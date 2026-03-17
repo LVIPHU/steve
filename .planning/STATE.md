@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 03-02
+current_plan: 03-03
 status: planning
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-03-17T19:41:50.710Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-17T19:46:25.801Z"
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 10
 ---
 
 # STATE.md — Project Memory
@@ -48,6 +48,8 @@ progress:
 | WebsiteCard with hover menu + inline CRUD | Done | Plan 02-03 complete |
 | Section components (6) + SectionRenderer | Done | Plan 03-02 complete |
 | Template layouts (5) + TemplateRenderer | Done | Plan 03-02 complete |
+| Public SSR route /[username]/[slug] | Done | Plan 03-04 complete |
+| OG image endpoint 1200x630 | Done | Plan 03-04 complete |
 
 ## What's Left (by phase)
 
@@ -91,6 +93,8 @@ progress:
 | 02 | 03 | 2m 34s | 2/2 | 2 |
 | Phase 03 P01 | 3min | 2 tasks | 7 files |
 | Phase 03 P02 | 2m 20s | 2 tasks | 13 files |
+| Phase 03 P04 | 3min | 2 tasks | 3 files |
+| Phase 03 P03 | 2m 13s | 1 tasks | 4 files |
 
 ## Milestone History
 
@@ -104,6 +108,13 @@ progress:
 | 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
+
+## Key Decisions (03-04)
+
+- (public) route group is sibling to (dashboard), not nested — no dashboard auth middleware applies to public pages
+- No edge runtime on OG image — postgres.js uses Node.js net module, not edge-compatible
+- ArchivedPage defined at module scope per rerender-no-inline-components rule
+- getWebsiteData shared between generateMetadata and default page export — avoids duplicate DB queries
 
 ## Key Decisions (02-02)
 
@@ -124,5 +135,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 03-02-PLAN.md
+**Stopped at:** Completed 03-03-PLAN.md
 **Timestamp:** 2026-03-17T12:32:55Z

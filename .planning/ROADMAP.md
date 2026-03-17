@@ -8,7 +8,7 @@ Building a companion web app for a mobile note-taking app. Users turn their note
 
 - [x] **Phase 1: Foundation Completion** - Verify/complete DB schema, enforce username, add token login from mobile app (1/3 plans done) (completed 2026-03-17)
 - [x] **Phase 2: Website CRUD + Templates** - Website list, create flow, 5 templates, status management (completed 2026-03-17)
-- [ ] **Phase 3: AI Generation + Publish** - OpenAI GPT-4o generation, public SSR routes, SEO auto-gen
+- [x] **Phase 3: AI Generation + Publish** - OpenAI GPT-4o generation, public SSR routes, SEO auto-gen (completed 2026-03-17)
 - [ ] **Phase 4: Editor** - Sidebar editor, dnd-kit reorder, image upload, color/font customization
 - [ ] **Phase 5: Note Sync + Analytics** - Auto-sync API endpoint, merge logic, Umami analytics
 
