@@ -6,11 +6,19 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
-export default function LoginPage() {
+const TOKEN_ERROR_MESSAGES: Record<string, string> = {
+  "invalid-token": "Link đăng nhập không hợp lệ. Vui lòng thử lại từ ứng dụng.",
+  "expired-token":
+    "Link đăng nhập đã hết hạn (5 phút). Vui lòng tạo link mới từ ứng dụng.",
+};
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tokenError = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +81,11 @@ export default function LoginPage() {
               required
             />
           </div>
+          {tokenError && TOKEN_ERROR_MESSAGES[tokenError] && (
+            <p className="text-sm text-destructive">
+              {TOKEN_ERROR_MESSAGES[tokenError]}
+            </p>
+          )}
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
@@ -98,5 +111,13 @@ export default function LoginPage() {
         </p>
       </motion.main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
