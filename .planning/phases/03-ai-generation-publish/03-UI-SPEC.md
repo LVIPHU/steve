@@ -43,8 +43,8 @@ Declared values (multiples of 4):
 | 3xl | 64px | Public website hero padding-top / hero padding-bottom |
 
 Exceptions:
-- Slug input + Publish button row: 12px gap (between label and button — intentional 3-unit deviation for compact inline layout)
-- Loading spinner container: 44px min-height (touch-target floor, applies to Generate button)
+- Slug input + Publish button row: 8px gap (between label and button — aligns with sm token)
+- Generate button: 48px min-height (touch-target floor, aligns with 2xl token; exceeds 44px accessibility minimum)
 
 ---
 
@@ -54,10 +54,10 @@ Exceptions:
 
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
-| Body | 14px | 400 | 1.5 | Form labels, card body text, status badges |
-| Label | 12px | 500 | 1.4 | Section type labels, input helper text, slug prefix |
-| Heading | 20px | 600 | 1.2 | Page title on detail page ("Website Details") |
-| Display | 28px | 700 | 1.15 | Not used in dashboard — reserved for public website hero only |
+| Body | 14px | 400 | 1.5 | Form labels, card body text, status badges, section type labels, input helper text, slug prefix |
+| Heading | 20px | 600 | 1.2 | Page title on detail page ("Website Details"), subheadings |
+
+Two weights only: 400 (body and all label/caption roles) and 600 (heading and subheading roles). Weights 500 and 700 are not used in the dashboard.
 
 ### Public Website (per-template via next/font/google)
 
@@ -75,8 +75,10 @@ Public website typography scale (applied inside each TemplateLayout):
 |------|------|--------|-------------|
 | Body | 16px | 400 | 1.6 |
 | Lead / Subtext | 18px | 400 | 1.5 |
-| Section heading | 28px | 600 | 1.2 |
+| Section headline | 28px | 700 | 1.2 |
 | Hero headline | 48px | 700 | 1.1 |
+
+Two weights only: 400 (body and lead text) and 700 (section headline and hero headline). Weight 600 is not used on public website pages.
 
 ---
 
@@ -111,6 +113,8 @@ OG image background: `theme.primaryColor` value — each website gets unique OG 
 ## Component Inventory
 
 ### Dashboard Detail Page (`/dashboard/websites/[id]`)
+
+Primary focal point: Generate button (full-width, accent background, above the fold). All other interactive elements (slug input, Publish button, preview panel) are hidden until generation completes, ensuring the Generate button is the sole call to action on first view.
 
 | Component | Source | State variants |
 |-----------|--------|---------------|
@@ -180,13 +184,14 @@ OG Image component: `src/app/(public)/[username]/[slug]/opengraph-image.tsx`
 - On reveal: slug input pre-filled with `seo.slug` from AI response; editable; 32-character max; lowercase-only validation.
 - Slug prefix display: `your-domain.com/[username]/` shown as non-editable text left of input.
 - Publish button: full width below slug input, accent background. Disabled while slug input is empty.
+- Row gap between slug input label and Publish button: 8px (sm token).
 - After publish: status badge on page updates to "Published"; Publish button changes to "Update Slug" (secondary).
 
 ### Preview Panel
 
 - Hidden until generation complete.
 - Renders Section components directly inline (not iframe — iframe is Phase 4).
-- Top of preview: label "Preview" (12px, weight 500, muted color).
+- Top of preview: label "Preview" (12px, weight 400, muted color).
 - Preview container: Card with 1px border, `--border` color, 16px padding, overflow-y scroll if content tall.
 
 ---
