@@ -57,11 +57,11 @@ All sizes in px at 1rem = 16px base.
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 14px | 400 (regular) | 1.5 | Sidebar form labels, input values, helper text |
-| Label | 12px | 500 (medium) | 1.4 | Section type badges, tab labels, small metadata |
+| Label | 12px | 600 (semibold) | 1.4 | Section type badges, tab labels, small metadata |
 | Heading | 16px | 600 (semibold) | 1.3 | Sidebar panel titles, section names in list |
 | Display | 20px | 600 (semibold) | 1.2 | Topbar website name |
 
-Weights used: 400 (regular) and 600 (semibold) only. Weight 500 used for label role only.
+Weights used: 400 (regular) and 600 (semibold) only.
 
 ---
 
@@ -176,9 +176,9 @@ dnd-kit components: installed via `npm install @dnd-kit/core @dnd-kit/sortable @
 - Save button triggers `PATCH /api/websites/[id]` with full AST
 
 ### Responsive Toggle
-- Desktop: preview container `w-full`
-- Tablet: preview container `max-w-[768px] mx-auto`
-- Mobile: preview container `max-w-[390px] mx-auto`
+- Desktop: preview container `w-full` — button `aria-label="Desktop preview"`
+- Tablet: preview container `max-w-[768px] mx-auto` — button `aria-label="Tablet preview"`
+- Mobile: preview container `max-w-[390px] mx-auto` — button `aria-label="Mobile preview"`
 - Transition: `transition-all duration-200 ease-in-out`
 
 ### Image Upload
@@ -219,7 +219,7 @@ dnd-kit components: installed via `npm install @dnd-kit/core @dnd-kit/sortable @
 | Save with unsaved indicator | "● Lưu" | Vietnamese |
 | Back button | "← Quay lại" | Vietnamese |
 | Tab 1 | "Sections" | English (technical term) |
-| Tab 2 | "Giao diện" | Vietnamese |
+| Tab 2 | "Theme" | English (locked — CONTEXT.md) |
 | Section type badge — hero | "Hero" | English |
 | Section type badge — about | "Giới thiệu" | Vietnamese |
 | Section type badge — features | "Tính năng" | Vietnamese |
