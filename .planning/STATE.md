@@ -4,26 +4,28 @@
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Planning complete — ready to execute
+**Status:** Executing Phase 1
 
 ## Current Phase
 
-**Phase:** 0 (not started)
-**Next action:** `/gsd:plan-phase 1`
+**Phase:** 1 — foundation-completion
+**Current Plan:** 2 of 3
+**Next action:** Execute plan 01-02
 
 ## What's Built
 
 | Layer | Status | Notes |
 |---|---|---|
-| Auth UI (login/register) | ✓ Done | better-auth, email/password, Google OAuth |
-| Dashboard layout | ✓ Done | nav, layout shell |
-| DB Schema | ✓ Done | users, profiles, websites, sessions |
-| Global CSS / Tailwind | ✓ Done | dark mode vars, base styles |
-| Codebase map | ✓ Done | `.planning/codebase/` |
+| Auth UI (login/register) | Done | better-auth, email/password, Google OAuth |
+| Dashboard layout | Done | nav, layout shell |
+| DB Schema | Done | users, profiles, websites, sessions |
+| Global CSS / Tailwind | Done | dark mode vars, base styles |
+| Codebase map | Done | `.planning/codebase/` |
+| Auth config (additionalFields, bearer, hooks) | Done | Plan 01-01 complete |
 
 ## What's Left (by phase)
 
-- **Phase 1:** Token login, username enforcement, reserved word validation
+- **Phase 1:** Token login, username enforcement, reserved word validation (2/3 plans remaining)
 - **Phase 2:** Website CRUD, template system, create flow
 - **Phase 3:** AI generation, publish route, SEO
 - **Phase 4:** Visual editor, dnd-kit, image upload
@@ -37,9 +39,23 @@
 - No Freemium / no plan tiers in v1
 - Website AST (JSON, not HTML) — enables editor field-level manipulation
 - `manual_overrides` pattern: AI content and user edits tracked separately
+- Used `inferAdditionalFields` client plugin instead of `bearerClient` (not exported in better-auth v1.5.5)
+- RESERVED_USERNAMES (9 entries) and USERNAME_REGEX defined at module scope in auth.ts
+
+## Performance Metrics
+
+| Phase | Plan | Duration | Tasks | Files |
+|---|---|---|---|---|
+| 01 | 01 | 4m 11s | 2/2 | 4 |
 
 ## Milestone History
 
 | Date | Event |
 |---|---|
 | 2026-03-16 | Project initialized, codebase mapped, planning complete |
+| 2026-03-17 | Phase 1 started — Plan 01-01 complete (auth config, bearer plugin, proxy) |
+
+## Last Session
+
+**Stopped at:** Completed 01-01-PLAN.md
+**Timestamp:** 2026-03-17T07:21:41Z

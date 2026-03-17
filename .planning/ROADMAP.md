@@ -6,7 +6,7 @@ Building a companion web app for a mobile note-taking app. Users turn their note
 
 ## Phases
 
-- [ ] **Phase 1: Foundation Completion** - Verify/complete DB schema, enforce username, add token login from mobile app
+- [ ] **Phase 1: Foundation Completion** - Verify/complete DB schema, enforce username, add token login from mobile app (1/3 plans done)
 - [ ] **Phase 2: Website CRUD + Templates** - Website list, create flow, 5 templates, status management
 - [ ] **Phase 3: AI Generation + Publish** - OpenAI GPT-4o generation, public SSR routes, SEO auto-gen
 - [ ] **Phase 4: Editor** - Sidebar editor, dnd-kit reorder, image upload, color/font customization
@@ -28,7 +28,7 @@ Building a companion web app for a mobile note-taking app. Users turn their note
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Auth server config: additionalFields, databaseHooks, bearer plugin, proxy.ts, typecheck script
+- [x] 01-01-PLAN.md — Auth server config: additionalFields, databaseHooks, bearer plugin, proxy.ts, typecheck script
 - [ ] 01-02-PLAN.md — Registration + onboarding UI: register form username field, /onboarding page, dashboard layout profiles check
 - [ ] 01-03-PLAN.md — Mobile token endpoints: POST /api/auth/mobile-token, GET /api/auth/token-login
 
