@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 3 of 3 (all complete)
-status: completed
-stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-03-17T11:03:23.427Z"
+current_plan: 1 of 3 (in progress)
+status: active
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-17T12:04:00Z"
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 3
-  completed_plans: 3
+  completed_plans: 1
 ---
 
 # STATE.md — Project Memory
@@ -19,13 +19,13 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Phase 1 Complete — Ready for Phase 2
+**Status:** Phase 2 In Progress — Plan 02-01 complete
 
 ## Current Phase
 
-**Phase:** 1 — foundation-completion (COMPLETE)
-**Current Plan:** 3 of 3 (all complete)
-**Next action:** Begin Phase 2 — Website CRUD, template system, create flow
+**Phase:** 2 — website-crud-templates (In Progress)
+**Current Plan:** 1 of 3 complete
+**Next action:** Execute Plan 02-02 — website create form
 
 ## What's Built
 
@@ -39,11 +39,15 @@ progress:
 | Auth config (additionalFields, bearer, hooks) | Done | Plan 01-01 complete |
 | Username registration + onboarding | Done | Plan 01-02 complete |
 | Mobile token login flow | Done | Plan 01-03 complete |
+| Template system (5 templates, suggestTemplate) | Done | Plan 02-01 complete |
+| Slug utility (generateSlug) | Done | Plan 02-01 complete |
+| Website mutation API (PATCH + DELETE /api/websites/[id]) | Done | Plan 02-01 complete |
+| Vitest test infrastructure | Done | Plan 02-01 complete |
 
 ## What's Left (by phase)
 
 - **Phase 1:** COMPLETE
-- **Phase 2:** Website CRUD, template system, create flow
+- **Phase 2:** 1/3 done — remaining: create form (02-02), list + card CRUD UI (02-03)
 - **Phase 3:** AI generation, publish route, SEO
 - **Phase 4:** Visual editor, dnd-kit, image upload
 - **Phase 5:** Note sync API, Umami analytics
@@ -63,6 +67,7 @@ progress:
 - auth.api has no createSession method — used direct DB insert + serializeSignedCookie from better-call for token-login
 - mobile-token: prefix on verification.identifier namespaces one-time tokens from better-auth's own verification records
 - Cookie signing replicates better-auth's internal approach: serializeSignedCookie(name, rawToken, secret) from better-call
+- KEYWORD_MAP ordering: more specific fitness keywords before "work" to avoid false portfolio match on inputs containing "workout"
 
 ## Performance Metrics
 
@@ -71,6 +76,7 @@ progress:
 | 01 | 01 | 4m 11s | 2/2 | 4 |
 | 01 | 02 | 4min | 2/2 | 4 |
 | 01 | 03 | 15min | 2/2 | 3 |
+| 02 | 01 | 3m 21s | 2/2 | 7 |
 
 ## Milestone History
 
@@ -81,8 +87,9 @@ progress:
 | 2026-03-17 | Plan 01-02 complete — username registration, onboarding page, dashboard profiles gate |
 | 2026-03-17 | Plan 01-03 complete — mobile token login flow (POST /api/auth/mobile-token, GET /api/auth/token-login, login page error display) |
 | 2026-03-17 | Phase 1 COMPLETE — all 3 plans done |
+| 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 
 ## Last Session
 
-**Stopped at:** Phase 2 UI-SPEC approved
-**Timestamp:** 2026-03-17T07:45:00Z
+**Stopped at:** Completed 02-01-PLAN.md
+**Timestamp:** 2026-03-17T12:04:00Z
