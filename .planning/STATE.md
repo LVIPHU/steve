@@ -4,13 +4,13 @@
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Executing Phase 1
+**Status:** Phase 1 Complete — Ready for Phase 2
 
 ## Current Phase
 
-**Phase:** 1 — foundation-completion
-**Current Plan:** 3 of 3
-**Next action:** Execute plan 01-03
+**Phase:** 1 — foundation-completion (COMPLETE)
+**Current Plan:** 3 of 3 (all complete)
+**Next action:** Begin Phase 2 — Website CRUD, template system, create flow
 
 ## What's Built
 
@@ -23,10 +23,11 @@
 | Codebase map | Done | `.planning/codebase/` |
 | Auth config (additionalFields, bearer, hooks) | Done | Plan 01-01 complete |
 | Username registration + onboarding | Done | Plan 01-02 complete |
+| Mobile token login flow | Done | Plan 01-03 complete |
 
 ## What's Left (by phase)
 
-- **Phase 1:** Token login (1/3 plans remaining)
+- **Phase 1:** COMPLETE
 - **Phase 2:** Website CRUD, template system, create flow
 - **Phase 3:** AI generation, publish route, SEO
 - **Phase 4:** Visual editor, dnd-kit, image upload
@@ -44,6 +45,9 @@
 - RESERVED_USERNAMES (9 entries) and USERNAME_REGEX defined at module scope in auth.ts
 - Server action co-located with onboarding page (action.ts) rather than standalone API route
 - Dashboard layout does profiles check on every request (acceptable for Phase 1 scale)
+- auth.api has no createSession method — used direct DB insert + serializeSignedCookie from better-call for token-login
+- mobile-token: prefix on verification.identifier namespaces one-time tokens from better-auth's own verification records
+- Cookie signing replicates better-auth's internal approach: serializeSignedCookie(name, rawToken, secret) from better-call
 
 ## Performance Metrics
 
@@ -51,6 +55,7 @@
 |---|---|---|---|---|
 | 01 | 01 | 4m 11s | 2/2 | 4 |
 | 01 | 02 | 4min | 2/2 | 4 |
+| 01 | 03 | 15min | 2/2 | 3 |
 
 ## Milestone History
 
@@ -59,8 +64,10 @@
 | 2026-03-16 | Project initialized, codebase mapped, planning complete |
 | 2026-03-17 | Phase 1 started — Plan 01-01 complete (auth config, bearer plugin, proxy) |
 | 2026-03-17 | Plan 01-02 complete — username registration, onboarding page, dashboard profiles gate |
+| 2026-03-17 | Plan 01-03 complete — mobile token login flow (POST /api/auth/mobile-token, GET /api/auth/token-login, login page error display) |
+| 2026-03-17 | Phase 1 COMPLETE — all 3 plans done |
 
 ## Last Session
 
-**Stopped at:** Completed 01-02-PLAN.md
-**Timestamp:** 2026-03-17T07:28:40Z
+**Stopped at:** Completed 01-03-PLAN.md (Phase 1 complete)
+**Timestamp:** 2026-03-17T07:45:00Z
