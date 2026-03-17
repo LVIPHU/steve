@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
+current_plan: 03-02
 status: planning
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-17T19:37:21.107Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-17T19:41:50.710Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # STATE.md — Project Memory
@@ -24,8 +24,8 @@ progress:
 ## Current Phase
 
 **Phase:** 3 — ai-generation-publish (In Progress)
-**Current Plan:** 03-02
-**Next action:** Dashboard detail page — "use client" + generate/preview/publish UX (03-02)
+**Current Plan:** 03-03
+**Next action:** Dashboard detail page — "use client" + generate/preview/publish UX (03-03)
 
 ## What's Built
 
@@ -46,6 +46,8 @@ progress:
 | Website create form (/dashboard/websites/new) | Done | Plan 02-02 complete |
 | Website list page (/dashboard/websites) | Done | Plan 02-03 complete |
 | WebsiteCard with hover menu + inline CRUD | Done | Plan 02-03 complete |
+| Section components (6) + SectionRenderer | Done | Plan 03-02 complete |
+| Template layouts (5) + TemplateRenderer | Done | Plan 03-02 complete |
 
 ## What's Left (by phase)
 
@@ -88,6 +90,7 @@ progress:
 | 02 | 02 | 3min | 2/2 | 4 |
 | 02 | 03 | 2m 34s | 2/2 | 2 |
 | Phase 03 P01 | 3min | 2 tasks | 7 files |
+| Phase 03 P02 | 2m 20s | 2 tasks | 13 files |
 
 ## Milestone History
 
@@ -108,6 +111,11 @@ progress:
 - Sub-components (TemplateCard, SuggestionBanner, StatusBadge) defined at module scope per rerender-no-inline-components rule
 - Tab UI implemented with native button elements + ARIA roles (tablist/tab/aria-selected/aria-controls) rather than third-party library
 
+## Key Decisions (03-02)
+
+- sections/index.tsx and layouts/index.tsx use .tsx extension (not .ts) because SectionRenderer and TemplateRenderer contain JSX — TypeScript requires .tsx for JSX syntax
+- All section and layout components have no "use client" — server-compatible, works in both server and client contexts
+
 ## Key Decisions (02-03)
 
 - Custom dropdown (no library) — simple enough for 3 menu items
@@ -116,5 +124,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 03-01-PLAN.md
+**Stopped at:** Completed 03-02-PLAN.md
 **Timestamp:** 2026-03-17T12:32:55Z
