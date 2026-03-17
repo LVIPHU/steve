@@ -43,7 +43,12 @@ Plans:
   4. Keyword-based template suggestion works from note content
   5. User can rename and delete websites
   6. Website status changes (draft/published/archived) work correctly
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Vitest setup, template system, slug utility, website mutation API route
+- [ ] 02-02-PLAN.md — Create website form page, server action, detail page, nav update
+- [ ] 02-03-PLAN.md — Website list page, WebsiteCard component with CRUD interactions
 
 ### Phase 3: AI Generation + Publish
 **Goal**: AI tạo website từ note JSON + prompt, publish được lên URL công khai, SEO hoạt động.
