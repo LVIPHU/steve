@@ -46,6 +46,23 @@ export async function PATCH(
     updateSet.status = status;
   }
 
+  if ("slug" in body) {
+    const slug = body.slug;
+    if (typeof slug !== "string" || slug.trim().length === 0) {
+      return Response.json({ error: "slug must be a non-empty string" }, { status: 400 });
+    }
+    // Check slug uniqueness for this user
+    const conflict = await db
+      .select()
+      .from(websites)
+      .where(and(eq(websites.userId, session.user.id), eq(websites.slug, slug as string)))
+      .limit(1);
+    if (conflict.length > 0 && conflict[0].id !== id) {
+      return Response.json({ error: "slug_conflict" }, { status: 409 });
+    }
+    updateSet.slug = (slug as string).trim();
+  }
+
   if (Object.keys(updateSet).length === 0) {
     return Response.json({ error: "No valid fields to update" }, { status: 400 });
   }

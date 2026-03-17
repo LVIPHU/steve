@@ -87,6 +87,6 @@ export function parseAndValidateAST(raw: string): WebsiteAST {
 
 export function resolveField<T>(section: Section, field: string): T {
   const overrides = section.manual_overrides as Record<string, unknown>;
-  const content = section.ai_content as Record<string, unknown>;
+  const content = section.ai_content as unknown as Record<string, unknown>;
   return (overrides[field] ?? content[field]) as T;
 }
