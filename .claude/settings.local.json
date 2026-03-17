@@ -5,7 +5,15 @@
       "Bash(grep:*)",
       "Bash(node:*)",
       "WebSearch",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Skill(gsd:plan-phase)",
+      "Skill(gsd:execute-phase)",
+      "Skill(update-config)",
+      "Bash(echo \"Exit code: $?\")",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(node -e \"require\\(''./.claude/hooks/gsd-context-monitor.js''\\)\")",
+      "Bash(echo \"node exit: $?\")",
+      "WebFetch(domain:ui.shadcn.com)"
     ]
   }
 }
