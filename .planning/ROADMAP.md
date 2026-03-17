@@ -62,7 +62,13 @@ Plans:
   5. Archived websites show "Website không còn hoạt động" page
   6. SEO meta title, description, and OG image are auto-generated on publish
   7. Slug is auto-generated but editable before publish
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — WebsiteAST types, AST validation utils, AI prompt builders, POST /api/ai/generate route
+- [ ] 03-02-PLAN.md — 6 section components (Hero/About/Features/Content/Gallery/CTA) + 5 template layouts + renderers
+- [ ] 03-03-PLAN.md — Dashboard detail page: generate/preview/publish interactive flow (Client Component)
+- [ ] 03-04-PLAN.md — Public SSR route /[username]/[slug], generateMetadata SEO, OG image endpoint
 
 ### Phase 4: Editor
 **Goal**: User chỉnh sửa website trực quan qua sidebar, kéo thả section, upload ảnh.
