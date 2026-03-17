@@ -23,6 +23,12 @@ export default function DashboardNav({ user }: { user: User }) {
           Website Generator
         </a>
         <div className="flex items-center gap-4">
+          <a
+            href="/dashboard/websites"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Websites
+          </a>
           <span className="text-sm text-muted-foreground">{user.email}</span>
           <Button
             type="button"
