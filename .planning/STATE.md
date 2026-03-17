@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Phase 3 UI-SPEC approved
-last_updated: "2026-03-17T18:59:36.296Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-17T19:37:21.107Z"
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 10
+  completed_plans: 7
 ---
 
 # STATE.md — Project Memory
@@ -23,9 +23,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 2 — website-crud-templates (COMPLETE)
-**Current Plan:** Not started
-**Next action:** Begin Phase 3 — AI generation, publish route, SEO
+**Phase:** 3 — ai-generation-publish (In Progress)
+**Current Plan:** 03-02
+**Next action:** Dashboard detail page — "use client" + generate/preview/publish UX (03-02)
 
 ## What's Built
 
@@ -72,6 +72,10 @@ progress:
 - mobile-token: prefix on verification.identifier namespaces one-time tokens from better-auth's own verification records
 - Cookie signing replicates better-auth's internal approach: serializeSignedCookie(name, rawToken, secret) from better-call
 - KEYWORD_MAP ordering: more specific fitness keywords before "work" to avoid false portfolio match on inputs containing "workout"
+- Route Handler (not Server Action) for /api/ai/generate — explicit AbortSignal.timeout(30000), returns 504 on timeout
+- Manual parseAndValidateAST (validate-or-throw) instead of Zod — WebsiteAST schema is small and locked
+- Slug normalized via generateSlug() on AI output before DB write — prevents invalid chars from GPT-4o reaching DB
+- Both content (full AST) and seoMeta columns written together on every generation — keeps them in sync
 
 ## Performance Metrics
 
@@ -83,6 +87,7 @@ progress:
 | 02 | 01 | 3m 21s | 2/2 | 7 |
 | 02 | 02 | 3min | 2/2 | 4 |
 | 02 | 03 | 2m 34s | 2/2 | 2 |
+| Phase 03 P01 | 3min | 2 tasks | 7 files |
 
 ## Milestone History
 
@@ -111,5 +116,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 3 UI-SPEC approved
+**Stopped at:** Completed 03-01-PLAN.md
 **Timestamp:** 2026-03-17T12:32:55Z
