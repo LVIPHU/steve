@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 3 of 3 complete
 status: completed
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-03-17T12:34:44.059Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-17T12:34:54.386Z"
 progress:
   total_phases: 5
   completed_phases: 2
@@ -81,8 +81,8 @@ progress:
 | 01 | 02 | 4min | 2/2 | 4 |
 | 01 | 03 | 15min | 2/2 | 3 |
 | 02 | 01 | 3m 21s | 2/2 | 7 |
+| 02 | 02 | 3min | 2/2 | 4 |
 | 02 | 03 | 2m 34s | 2/2 | 2 |
-| Phase 02 P02 | 3min | 2 tasks | 4 files |
 
 ## Milestone History
 
@@ -97,6 +97,12 @@ progress:
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
 
+## Key Decisions (02-02)
+
+- redirect() called outside try/catch in server action — Next.js redirect throws NEXT_REDIRECT internally, catching it swallows the navigation
+- Sub-components (TemplateCard, SuggestionBanner, StatusBadge) defined at module scope per rerender-no-inline-components rule
+- Tab UI implemented with native button elements + ARIA roles (tablist/tab/aria-selected/aria-controls) rather than third-party library
+
 ## Key Decisions (02-03)
 
 - Custom dropdown (no library) — simple enough for 3 menu items
@@ -105,5 +111,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 02-03-PLAN.md
+**Stopped at:** Completed 02-02-PLAN.md
 **Timestamp:** 2026-03-17T12:32:55Z
