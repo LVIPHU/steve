@@ -1,0 +1,97 @@
+import { and, eq } from "drizzle-orm";
+import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { websites } from "@/db/schema";
+
+const VALID_STATUSES = ["draft", "published", "archived"] as const;
+type ValidStatus = (typeof VALID_STATUSES)[number];
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  // Validate fields
+  const updateSet: Record<string, unknown> = {};
+
+  if ("name" in body) {
+    const name = body.name;
+    if (typeof name !== "string" || name.trim().length === 0) {
+      return Response.json({ error: "name must be a non-empty string" }, { status: 400 });
+    }
+    updateSet.name = name.trim();
+  }
+
+  if ("status" in body) {
+    const status = body.status;
+    if (!VALID_STATUSES.includes(status as ValidStatus)) {
+      return Response.json(
+        { error: `status must be one of: ${VALID_STATUSES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+    updateSet.status = status;
+  }
+
+  if (Object.keys(updateSet).length === 0) {
+    return Response.json({ error: "No valid fields to update" }, { status: 400 });
+  }
+
+  // Ownership check
+  const existing = await db
+    .select()
+    .from(websites)
+    .where(and(eq(websites.id, id), eq(websites.userId, session.user.id)))
+    .limit(1);
+
+  if (existing.length === 0) {
+    return Response.json({ error: "Not found" }, { status: 404 });
+  }
+
+  await db
+    .update(websites)
+    .set({ ...updateSet, updatedAt: new Date() })
+    .where(eq(websites.id, id));
+
+  return Response.json({ ok: true });
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  // Ownership check
+  const existing = await db
+    .select()
+    .from(websites)
+    .where(and(eq(websites.id, id), eq(websites.userId, session.user.id)))
+    .limit(1);
+
+  if (existing.length === 0) {
+    return Response.json({ error: "Not found" }, { status: 404 });
+  }
+
+  await db.delete(websites).where(eq(websites.id, id));
+
+  return Response.json({ ok: true });
+}
