@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Phase 5 UI-SPEC approved
-last_updated: "2026-03-18T08:58:41.228Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-18T09:45:50.205Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 15
+  completed_plans: 14
 ---
 
 # STATE.md — Project Memory
@@ -23,9 +23,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 4 — editor (In Progress)
-**Current Plan:** Not started
-**Next action:** Phase 4 Plan 03 — Theme tab, image upload, per-section regenerate
+**Phase:** 5 — note-sync-analytics (In Progress)
+**Current Plan:** 05-01 complete, 05-02 next
+**Next action:** Phase 5 Plan 02 — Umami analytics integration
 
 ## What's Built
 
@@ -69,6 +69,11 @@ progress:
 | Unsaved changes dialog (shadcn Dialog) + toast (sonner) | Done | Plan 04-03 complete |
 | Edit Website button on detail page | Done | Plan 04-03 complete |
 | Public page Google Font + CSS variable injection | Done | Plan 04-03 complete |
+| syncStatus + lastSyncedAt columns on websites table | Done | Plan 05-01 complete |
+| mergeAiSectionsIntoAst (index-based merge, 5 unit tests) | Done | Plan 05-01 complete |
+| POST /api/sync/trigger (background AI via after()) | Done | Plan 05-01 complete |
+| SyncBadge on WebsiteCard (syncing/synced/sync_failed states) | Done | Plan 05-01 complete |
+| WebsitesPoller — 30s auto-refresh via router.refresh() | Done | Plan 05-01 complete |
 
 ## What's Left (by phase)
 
@@ -76,7 +81,7 @@ progress:
 - **Phase 2:** COMPLETE (3/3 plans done)
 - **Phase 3:** COMPLETE
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
-- **Phase 5:** Note sync API, Umami analytics
+- **Phase 5:** Plan 05-01 COMPLETE — sync API + dashboard polling. Plan 05-02 next: Umami analytics
 
 ## Key Decisions
 
@@ -116,6 +121,7 @@ progress:
 | Phase 04 P01 | 6m 15s | 2 tasks | 13 files |
 | Phase 04 P02 | 3m 46s | 2 tasks | 9 files |
 | Phase 04 P03 | 4min | 2 tasks | 8 files |
+| Phase 05 P01 | 6m 13s | 3 tasks | 7 files |
 
 ## Milestone History
 
@@ -129,6 +135,16 @@ progress:
 | 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
+
+## Key Decisions (05-01)
+
+- mergeAiSectionsIntoAst uses index-based merge (not id-based) — AI does not know existing section IDs
+- after() from next/server for background AI regeneration — response not blocked
+- syncStatus='syncing' set synchronously before after() — client sees immediate state transition
+- Each website in after() wrapped in individual try/catch — one failure does not block others
+- drizzle-kit push has upstream bug with CHECK constraints; columns applied via direct SQL ALTER TABLE
+- SyncBadge returns null for 'idle' syncStatus — no visual noise for websites never synced
+- WebsitesPoller wraps only the grid, not empty state — no point polling with no websites
 
 ## Key Decisions (04-03)
 
@@ -189,5 +205,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 5 UI-SPEC approved
+**Stopped at:** Completed 05-01-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
