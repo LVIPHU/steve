@@ -1,8 +1,9 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import type { WebsiteAST, Section } from "@/types/website-ast";
+import type { WebsiteAST, WebsiteTheme, Section } from "@/types/website-ast";
 import { SectionsTab } from "./sections-tab";
+import { ThemeTab } from "./theme-tab";
 
 interface EditorSidebarProps {
   ast: WebsiteAST;
@@ -12,6 +13,10 @@ interface EditorSidebarProps {
   onSelectSection: (sectionId: string) => void;
   onReorderSections: (newSections: Section[]) => void;
   onUpdateSection: (sectionId: string, field: string, value: unknown) => void;
+  onUpdateTheme: (partial: Partial<WebsiteTheme>) => void;
+  onRegenerateSection: (sectionId: string, prompt: string) => Promise<void>;
+  websiteId: string;
+  templateId: string;
 }
 
 export function EditorSidebar({
@@ -22,6 +27,10 @@ export function EditorSidebar({
   onSelectSection,
   onReorderSections,
   onUpdateSection,
+  onUpdateTheme,
+  onRegenerateSection,
+  websiteId,
+  templateId,
 }: EditorSidebarProps) {
   return (
     <Tabs
@@ -44,12 +53,13 @@ export function EditorSidebar({
           onSelect={onSelectSection}
           onReorder={onReorderSections}
           onUpdateSection={onUpdateSection}
+          onRegenerateSection={onRegenerateSection}
+          websiteId={websiteId}
+          templateId={templateId}
         />
       </TabsContent>
       <TabsContent value="theme" className="mt-0">
-        <div className="p-4 text-sm text-muted-foreground">
-          Theme tab - coming in next plan
-        </div>
+        <ThemeTab theme={ast.theme} onUpdateTheme={onUpdateTheme} />
       </TabsContent>
     </Tabs>
   );

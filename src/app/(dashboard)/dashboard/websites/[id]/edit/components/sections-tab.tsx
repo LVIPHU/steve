@@ -28,6 +28,9 @@ interface SectionsTabProps {
   onSelect: (id: string) => void;
   onReorder: (sections: Section[]) => void;
   onUpdateSection: (sectionId: string, field: string, value: unknown) => void;
+  onRegenerateSection: (sectionId: string, prompt: string) => Promise<void>;
+  websiteId: string;
+  templateId: string;
 }
 
 export function SectionsTab({
@@ -36,6 +39,9 @@ export function SectionsTab({
   onSelect,
   onReorder,
   onUpdateSection,
+  onRegenerateSection,
+  websiteId,
+  templateId,
 }: SectionsTabProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -101,6 +107,9 @@ export function SectionsTab({
             onUpdateField={(field, value) =>
               onUpdateSection(selectedSection.id, field, value)
             }
+            onRegenerateSection={onRegenerateSection}
+            websiteId={websiteId}
+            templateId={templateId}
           />
         </>
       )}

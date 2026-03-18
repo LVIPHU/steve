@@ -2,11 +2,21 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { WebsiteAST, Section } from "@/types/website-ast";
-import { applyManualOverride } from "@/lib/editor-utils";
+import { toast } from "sonner";
+import type { WebsiteAST, WebsiteTheme, Section } from "@/types/website-ast";
+import { applyManualOverride, updateTheme, updateSectionAiContent } from "@/lib/editor-utils";
 import { EditorTopbar } from "./components/editor-topbar";
 import { EditorPreview } from "./components/editor-preview";
 import { EditorSidebar } from "./components/editor-sidebar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface EditorClientProps {
   websiteId: string;
@@ -28,6 +38,7 @@ export function EditorClient({
   const [activeTab, setActiveTab] = useState<"sections" | "theme">("sections");
   const [previewMode, setPreviewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isSaving, setIsSaving] = useState(false);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
 
   // Unsaved changes guard — browser refresh/close
   useEffect(() => {
@@ -48,6 +59,11 @@ export function EditorClient({
     []
   );
 
+  const handleUpdateTheme = useCallback((partial: Partial<WebsiteTheme>) => {
+    setAst((prev) => updateTheme(prev, partial));
+    setHasUnsavedChanges(true);
+  }, []);
+
   const handleReorderSections = useCallback((newSections: Section[]) => {
     setAst((prev) => ({ ...prev, sections: newSections }));
     setHasUnsavedChanges(true);
@@ -57,6 +73,29 @@ export function EditorClient({
     setSelectedSectionId(sectionId);
     setActiveTab("sections");
   }, []);
+
+  const handleRegenerateSection = useCallback(
+    async (sectionId: string, prompt: string) => {
+      const section = ast.sections.find((s) => s.id === sectionId);
+      if (!section) return;
+      const res = await fetch("/api/ai/regenerate-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          websiteId,
+          sectionId,
+          sectionType: section.type,
+          prompt: prompt || undefined,
+          currentContent: section.ai_content,
+        }),
+      });
+      if (!res.ok) throw new Error("Regeneration failed");
+      const { ai_content } = await res.json();
+      setAst((prev) => updateSectionAiContent(prev, sectionId, ai_content));
+      setHasUnsavedChanges(true);
+    },
+    [ast, websiteId]
+  );
 
   const handleSave = useCallback(async () => {
     setIsSaving(true);
@@ -68,11 +107,12 @@ export function EditorClient({
       });
       if (res.ok) {
         setHasUnsavedChanges(false);
+        toast.success("Da luu", { duration: 2000 });
       } else {
-        alert("Luu that bai. Kiem tra ket noi va thu lai.");
+        toast.error("Luu that bai. Kiem tra ket noi va thu lai.", { duration: 4000 });
       }
     } catch {
-      alert("Luu that bai. Kiem tra ket noi va thu lai.");
+      toast.error("Luu that bai. Kiem tra ket noi va thu lai.", { duration: 4000 });
     } finally {
       setIsSaving(false);
     }
@@ -80,13 +120,11 @@ export function EditorClient({
 
   const handleBack = useCallback(() => {
     if (hasUnsavedChanges) {
-      const confirmed = window.confirm(
-        "Ban co thay doi chua luu. Roi trang se mat cac thay doi chua duoc luu."
-      );
-      if (!confirmed) return;
+      setShowUnsavedDialog(true);
+    } else {
+      router.push(`/dashboard/websites/${websiteId}`);
     }
-    router.push(`/dashboard/websites/${websiteId}`);
-  }, [hasUnsavedChanges, router, websiteId]);
+  }, [hasUnsavedChanges, websiteId, router]);
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -120,9 +158,36 @@ export function EditorClient({
             onSelectSection={handleSelectSection}
             onReorderSections={handleReorderSections}
             onUpdateSection={handleUpdateSection}
+            onUpdateTheme={handleUpdateTheme}
+            onRegenerateSection={handleRegenerateSection}
+            websiteId={websiteId}
+            templateId={templateId}
           />
         </div>
       </div>
+
+      {/* Unsaved changes dialog */}
+      <Dialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ban co thay doi chua luu</DialogTitle>
+            <DialogDescription>
+              Roi trang se mat cac thay doi chua duoc luu.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowUnsavedDialog(false)}>
+              Tiep tuc chinh sua
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => router.push(`/dashboard/websites/${websiteId}`)}
+            >
+              Roi trang
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
