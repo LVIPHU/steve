@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 04-02 complete, next 04-03
 status: planning
-stopped_at: "Checkpoint: Task 3 human-verify — 04-03 Tasks 1+2 complete"
-last_updated: "2026-03-18T04:23:31.546Z"
+stopped_at: Completed 04-03-PLAN.md — Phase 4 complete
+last_updated: "2026-03-18T04:52:57.697Z"
 progress:
   total_phases: 5
   completed_phases: 4
@@ -137,6 +137,9 @@ progress:
 - CSS variables --primary-color and --font-family injected at wrapper div level on public page
 - ImageUploadField and RegenerateSection defined at module scope to prevent focus loss on re-render (same pattern as 04-02)
 - window.confirm replaced with shadcn Dialog in EditorClient; alert() replaced with sonner toast
+- fontFamily inline style required on EditorPreview wrapper — section components never consume var(--font-family), CSS var alone is not enough for font inheritance
+- Public page fontFamily inline style overrides next/font hardcoded className from layout components — inline style has higher specificity than className-applied font-family
+- ThemeTab useEffect injects Google Font on mount so existing saved font renders in editor preview on first load
 
 ## Key Decisions (04-02)
 
@@ -186,5 +189,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Checkpoint: Task 3 human-verify — 04-03 Tasks 1+2 complete
+**Stopped at:** Completed 04-03-PLAN.md — Phase 4 complete
 **Timestamp:** 2026-03-18T04:15:43Z

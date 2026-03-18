@@ -45,6 +45,9 @@ key-decisions:
   - "RegenerateSection sub-component manages its own regenPrompt and isRegenerating state — decoupled from parent form"
   - "Public page uses inline <link rel=stylesheet> for Google Font instead of Next.js metadata API — simpler for dynamic per-website fonts"
   - "CSS variables --primary-color and --font-family injected at public page wrapper div level"
+  - "fontFamily inline style required on EditorPreview wrapper — section components never consume var(--font-family), CSS var alone is not enough"
+  - "Public page fontFamily inline style overrides next/font hardcoded className from layout components (BlogLayout etc.)"
+  - "ThemeTab useEffect injects Google Font on mount so existing saved font renders in editor preview on first load"
 
 patterns-established:
   - "Sub-components at module scope (ImageUploadField, RegenerateSection) to prevent focus loss on re-render"
@@ -59,15 +62,15 @@ completed: 2026-03-18
 
 # Phase 4 Plan 03: Editor Theme, Image Upload, Regenerate, Polish Summary
 
-**Full editor completion: ThemeTab with Google Fonts, image upload in section forms, per-section regenerate with prompt, toast/dialog notifications, and public page font injection**
+**Full editor completion: ThemeTab with Google Fonts, image upload in section forms, per-section regenerate with prompt, toast/dialog notifications, public page font injection — plus bug fix for font not live-updating in editor preview or public page**
 
 ## Performance
 
-- **Duration:** ~4 min
+- **Duration:** ~20 min (including checkpoint + bug fix)
 - **Started:** 2026-03-18T11:17:50Z
-- **Completed:** 2026-03-18T11:22:30Z
-- **Tasks:** 2/2 auto tasks complete (Task 3 is human-verify checkpoint)
-- **Files modified:** 8
+- **Completed:** 2026-03-18T11:44:00Z
+- **Tasks:** 3 (2 auto + 1 checkpoint with bug fix)
+- **Files modified:** 9
 
 ## Accomplishments
 
@@ -82,8 +85,9 @@ Each task was committed atomically:
 
 1. **Task 1: Theme tab + image upload + per-section regenerate UI** - `dc1c990` (feat)
 2. **Task 2: Toast + unsaved dialog + edit button + public font loading** - `0aae20d` (feat)
+3. **Task 3: Font live-update bug fix (editor preview + public page)** - `66c4b0a` (fix)
 
-**Plan metadata:** pending final docs commit
+**Plan metadata:** (docs commit follows)
 
 ## Files Created/Modified
 
@@ -114,20 +118,36 @@ Each task was committed atomically:
 - **Files modified:** sections-tab.tsx
 - **Committed in:** dc1c990 (Task 1 commit)
 
+**2. [Rule 1 - Bug] Font not live-updating in editor preview**
+- **Found during:** Task 3 (human visual verification)
+- **Issue:** EditorPreview set `--font-family` CSS variable but section components never consume it. Text font did not change when a new font was selected. Also, the already-saved font did not load on editor open because injectGoogleFont was only called when user picks a new font.
+- **Fix:** Added `fontFamily: '"${font}", sans-serif'` inline style on EditorPreview wrapper div. Added useEffect in ThemeTab to inject Google Font on mount.
+- **Files modified:** editor-preview.tsx, theme-tab.tsx
+- **Verification:** typecheck passes, 58 tests pass
+- **Committed in:** `66c4b0a`
+
+**3. [Rule 1 - Bug] Font not applied on public page after save**
+- **Found during:** Task 3 (human visual verification)
+- **Issue:** Layout components (BlogLayout, etc.) apply `next/font` via className which hardcodes font-family with high specificity, overriding the `--font-family` CSS variable set on the outer wrapper div.
+- **Fix:** Added `fontFamily: '"${fontFamily}", sans-serif'` inline style to the public page outer wrapper div. Inline style priority overrides className-applied font-family.
+- **Files modified:** src/app/(public)/[username]/[slug]/page.tsx
+- **Verification:** typecheck passes, 58 tests pass
+- **Committed in:** `66c4b0a`
+
 ---
 
-**Total deviations:** 1 auto-fixed (1 blocking)
-**Impact on plan:** Necessary intermediate prop threading. No scope creep.
+**Total deviations:** 3 auto-fixed (1 blocking, 2 bugs)
+**Impact on plan:** Bug fixes were required for correctness — the font feature was built but not working end-to-end. No scope creep.
 
 ## Issues Encountered
 
-None — all tasks executed cleanly. TypeScript typecheck and 58 tests pass.
+Root cause of both font bugs: layout components use `next/font` which applies font-family via a generated CSS class. CSS custom properties set on ancestor elements cannot override this. The fix pattern — inline `fontFamily` style on the wrapper div — has higher specificity and correctly propagates to all text.
 
 ## Next Phase Readiness
 
 - Phase 4 editor fully complete — all 7 requirements (F-12, F-13, F-14, F-15, S-01, S-02, S-05) implemented
+- Font selection now live-updates in editor preview and persists correctly to public page
 - Phase 5 (Note sync API + Umami analytics) can begin
-- Human visual verification checkpoint (Task 3) pending user review
 
 ---
 *Phase: 04-editor*
