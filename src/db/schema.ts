@@ -83,6 +83,8 @@ export const websites = pgTable("websites", (t) => ({
   templateId: t.text("template_id"),
   content: t.jsonb("content"),
   seoMeta: t.jsonb("seo_meta"),
+  syncStatus: t.text("sync_status").default("idle"),
+  lastSyncedAt: t.timestamp("last_synced_at"),
   ...timestamps(t),
 }));
 

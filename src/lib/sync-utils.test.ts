@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import { mergeAiSectionsIntoAst } from "@/lib/sync-utils";
 import type { Section, WebsiteAST } from "@/types/website-ast";
 
+// Helper to access content fields with type safety
+const asRecord = (v: unknown) => v as unknown as Record<string, unknown>;
+
 // Test fixtures
 const existingAst: WebsiteAST = {
   theme: { primaryColor: "#2563eb", backgroundColor: "#ffffff", font: "Inter" },
@@ -46,11 +49,11 @@ describe("mergeAiSectionsIntoAst", () => {
     const result = mergeAiSectionsIntoAst(existingAst, newAst);
 
     // ai_content is replaced with new values
-    expect((result.sections[0].ai_content as Record<string, unknown>)["headline"]).toBe("New Headline");
-    expect((result.sections[1].ai_content as Record<string, unknown>)["title"]).toBe("New Title");
+    expect(asRecord(result.sections[0].ai_content)["headline"]).toBe("New Headline");
+    expect(asRecord(result.sections[1].ai_content)["title"]).toBe("New Title");
 
     // manual_overrides are preserved from existing
-    expect((result.sections[0].manual_overrides as Record<string, unknown>)["headline"]).toBe("User Edit");
+    expect(asRecord(result.sections[0].manual_overrides)["headline"]).toBe("User Edit");
     expect(result.sections[1].manual_overrides).toEqual({});
 
     // id and type are preserved from existing (not from newAst)
@@ -72,12 +75,12 @@ describe("mergeAiSectionsIntoAst", () => {
     expect(result.sections).toHaveLength(2);
 
     // First section is merged (ai_content replaced)
-    expect((result.sections[0].ai_content as Record<string, unknown>)["headline"]).toBe("New Headline");
+    expect(asRecord(result.sections[0].ai_content)["headline"]).toBe("New Headline");
 
     // Second section is kept unchanged (no new section at index 1)
     expect(result.sections[1].id).toBe("content-1");
-    expect((result.sections[1].ai_content as Record<string, unknown>)["title"]).toBe("Old Title");
-    expect((result.sections[1].ai_content as Record<string, unknown>)["body"]).toBe("Old Body");
+    expect(asRecord(result.sections[1].ai_content)["title"]).toBe("Old Title");
+    expect(asRecord(result.sections[1].ai_content)["body"]).toBe("Old Body");
   });
 
   it("Test 3: more new sections than existing — extra new sections ignored", () => {
@@ -98,8 +101,8 @@ describe("mergeAiSectionsIntoAst", () => {
     expect(result.sections).toHaveLength(2);
 
     // Both are merged properly
-    expect((result.sections[0].ai_content as Record<string, unknown>)["headline"]).toBe("New Headline");
-    expect((result.sections[1].ai_content as Record<string, unknown>)["title"]).toBe("New Title");
+    expect(asRecord(result.sections[0].ai_content)["headline"]).toBe("New Headline");
+    expect(asRecord(result.sections[1].ai_content)["title"]).toBe("New Title");
   });
 
   it("Test 4: empty new sections array — all existing sections kept unchanged", () => {
@@ -112,11 +115,11 @@ describe("mergeAiSectionsIntoAst", () => {
 
     // Should have 2 sections, all unchanged
     expect(result.sections).toHaveLength(2);
-    expect((result.sections[0].ai_content as Record<string, unknown>)["headline"]).toBe("Old Headline");
-    expect((result.sections[1].ai_content as Record<string, unknown>)["title"]).toBe("Old Title");
+    expect(asRecord(result.sections[0].ai_content)["headline"]).toBe("Old Headline");
+    expect(asRecord(result.sections[1].ai_content)["title"]).toBe("Old Title");
 
     // manual_overrides still preserved
-    expect((result.sections[0].manual_overrides as Record<string, unknown>)["headline"]).toBe("User Edit");
+    expect(asRecord(result.sections[0].manual_overrides)["headline"]).toBe("User Edit");
   });
 
   it("preserves theme and seo from existing AST", () => {
