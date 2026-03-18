@@ -13,7 +13,15 @@
       "Bash(echo \"Exit: $?\")",
       "Bash(node -e \"require\\(''./.claude/hooks/gsd-context-monitor.js''\\)\")",
       "Bash(echo \"node exit: $?\")",
-      "WebFetch(domain:ui.shadcn.com)"
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(npm run:*)",
+      "Bash(cat D:/STEVE/steve/.planning/phases/04-editor/*-VERIFICATION.md)",
+      "Bash(grep -n 'SectionEditForm\\\\|resolveField\\\\|onUpdateField\\\\|headline\\\\|subtext\\\\|buttonText' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/section-edit-form.tsx)",
+      "Bash(grep -n 'handleUpdateTheme\\\\|handleRegenerateSection\\\\|updateTheme\\\\|updateSectionAiContent\\\\|toast\\\\.success\\\\|Da luu\\\\|beforeunload\\\\|showUnsavedDialog\\\\|Ban co thay doi' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx)",
+      "Bash(grep -n 'updateSection\\\\|onUpdateSection' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/section-edit-form.tsx)",
+      "Bash(grep -n 'TODO\\\\|FIXME\\\\|XXX\\\\|HACK\\\\|PLACEHOLDER\\\\|placeholder\\\\|coming soon\\\\|will be here' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/editor-sidebar.tsx 2)",
+      "Bash(/dev/null -i)",
+      "Bash(git -C D:/STEVE/steve log --oneline 189e120 f39de9d fff4a67 7c1779e dc1c990 0aae20d 66c4b0a)"
     ]
   }
 }
