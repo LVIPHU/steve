@@ -3,15 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_plan: 04-02 complete, next 04-03
-status: in_progress
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-18T04:15:43.490Z"
+status: planning
+stopped_at: "Checkpoint: Task 3 human-verify — 04-03 Tasks 1+2 complete"
+last_updated: "2026-03-18T04:23:31.546Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 13
-  completed_plans: 12
-  percent: 92
+  completed_plans: 13
 ---
 
 # STATE.md — Project Memory
@@ -64,13 +63,19 @@ progress:
 | EditorSidebar (Sections/Theme tabs) | Done | Plan 04-02 complete |
 | SectionsTab (dnd-kit DnD reorder) | Done | Plan 04-02 complete |
 | SectionEditForm (per-type dynamic fields, resolveField) | Done | Plan 04-02 complete |
+| ThemeTab (color picker + Google Fonts selector) | Done | Plan 04-03 complete |
+| Image upload integration in section forms (gallery + hero) | Done | Plan 04-03 complete |
+| Per-section regenerate UI with optional prompt | Done | Plan 04-03 complete |
+| Unsaved changes dialog (shadcn Dialog) + toast (sonner) | Done | Plan 04-03 complete |
+| Edit Website button on detail page | Done | Plan 04-03 complete |
+| Public page Google Font + CSS variable injection | Done | Plan 04-03 complete |
 
 ## What's Left (by phase)
 
 - **Phase 1:** COMPLETE
 - **Phase 2:** COMPLETE (3/3 plans done)
 - **Phase 3:** COMPLETE
-- **Phase 4:** Theme tab, image upload, per-section regenerate (Plan 04-03 remaining)
+- **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** Note sync API, Umami analytics
 
 ## Key Decisions
@@ -110,6 +115,7 @@ progress:
 | Phase 03 P03 | 2m 13s | 1 tasks | 4 files |
 | Phase 04 P01 | 6m 15s | 2 tasks | 13 files |
 | Phase 04 P02 | 3m 46s | 2 tasks | 9 files |
+| Phase 04 P03 | 4min | 2 tasks | 8 files |
 
 ## Milestone History
 
@@ -123,6 +129,14 @@ progress:
 | 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
+
+## Key Decisions (04-03)
+
+- injectGoogleFont creates a `<link>` in `document.head` during editor preview — no SSR needed, client-side only
+- Public page uses inline JSX `<link rel="stylesheet">` instead of metadata API — dynamic per-website font URLs work naturally
+- CSS variables --primary-color and --font-family injected at wrapper div level on public page
+- ImageUploadField and RegenerateSection defined at module scope to prevent focus loss on re-render (same pattern as 04-02)
+- window.confirm replaced with shadcn Dialog in EditorClient; alert() replaced with sonner toast
 
 ## Key Decisions (04-02)
 
@@ -172,5 +186,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 04-02-PLAN.md
+**Stopped at:** Checkpoint: Task 3 human-verify — 04-03 Tasks 1+2 complete
 **Timestamp:** 2026-03-18T04:15:43Z
