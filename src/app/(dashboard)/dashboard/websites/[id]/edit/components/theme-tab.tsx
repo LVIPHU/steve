@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { WebsiteTheme } from "@/types/website-ast";
@@ -30,6 +30,13 @@ interface ThemeTabProps {
 export function ThemeTab({ theme, onUpdateTheme }: ThemeTabProps) {
   const [fontSearch, setFontSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+
+  // Inject the current font on mount so the editor preview shows it immediately
+  useEffect(() => {
+    if (theme.font) {
+      injectGoogleFont(theme.font);
+    }
+  }, [theme.font]);
 
   const filteredFonts = POPULAR_FONTS.filter((f) =>
     f.toLowerCase().includes(fontSearch.toLowerCase())

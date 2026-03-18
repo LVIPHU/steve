@@ -31,6 +31,7 @@ export function EditorPreview({
         {
           "--primary-color": ast.theme.primaryColor,
           "--font-family": ast.theme.font,
+          fontFamily: ast.theme.font ? `"${ast.theme.font}", sans-serif` : undefined,
         } as React.CSSProperties
       }
     >

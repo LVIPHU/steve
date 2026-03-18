@@ -88,6 +88,7 @@ export default async function PublicWebsitePage({
           {
             "--primary-color": ast.theme?.primaryColor,
             "--font-family": fontFamily,
+            fontFamily: `"${fontFamily}", sans-serif`,
           } as React.CSSProperties
         }
       >
