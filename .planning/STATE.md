@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: planning
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-18T09:45:50.205Z"
+current_plan: All complete — v1.0 milestone done
+status: complete
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-18T09:49:20.465Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # STATE.md — Project Memory
@@ -74,6 +74,7 @@ progress:
 | POST /api/sync/trigger (background AI via after()) | Done | Plan 05-01 complete |
 | SyncBadge on WebsiteCard (syncing/synced/sync_failed states) | Done | Plan 05-01 complete |
 | WebsitesPoller — 30s auto-refresh via router.refresh() | Done | Plan 05-01 complete |
+| Umami analytics conditional script in public page | Done | Plan 05-02 complete |
 
 ## What's Left (by phase)
 
@@ -81,7 +82,12 @@ progress:
 - **Phase 2:** COMPLETE (3/3 plans done)
 - **Phase 3:** COMPLETE
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
-- **Phase 5:** Plan 05-01 COMPLETE — sync API + dashboard polling. Plan 05-02 next: Umami analytics
+- **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
+
+## Key Decisions (05-02)
+
+- Both NEXT_PUBLIC_UMAMI_URL AND NEXT_PUBLIC_UMAMI_WEBSITE_ID required for Umami script — partial config renders nothing (safe default)
+- .env.example is gitignored by .env* pattern — Umami vars documented on disk only, consistent with all prior plans
 
 ## Key Decisions
 
@@ -122,6 +128,7 @@ progress:
 | Phase 04 P02 | 3m 46s | 2 tasks | 9 files |
 | Phase 04 P03 | 4min | 2 tasks | 8 files |
 | Phase 05 P01 | 6m 13s | 3 tasks | 7 files |
+| Phase 05 P02 | 1min | 1 tasks | 2 files |
 
 ## Milestone History
 
@@ -205,5 +212,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 05-01-PLAN.md
+**Stopped at:** Completed 05-02-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
