@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import DashboardNav from "../dashboard-nav";
 import WebsiteCard from "@/components/website-card";
+import WebsitesPoller from "./websites-poller";
 import { Button } from "@/components/ui/button";
 
 export default async function WebsitesPage() {
@@ -42,11 +43,13 @@ export default async function WebsitesPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
-            {userWebsites.map((site, index) => (
-              <WebsiteCard key={site.id} website={site} index={index} />
-            ))}
-          </div>
+          <WebsitesPoller>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+              {userWebsites.map((site, index) => (
+                <WebsiteCard key={site.id} website={site} index={index} />
+              ))}
+            </div>
+          </WebsitesPoller>
         )}
       </main>
     </div>

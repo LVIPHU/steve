@@ -11,6 +11,55 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Website } from "@/db/schema";
 
+function SyncBadge({
+  syncStatus,
+  lastSyncedAt,
+}: {
+  syncStatus: string | null;
+  lastSyncedAt: Date | null;
+}) {
+  if (!syncStatus || syncStatus === "idle") return null;
+
+  if (syncStatus === "syncing") {
+    return (
+      <span
+        aria-label="Trang thai dong bo: dang xu ly"
+        className="rounded-full px-2 py-0.5 text-xs font-normal bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 animate-pulse"
+      >
+        Dang dong bo...
+      </span>
+    );
+  }
+
+  if (syncStatus === "sync_failed") {
+    return (
+      <span
+        aria-label="Trang thai dong bo: that bai"
+        className="rounded-full px-2 py-0.5 text-xs font-normal bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+      >
+        Dong bo that bai
+      </span>
+    );
+  }
+
+  if (syncStatus === "synced" && lastSyncedAt) {
+    const time = new Date(lastSyncedAt).toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return (
+      <span
+        aria-label={`Trang thai dong bo: thanh cong luc ${time}`}
+        className="rounded-full px-2 py-0.5 text-xs font-normal bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+      >
+        Dong bo luc {time}
+      </span>
+    );
+  }
+
+  return null;
+}
+
 function StatusBadge({ status }: { status: string }) {
   return (
     <span
@@ -259,7 +308,10 @@ export default function WebsiteCard({ website, index }: WebsiteCardProps) {
             )}
           </CardHeader>
           <CardContent className="pt-0">
-            <StatusBadge status={website.status} />
+            <div className="flex flex-wrap items-center gap-1">
+              <StatusBadge status={website.status} />
+              <SyncBadge syncStatus={website.syncStatus} lastSyncedAt={website.lastSyncedAt} />
+            </div>
           </CardContent>
         </Link>
 
