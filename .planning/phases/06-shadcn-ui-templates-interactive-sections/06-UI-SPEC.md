@@ -74,7 +74,7 @@ Dashboard and editor inherit `--font-geist-sans`. Public website pages inherit t
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 16px | 400 (regular) | 1.5 | Paragraph text, form labels, section descriptions |
-| Label | 14px | 500 (medium) | 1.4 | UI labels, badge text, input labels, meta text |
+| Label | 14px | 400 (regular) | 1.4 | UI labels, badge text, input labels, meta text |
 | Heading | 20px | 600 (semibold) | 1.25 | Section titles (e.g. "Ingredients", "Goals") |
 | Display | 36px | 700 (bold) | 1.1 | Hero headline in template public pages |
 
@@ -133,6 +133,12 @@ Default primary colors per template (used when no user override):
 | learning | #7c3aed (violet-600) | Focus, study, knowledge |
 
 Dark mode for public pages: toggled by adding/removing `dark` class on `<html>` element. Persisted to `localStorage` key `"theme-preference"`. System preference applied on first visit via `prefers-color-scheme` media query check before first paint.
+
+---
+
+## Visual Focal Point
+
+**Editor primary screen:** The section preview panel (EditorPreview) is the visual anchor. It occupies the dominant right-side area of the two-column editor layout. All sidebar interactions (section selection, field edits, theme changes) produce visible updates in this panel. The active section ring (accent color) draws the eye to the currently edited section within the preview. Sidebar controls are visually subordinate — lower contrast, narrower column — so attention remains on the preview output.
 
 ---
 
