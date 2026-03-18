@@ -63,6 +63,19 @@ export async function PATCH(
     updateSet.slug = (slug as string).trim();
   }
 
+  if ("content" in body) {
+    const content = body.content;
+    if (typeof content !== "object" || content === null || Array.isArray(content)) {
+      return Response.json({ error: "content must be an object" }, { status: 400 });
+    }
+    updateSet.content = content;
+    // Sync seoMeta if seo field present
+    const ast = content as { seo?: Record<string, unknown> };
+    if (ast.seo && typeof ast.seo === "object") {
+      updateSet.seoMeta = ast.seo;
+    }
+  }
+
   if (Object.keys(updateSet).length === 0) {
     return Response.json({ error: "No valid fields to update" }, { status: 400 });
   }

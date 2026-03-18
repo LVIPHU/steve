@@ -95,7 +95,7 @@ describe("applyManualOverride", () => {
   it("does NOT modify ai_content on any section", () => {
     const result = applyManualOverride(sampleAST, "hero-1", "headline", "Override Value");
     const heroResult = result.sections.find((s) => s.id === "hero-1");
-    expect((heroResult?.ai_content as Record<string, unknown>)["headline"]).toBe("AI Headline");
+    expect((heroResult?.ai_content as unknown as Record<string, unknown>)["headline"]).toBe("AI Headline");
   });
 
   it("leaves other sections unchanged", () => {
@@ -156,7 +156,7 @@ describe("updateSectionAiContent", () => {
     const newAiContent = { headline: "New AI Headline", subtext: "New AI Subtext" };
     const result = updateSectionAiContent(sampleAST, "hero-1", newAiContent);
     const heroResult = result.sections.find((s) => s.id === "hero-1");
-    expect((heroResult?.ai_content as Record<string, unknown>)["headline"]).toBe(
+    expect((heroResult?.ai_content as unknown as Record<string, unknown>)["headline"]).toBe(
       "New AI Headline"
     );
   });
@@ -175,13 +175,13 @@ describe("updateSectionAiContent", () => {
     const result = updateSectionAiContent(sampleAST, "nonexistent-id", newAiContent);
     expect(result.sections).toHaveLength(3);
     const heroResult = result.sections.find((s) => s.id === "hero-1");
-    expect((heroResult?.ai_content as Record<string, unknown>)["headline"]).toBe("AI Headline");
+    expect((heroResult?.ai_content as unknown as Record<string, unknown>)["headline"]).toBe("AI Headline");
   });
 
   it("does not affect other sections", () => {
     const newAiContent = { headline: "New", subtext: "New" };
     const result = updateSectionAiContent(sampleAST, "hero-1", newAiContent);
     const aboutResult = result.sections.find((s) => s.id === "about-1");
-    expect((aboutResult?.ai_content as Record<string, unknown>)["title"]).toBe("About Us");
+    expect((aboutResult?.ai_content as unknown as Record<string, unknown>)["title"]).toBe("About Us");
   });
 });

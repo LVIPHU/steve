@@ -1,3 +1,5 @@
+import type { SectionType } from "@/types/website-ast";
+
 export const TEMPLATE_PRESETS: Record<string, string[]> = {
   blog: ["hero", "content", "cta"],
   portfolio: ["hero", "about", "features", "cta"],
@@ -105,5 +107,20 @@ export function buildUserPrompt(noteJson?: string | null, prompt?: string | null
     }
   }
 
+  return result;
+}
+
+export function buildSectionRegenPrompt(
+  sectionType: SectionType,
+  prompt?: string,
+  currentContent?: Record<string, unknown>
+): string {
+  let result = `Regenerate ONLY the ${sectionType} section. Return a JSON object with ONLY the ai_content fields for this section type.`;
+  if (prompt) {
+    result += ` Additional instructions: ${prompt}`;
+  }
+  if (currentContent) {
+    result += ` Current content for context: ${JSON.stringify(currentContent)}`;
+  }
   return result;
 }
