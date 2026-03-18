@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 04-01 complete, next 04-02
+current_plan: 04-02 complete, next 04-03
 status: in_progress
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-18T04:07:18.519Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-18T04:15:43.490Z"
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 13
-  completed_plans: 11
-  percent: 85
+  completed_plans: 12
+  percent: 92
 ---
 
 # STATE.md — Project Memory
@@ -25,8 +25,8 @@ progress:
 ## Current Phase
 
 **Phase:** 4 — editor (In Progress)
-**Current Plan:** 04-01 complete, next 04-02
-**Next action:** Phase 4 Plan 02 — Editor UI shell and layout
+**Current Plan:** 04-02 complete, next 04-03
+**Next action:** Phase 4 Plan 03 — Theme tab, image upload, per-section regenerate
 
 ## What's Built
 
@@ -57,14 +57,20 @@ progress:
 | POST /api/upload/image (Supabase Storage) | Done | Plan 04-01 complete |
 | POST /api/ai/regenerate-section (GPT-4o per-section) | Done | Plan 04-01 complete |
 | shadcn components: tabs, separator, badge, dialog, skeleton, sonner | Done | Plan 04-01 complete |
+| Editor page /dashboard/websites/[id]/edit | Done | Plan 04-02 complete |
+| EditorClient (ast state, unsaved guard, save PATCH) | Done | Plan 04-02 complete |
+| EditorTopbar (back, name indicator, responsive toggle, save) | Done | Plan 04-02 complete |
+| EditorPreview (click-to-select, ring-2, responsive width) | Done | Plan 04-02 complete |
+| EditorSidebar (Sections/Theme tabs) | Done | Plan 04-02 complete |
+| SectionsTab (dnd-kit DnD reorder) | Done | Plan 04-02 complete |
+| SectionEditForm (per-type dynamic fields, resolveField) | Done | Plan 04-02 complete |
 
 ## What's Left (by phase)
 
 - **Phase 1:** COMPLETE
 - **Phase 2:** COMPLETE (3/3 plans done)
-- **Phase 3:** AI generation, publish route, SEO
-- **Phase 3:** AI generation, publish route, SEO
-- **Phase 4:** Visual editor, dnd-kit, image upload
+- **Phase 3:** COMPLETE
+- **Phase 4:** Theme tab, image upload, per-section regenerate (Plan 04-03 remaining)
 - **Phase 5:** Note sync API, Umami analytics
 
 ## Key Decisions
@@ -103,6 +109,7 @@ progress:
 | Phase 03 P04 | 3min | 2 tasks | 3 files |
 | Phase 03 P03 | 2m 13s | 1 tasks | 4 files |
 | Phase 04 P01 | 6m 15s | 2 tasks | 13 files |
+| Phase 04 P02 | 3m 46s | 2 tasks | 9 files |
 
 ## Milestone History
 
@@ -116,6 +123,13 @@ progress:
 | 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
+
+## Key Decisions (04-02)
+
+- templateId column is nullable in schema — defaulted to 'blog' when null to satisfy EditorClient prop type
+- window.confirm used for unsaved changes guard on back button — shadcn Dialog deferred to 04-03
+- SortableSectionItem and SectionEditForm defined at module scope — prevents input focus loss on re-render
+- handle-only drag: listeners applied only to GripVertical button, not the whole row — prevents accidental drag on click
 
 ## Key Decisions (04-01)
 
@@ -158,5 +172,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 04-01-PLAN.md
-**Timestamp:** 2026-03-18T04:06:01Z
+**Stopped at:** Completed 04-02-PLAN.md
+**Timestamp:** 2026-03-18T04:15:43Z
