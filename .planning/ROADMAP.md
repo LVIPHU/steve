@@ -11,6 +11,7 @@ Building a companion web app for a mobile note-taking app. Users turn their note
 - [x] **Phase 3: AI Generation + Publish** - OpenAI GPT-4o generation, public SSR routes, SEO auto-gen (completed 2026-03-17)
 - [x] **Phase 4: Editor** - Sidebar editor, dnd-kit reorder, image upload, color/font customization (completed 2026-03-18)
 - [x] **Phase 5: Note Sync + Analytics** - Auto-sync API endpoint, merge logic, Umami analytics (completed 2026-03-18)
+- [ ] **Phase 6: shadcn-ui Templates Interactive Sections** - 5 new interactive section types, template visual redesign, dark mode, editor extensions
 
 ## Phase Details
 
@@ -103,3 +104,28 @@ Plans:
 Plans:
 - [ ] 05-01-PLAN.md — DB schema + sync API route (after() background AI) + merge logic + SyncBadge + 30s polling
 - [ ] 05-02-PLAN.md — Umami analytics script embed in public page + env vars
+
+### Phase 6: shadcn-ui Templates Interactive Sections
+
+**Goal:** Nang cap visual quality toan bo 5 templates bang shadcn/ui + them 5 interactive section types moi (steps, ingredients, goals, flashcard, quiz) + dark mode + editor add-section flow.
+**Requirements**: P6-01, P6-02, P6-03, P6-04, P6-05, P6-06, P6-07, P6-08, P6-09, P6-10, P6-11, P6-12, P6-13, P6-14
+**Depends on:** Phase 5
+**Success Criteria** (what must be TRUE):
+  1. SectionType union includes 11 types (6 existing + 5 new interactive)
+  2. AI generates correct section types per template (cooking: ingredients+steps, learning: goals+flashcard+quiz)
+  3. All 5 interactive sections work on public pages with correct behavior (check, flip, score, etc.)
+  4. Progress persists to localStorage where specified (goals, quiz)
+  5. No hydration mismatches on interactive sections (SSR renders static, client hydrates)
+  6. Editor has edit forms for all 11 section types
+  7. "Them section" flow works: Dialog picker filtered by template, AI generates content
+  8. All 5 templates have distinct visual identities (not just different fonts)
+  9. Dark mode toggle works on all public template pages, preference persists
+  10. No FOUC on dark mode page load
+**Plans:** 5 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Extend types/validation/AI prompts, install 7 shadcn components, add TEMPLATE_ALLOWED_SECTIONS
+- [ ] 06-02-PLAN.md — Create 5 interactive section components (goals, quiz, flashcard, steps, ingredients) + update SectionRenderer
+- [ ] 06-03-PLAN.md — Editor extensions: edit forms for 5 new types + add-section Dialog flow
+- [ ] 06-04-PLAN.md — Redesign all 5 template layouts with distinct visual identities
+- [ ] 06-05-PLAN.md — Dark mode: next-themes ThemeProvider + DarkModeToggle in all layouts
