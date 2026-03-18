@@ -71,18 +71,23 @@ Plans:
 - [ ] 03-04-PLAN.md — Public SSR route /[username]/[slug], generateMetadata SEO, OG image endpoint
 
 ### Phase 4: Editor
-**Goal**: User chỉnh sửa website trực quan qua sidebar, kéo thả section, upload ảnh.
+**Goal**: User chỉnh sửa website trực quan qua sidebar, kéo thả section, upload ảnh, tùy chỉnh màu và font.
 **Depends on**: Phase 3
 **Requirements**: F-12, F-13, F-14, F-15, S-01, S-02, S-05
 **Success Criteria** (what must be TRUE):
-  1. Editor page shows responsive preview (iframe) with Desktop/Tablet/Mobile toggle
+  1. Editor page shows responsive preview (direct React render) with Desktop/Tablet/Mobile toggle
   2. Clicking a section opens sidebar with editable fields
   3. Edits are saved as manual_overrides — AI content is not overwritten
   4. Sections can be reordered via drag-and-drop (dnd-kit)
   5. Images can be uploaded to Supabase Storage and used in sections
   6. Primary color and font can be customized (CSS variables)
   7. Per-section AI regenerate button works
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Install deps, extend PATCH API, editor-utils + tests, upload API, regenerate-section API
+- [ ] 04-02-PLAN.md — Editor page, EditorClient, topbar, preview, sidebar sections tab with dnd-kit, section edit forms
+- [ ] 04-03-PLAN.md — Theme tab, image upload UI, per-section regenerate UI, toast, unsaved guard, detail page edit button, public page font
 
 ### Phase 5: Note Sync + Analytics
 **Goal**: Note thay đổi trong mobile app → website tự cập nhật content; analytics tracking hoạt động.
