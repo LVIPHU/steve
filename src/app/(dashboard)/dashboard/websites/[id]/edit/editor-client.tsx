@@ -6,6 +6,7 @@ import type { WebsiteAST, Section } from "@/types/website-ast";
 import { applyManualOverride } from "@/lib/editor-utils";
 import { EditorTopbar } from "./components/editor-topbar";
 import { EditorPreview } from "./components/editor-preview";
+import { EditorSidebar } from "./components/editor-sidebar";
 
 interface EditorClientProps {
   websiteId: string;
@@ -111,13 +112,15 @@ export function EditorClient({
         </div>
         {/* Sidebar */}
         <div className="w-[35%] min-w-[320px] max-w-[480px] border-l border-border overflow-y-auto bg-sidebar">
-          <div
-            data-active-tab={activeTab}
-            data-selected-section={selectedSectionId}
-            className="p-4 text-sm text-muted-foreground"
-          >
-            Sidebar placeholder
-          </div>
+          <EditorSidebar
+            ast={ast}
+            selectedSectionId={selectedSectionId}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            onSelectSection={handleSelectSection}
+            onReorderSections={handleReorderSections}
+            onUpdateSection={handleUpdateSection}
+          />
         </div>
       </div>
     </div>
