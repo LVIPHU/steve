@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -134,10 +135,18 @@ export function WebsiteDetailClient({
 
   return (
     <div>
-      {/* Header: title + status badge */}
-      <div className="flex items-center gap-3 mb-6">
+      {/* Header: title + status badge + edit button */}
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <h1 className="text-xl font-semibold">{website.name}</h1>
         <StatusBadge status={status} />
+        {hasContent && (
+          <Link href={`/dashboard/websites/${website.id}/edit`} className="ml-auto">
+            <Button variant="outline" className="gap-2">
+              <Pencil className="h-4 w-4" />
+              Chinh sua website
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Info card */}

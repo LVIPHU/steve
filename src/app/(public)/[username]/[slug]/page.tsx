@@ -77,5 +77,22 @@ export default async function PublicWebsitePage({
   const ast = website.content as WebsiteAST;
   if (!ast) notFound();
 
-  return <TemplateRenderer templateId={website.templateId ?? "blog"} ast={ast} />;
+  const fontFamily = ast.theme?.font || "Inter";
+  const fontUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;600&display=swap`;
+
+  return (
+    <>
+      <link rel="stylesheet" href={fontUrl} />
+      <div
+        style={
+          {
+            "--primary-color": ast.theme?.primaryColor,
+            "--font-family": fontFamily,
+          } as React.CSSProperties
+        }
+      >
+        <TemplateRenderer templateId={website.templateId ?? "blog"} ast={ast} />
+      </div>
+    </>
+  );
 }
