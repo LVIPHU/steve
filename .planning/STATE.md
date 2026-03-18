@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: planning
-stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-03-17T20:28:44.896Z"
+current_plan: 04-01 complete, next 04-02
+status: in_progress
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-18T04:07:18.519Z"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 13
+  completed_plans: 11
+  percent: 85
 ---
 
 # STATE.md — Project Memory
@@ -23,9 +24,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 3 — ai-generation-publish (COMPLETE)
-**Current Plan:** Not started
-**Next action:** Phase 4 — Visual editor, dnd-kit, image upload
+**Phase:** 4 — editor (In Progress)
+**Current Plan:** 04-01 complete, next 04-02
+**Next action:** Phase 4 Plan 02 — Editor UI shell and layout
 
 ## What's Built
 
@@ -51,6 +52,11 @@ progress:
 | Website detail generate/preview/publish flow | Done | Plan 03-03 complete |
 | Public SSR route /[username]/[slug] | Done | Plan 03-04 complete |
 | OG image endpoint 1200x630 | Done | Plan 03-04 complete |
+| editor-utils pure functions (4 functions, 18 tests) | Done | Plan 04-01 complete |
+| PATCH /api/websites/[id] content field support | Done | Plan 04-01 complete |
+| POST /api/upload/image (Supabase Storage) | Done | Plan 04-01 complete |
+| POST /api/ai/regenerate-section (GPT-4o per-section) | Done | Plan 04-01 complete |
+| shadcn components: tabs, separator, badge, dialog, skeleton, sonner | Done | Plan 04-01 complete |
 
 ## What's Left (by phase)
 
@@ -96,6 +102,7 @@ progress:
 | Phase 03 P02 | 2m 20s | 2 tasks | 13 files |
 | Phase 03 P04 | 3min | 2 tasks | 3 files |
 | Phase 03 P03 | 2m 13s | 1 tasks | 4 files |
+| Phase 04 P01 | 6m 15s | 2 tasks | 13 files |
 
 ## Milestone History
 
@@ -109,6 +116,13 @@ progress:
 | 2026-03-17 | Phase 2 started — Plan 02-01 complete (Vitest, template system, slug utility, website PATCH/DELETE API) |
 | 2026-03-17 | Plan 02-03 complete — website list page + WebsiteCard CRUD component |
 | 2026-03-17 | Phase 2 COMPLETE — all 3 plans done |
+
+## Key Decisions (04-01)
+
+- editor-utils functions are pure (no side effects) — simplifies testing and makes state mutations predictable in React
+- regenerate-section does NOT save to DB — client receives ai_content, merges into local editor state, and persists via PATCH Save button
+- PATCH content field syncs seoMeta automatically if ast.seo present — keeps columns in sync same as generate endpoint
+- Supabase client in upload route uses service role key (server-side only) — bypasses RLS for reliable storage writes
 
 ## Key Decisions (03-04)
 
@@ -144,5 +158,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 4 UI-SPEC approved
-**Timestamp:** 2026-03-17T12:32:55Z
+**Stopped at:** Completed 04-01-PLAN.md
+**Timestamp:** 2026-03-18T04:06:01Z
