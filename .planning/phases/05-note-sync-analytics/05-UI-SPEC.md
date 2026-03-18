@@ -62,7 +62,7 @@ Inherited from existing codebase. Phase 5 introduces no new type roles.
 | Role | Size | Weight | Line Height | Usage in this phase |
 |------|------|--------|-------------|---------------------|
 | Body | 14px (text-sm) | 400 (normal) | 1.5 | Sync timestamp text on badge |
-| Label | 12px (text-xs) | 500 (medium) | 1.4 | Sync badge label text |
+| Label | 12px (text-xs) | 400 (normal) | 1.4 | Sync badge label text |
 | Heading | 20px (text-xl) | 600 (semibold) | 1.2 | Page heading (unchanged) |
 | Display | 28px (text-2xl) | 600 (semibold) | 1.2 | Not used in this phase |
 
