@@ -98,4 +98,8 @@ Plans:
   2. Website ai_content is updated without touching manual_overrides
   3. In-app notification appears when sync occurs
   4. Umami analytics script is embedded in published website layout
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — DB schema + sync API route (after() background AI) + merge logic + SyncBadge + 30s polling
+- [ ] 05-02-PLAN.md — Umami analytics script embed in public page + env vars
