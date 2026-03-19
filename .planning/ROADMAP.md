@@ -121,7 +121,7 @@ Plans:
   8. All 5 templates have distinct visual identities (not just different fonts)
   9. Dark mode toggle works on all public template pages, preference persists
   10. No FOUC on dark mode page load
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 - [ ] 06-01-PLAN.md — Extend types/validation/AI prompts, install 7 shadcn components, add TEMPLATE_ALLOWED_SECTIONS

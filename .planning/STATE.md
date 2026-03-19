@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 05-01 complete, 05-02 next
+current_plan: 06-02 complete, 06-03 next
 status: planning
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-03-19T03:13:50.494Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-19T03:19:08.884Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # STATE.md — Project Memory
@@ -24,8 +24,8 @@ progress:
 ## Current Phase
 
 **Phase:** 6 — shadcn-ui-templates-interactive-sections (In Progress)
-**Current Plan:** 06-01 complete, 06-02 next
-**Next action:** Phase 6 Plan 02 — Cooking template layout (ingredients + steps sections)
+**Current Plan:** 06-02 complete, 06-03 next
+**Next action:** Phase 6 Plan 03 — Cooking + Learning template layouts
 
 ## What's Built
 
@@ -80,6 +80,8 @@ progress:
 | TEMPLATE_ALLOWED_SECTIONS map (per-template section type filtering) | Done | Plan 06-01 complete |
 | shadcn components: progress, accordion, carousel, toggle, switch, checkbox, radio-group | Done | Plan 06-01 complete |
 | AI prompts updated with new section schemas + template-specific rules | Done | Plan 06-01 complete |
+| GoalsSection (progress bar + localStorage) + QuizSection (radio + score + localStorage) + FlashcardSection (3D flip motion) + StepsSection + IngredientsSection | Done | Plan 06-02 complete |
+| SectionRenderer updated to dispatch all 11 section types | Done | Plan 06-02 complete |
 
 ## What's Left (by phase)
 
@@ -89,6 +91,13 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** In Progress — Plan 06-01 complete (type system + shadcn foundation), 4 plans remaining
+
+## Key Decisions (06-02)
+
+- GoalsSection and QuizSection use slug-keyed localStorage (`goals-{slug}-{sectionId}`) — per-website state isolation so visiting multiple websites gets independent progress
+- StepsSection and IngredientsSection use ephemeral in-memory state only — transient cooking session data needs no persistence
+- FlashcardSection imports from `motion/react` (not `framer-motion`); CardFace and QuizChoice sub-components defined at module scope to prevent re-render animation/focus issues
+- mounted flag pattern: `useState(false)` + `useEffect` sets true + reads localStorage — prevents SSR hydration mismatch on server-rendered checkboxes
 
 ## Key Decisions (06-01)
 
@@ -143,6 +152,8 @@ progress:
 | Phase 05 P01 | 6m 13s | 3 tasks | 7 files |
 | Phase 05 P02 | 1min | 1 tasks | 2 files |
 | Phase 06 P01 | 6min | 2 tasks | 15 files |
+| Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
+| Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -231,5 +242,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 06-01-PLAN.md
+**Stopped at:** Completed 06-02-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
