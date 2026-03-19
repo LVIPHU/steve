@@ -1,12 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  pgTable,
-  text,
-  boolean,
-  timestamp,
-  uuid,
-  jsonb,
-} from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const timestamps = (t: any) => ({
@@ -80,12 +73,8 @@ export const websites = pgTable("websites", (t) => ({
   slug: t.text("slug").notNull(),
   status: t.text("status").default("draft").notNull(),
   sourceNoteId: t.text("source_note_id"),
-  templateId: t.text("template_id"),
-  content: t.jsonb("content"),
-  seoMeta: t.jsonb("seo_meta"),
   htmlContent: t.text("html_content"),
-  syncStatus: t.text("sync_status").default("idle"),
-  lastSyncedAt: t.timestamp("last_synced_at"),
+  chatHistory: t.jsonb("chat_history"),
   ...timestamps(t),
 }));
 

@@ -63,25 +63,20 @@ export async function PATCH(
     updateSet.slug = (slug as string).trim();
   }
 
-  if ("content" in body) {
-    const content = body.content;
-    if (typeof content !== "object" || content === null || Array.isArray(content)) {
-      return Response.json({ error: "content must be an object" }, { status: 400 });
-    }
-    updateSet.content = content;
-    // Sync seoMeta if seo field present
-    const ast = content as { seo?: Record<string, unknown> };
-    if (ast.seo && typeof ast.seo === "object") {
-      updateSet.seoMeta = ast.seo;
-    }
-  }
-
   if ("html_content" in body) {
     const htmlContent = body.html_content;
     if (typeof htmlContent !== "string") {
       return Response.json({ error: "html_content must be a string" }, { status: 400 });
     }
     updateSet.htmlContent = htmlContent;
+  }
+
+  if ("chat_history" in body) {
+    const chatHistory = body.chat_history;
+    if (chatHistory !== null && !Array.isArray(chatHistory)) {
+      return Response.json({ error: "chat_history must be an array or null" }, { status: 400 });
+    }
+    updateSet.chatHistory = chatHistory;
   }
 
   if (Object.keys(updateSet).length === 0) {
