@@ -1,8 +1,11 @@
-import { Inter } from "next/font/google";
+import { Merriweather } from "next/font/google";
 import type { WebsiteAST } from "@/types/website-ast";
 import { SectionRenderer } from "@/components/sections";
 
-const inter = Inter({ subsets: ["latin"] });
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
 
 interface BlogLayoutProps {
   ast: WebsiteAST;
@@ -11,12 +14,15 @@ interface BlogLayoutProps {
 export function BlogLayout({ ast }: BlogLayoutProps) {
   return (
     <div
-      className={inter.className}
-      style={{ "--primary": ast.theme.primaryColor } as React.CSSProperties}
+      className={merriweather.className}
+      style={{ "--primary-color": ast.theme.primaryColor } as React.CSSProperties}
     >
-      <div className="max-w-4xl mx-auto">
-        {ast.sections.map((section) => (
-          <SectionRenderer key={section.id} section={section} theme={ast.theme} />
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        {ast.sections.map((section, idx) => (
+          <div key={section.id}>
+            {idx > 0 && <hr className="border-t border-border my-12" />}
+            <SectionRenderer section={section} theme={ast.theme} />
+          </div>
         ))}
       </div>
     </div>
