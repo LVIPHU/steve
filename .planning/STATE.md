@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 2
 status: executing
-stopped_at: Phase 7 UI-SPEC approved
-last_updated: "2026-03-19T06:31:30.903Z"
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-03-19T06:31:42.465Z"
 progress:
   total_phases: 7
   completed_phases: 6
@@ -97,6 +97,9 @@ progress:
 | PATCH /api/websites/[id] accepts html_content field | Done | Plan 07-01 complete |
 | html-prompts.ts: buildFreshSystemPrompt, buildEditSystemPrompt, stripMarkdownFences | Done | Plan 07-01 complete |
 | POST /api/ai/generate-html (GPT-4o HTML generation, 90s timeout, auto-save) | Done | Plan 07-01 complete |
+| Public route.ts GET handler serving raw htmlContent | Done | Plan 07-02 complete |
+| Vietnamese landing page (hero, features, how-it-works, footer) | Done | Plan 07-02 complete |
+| Dashboard nav rebranded to AppGen | Done | Plan 07-02 complete |
 
 ## What's Left (by phase)
 
@@ -106,6 +109,8 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
+- **Phase 7:** In Progress — Plan 07-01 complete (htmlContent schema + generate-html API), Plan 07-02 complete (public route.ts, landing page, AppGen rebrand)
+
 
 ## Key Decisions (07-01)
 
@@ -114,6 +119,14 @@ progress:
 - maxDuration=90 matches AbortSignal.timeout(90000) — HTML generation needs more time than JSON AST generation (30s)
 - No response_format on OpenAI call — HTML output is plain text, not JSON
 - Fresh vs edit mode selected by `Boolean(currentHtml)` — truthy check on the optional currentHtml field
+
+## Key Decisions (07-02)
+
+- route.ts replaces page.tsx for public HTML serving — no React rendering, pure Response with Content-Type text/html
+- CSS keyframes used in Server Component landing page instead of motion/react — keeps page.tsx SSR-only for SEO
+- Delete page.tsx and opengraph-image.tsx before creating route.ts — Next.js cannot have both in same segment
+- Archived websites return inline HTML string from route handler (Response, not JSX)
+- Clean .next cache when typecheck fails on deleted files — stale validator.ts references persist after file deletion
 
 ## Key Decisions (06-05)
 
@@ -294,5 +307,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 7 UI-SPEC approved
+**Stopped at:** Completed 07-02-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
