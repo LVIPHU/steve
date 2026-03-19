@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-19T11:40:13.537Z"
+stopped_at: Completed 08-03-PLAN.md
+last_updated: "2026-03-19T11:45:54.660Z"
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 28
-  completed_plans: 25
+  completed_plans: 26
 ---
 
 # STATE.md — Project Memory
@@ -107,6 +107,8 @@ progress:
 | shadcn components: textarea, scroll-area | Done | Plan 07-03 complete |
 | HtmlEditorClient — full Lovable-style editor (iframe + chat + code tabs) | Done | Plan 07-04 complete |
 | DB schema cleanup: chatHistory JSONB added, 5 legacy AST columns removed | Done | Plan 08-01 complete |
+| POST /api/websites endpoint (auth, slug generation, 201) | Done | Plan 08-03 complete |
+| Dashboard AI onboarding chat (2-question state machine, no AI call) | Done | Plan 08-03 complete |
 | Codebase purged: 48+ old AST/template/sync/editor files deleted, typecheck clean | Done | Plan 08-01 complete |
 
 ## What's Left (by phase)
@@ -119,6 +121,13 @@ progress:
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
 - **Phase 7:** COMPLETE — All 4 plans done (07-01 through 07-04)
 - **Phase 8:** In Progress — Plan 08-01 complete (1/4)
+
+## Key Decisions (08-03)
+
+- OnboardingChat extracted to onboarding-chat.tsx (not inline in page.tsx) — server/client boundary clean, page.tsx becomes thin wrapper
+- Session check removed from dashboard page.tsx — auth enforced at layout level by (dashboard)/layout.tsx
+- goal captured via local text variable in waiting_q2 handler — avoids React closure issue with setGoal + setTimeout
+- Bot messages use hardcoded Vietnamese text (no AI call) — conversation is a pure state machine, faster and simpler
 
 ## Key Decisions (08-01)
 
@@ -252,6 +261,7 @@ progress:
 | Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
 | Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
 | Phase 08 P01 | 7min | 2 tasks | 52 files |
+| Phase 08 P03 | 2m 13s | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -342,5 +352,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 08-01-PLAN.md
+**Stopped at:** Completed 08-03-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
