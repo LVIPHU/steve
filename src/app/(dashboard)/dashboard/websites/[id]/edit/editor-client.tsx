@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { WebsiteAST, WebsiteTheme, Section } from "@/types/website-ast";
+import type { WebsiteAST, WebsiteTheme, Section, SectionType } from "@/types/website-ast";
 import { applyManualOverride, updateTheme, updateSectionAiContent } from "@/lib/editor-utils";
 import { EditorTopbar } from "./components/editor-topbar";
 import { EditorPreview } from "./components/editor-preview";
@@ -97,6 +97,35 @@ export function EditorClient({
     [ast, websiteId]
   );
 
+  const handleAddSection = useCallback(
+    async (sectionType: SectionType) => {
+      const res = await fetch("/api/ai/regenerate-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          websiteId,
+          sectionId: `${sectionType}-${Date.now()}`,
+          sectionType,
+          templateId,
+        }),
+      });
+      if (!res.ok) {
+        toast.error("Khong the tao section. Hay thu lai.");
+        throw new Error("Add section failed");
+      }
+      const { ai_content } = await res.json();
+      const newSection: Section = {
+        id: `${sectionType}-${Date.now()}`,
+        type: sectionType,
+        ai_content,
+        manual_overrides: {},
+      };
+      setAst((prev) => ({ ...prev, sections: [...prev.sections, newSection] }));
+      setHasUnsavedChanges(true);
+    },
+    [websiteId, templateId]
+  );
+
   const handleSave = useCallback(async () => {
     setIsSaving(true);
     try {
@@ -160,6 +189,7 @@ export function EditorClient({
             onUpdateSection={handleUpdateSection}
             onUpdateTheme={handleUpdateTheme}
             onRegenerateSection={handleRegenerateSection}
+            onAddSection={handleAddSection}
             websiteId={websiteId}
             templateId={templateId}
           />

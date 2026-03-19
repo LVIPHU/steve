@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import type { WebsiteAST, WebsiteTheme, Section } from "@/types/website-ast";
+import type { WebsiteAST, WebsiteTheme, Section, SectionType } from "@/types/website-ast";
 import { SectionsTab } from "./sections-tab";
 import { ThemeTab } from "./theme-tab";
 
@@ -15,6 +15,7 @@ interface EditorSidebarProps {
   onUpdateSection: (sectionId: string, field: string, value: unknown) => void;
   onUpdateTheme: (partial: Partial<WebsiteTheme>) => void;
   onRegenerateSection: (sectionId: string, prompt: string) => Promise<void>;
+  onAddSection: (sectionType: SectionType) => Promise<void>;
   websiteId: string;
   templateId: string;
 }
@@ -29,6 +30,7 @@ export function EditorSidebar({
   onUpdateSection,
   onUpdateTheme,
   onRegenerateSection,
+  onAddSection,
   websiteId,
   templateId,
 }: EditorSidebarProps) {
@@ -54,6 +56,7 @@ export function EditorSidebar({
           onReorder={onReorderSections}
           onUpdateSection={onUpdateSection}
           onRegenerateSection={onRegenerateSection}
+          onAddSection={onAddSection}
           websiteId={websiteId}
           templateId={templateId}
         />
