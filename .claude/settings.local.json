@@ -25,7 +25,12 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''''scripts'''',{}\\), indent=2\\)\\)\")",
       "Skill(gsd:add-phase)",
       "Skill(gsd:discuss-phase)",
-      "Skill(gsd:ui-phase)"
+      "Skill(gsd:ui-phase)",
+      "Skill(gsd:add-todo)",
+      "Bash(npx vitest:*)",
+      "Bash(find \"D:/STEVE/steve/src/app/\\(dashboard\\)/dashboard/websites\" -type f)",
+      "Bash(find \"D:/STEVE/steve/src/app/\\(public\\)\" -type f)",
+      "Bash(cat:*)"
     ]
   }
 }
