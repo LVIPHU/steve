@@ -1,50 +1,44 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { websites, profiles } from "@/db/schema";
+import { websites } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { redirect, notFound } from "next/navigation";
-import type { WebsiteAST } from "@/types/website-ast";
-import { EditorClient } from "./editor-client";
+import { notFound, redirect } from "next/navigation";
+import HtmlEditorClient from "./editor-client";
 
 type Params = Promise<{ id: string }>;
+type SearchParams = Promise<{ prompt?: string }>;
 
-export default async function EditPage({ params }: { params: Params }) {
+export default async function EditPage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
   const { id } = await params;
+  const { prompt } = await searchParams;
 
-  const results = await db
+  const result = await db
     .select()
     .from(websites)
     .where(and(eq(websites.id, id), eq(websites.userId, session.user.id)))
     .limit(1);
 
-  if (results.length === 0) notFound();
+  if (result.length === 0) notFound();
 
-  const website = results[0];
-
-  // Can't edit what hasn't been generated yet
-  if (!website.content) {
-    redirect(`/dashboard/websites/${id}`);
-  }
-
-  const profileResults = await db
-    .select()
-    .from(profiles)
-    .where(eq(profiles.id, session.user.id))
-    .limit(1);
-  const _username = profileResults[0]?.username ?? "";
-
-  const initialAst = JSON.parse(JSON.stringify(website.content)) as WebsiteAST;
+  const website = result[0];
 
   return (
-    <EditorClient
-      websiteId={id}
-      initialAst={initialAst}
+    <HtmlEditorClient
+      websiteId={website.id}
       websiteName={website.name}
-      templateId={website.templateId ?? "blog"}
+      initialHtml={(website.htmlContent as string | null) ?? null}
+      initialPrompt={prompt ?? ""}
+      websiteStatus={website.status}
     />
   );
 }
