@@ -129,3 +129,27 @@ Plans:
 - [ ] 06-03-PLAN.md — Editor extensions: edit forms for 5 new types + add-section Dialog flow
 - [ ] 06-04-PLAN.md — Redesign all 5 template layouts with distinct visual identities
 - [ ] 06-05-PLAN.md — Dark mode: next-themes ThemeProvider + DarkModeToggle in all layouts
+
+### Phase 7: HTML-first AI generation and Lovable-style editor
+
+**Goal:** Thay the he thong AST/template bang HTML-first model — GPT-4o tao HTML hoan chinh, editor kieu Lovable (iframe + chat + code), landing page moi, public route tra raw HTML.
+**Requirements**: P7-01, P7-02, P7-03, P7-04, P7-05, P7-06, P7-07, P7-08
+**Depends on:** Phase 6
+**Success Criteria** (what must be TRUE):
+  1. htmlContent TEXT column exists on websites table
+  2. PATCH /api/websites/[id] accepts html_content field
+  3. POST /api/ai/generate-html generates complete HTML from GPT-4o
+  4. Public route serves raw HTML for published websites (route.ts, not page.tsx)
+  5. Creation form has name + prompt only (no template picker)
+  6. Editor shows iframe preview (60%) + chat/code panel (40%)
+  7. Chat panel sends prompts to AI, updates iframe live
+  8. Code tab allows direct HTML editing with Apply button
+  9. Landing page shows Vietnamese hero/features/how-it-works/footer
+  10. Dashboard nav brand is "AppGen"
+**Plans:** 4 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — DB schema (htmlContent), PATCH extension, generate-html API, prompt utils + tests
+- [ ] 07-02-PLAN.md — Public route handler (raw HTML), landing page, dashboard nav rebrand
+- [ ] 07-03-PLAN.md — Simplified creation form (name + prompt), edit page searchParams
+- [ ] 07-04-PLAN.md — Lovable-style editor: iframe + chat + code tabs + auto-generate + save/publish
