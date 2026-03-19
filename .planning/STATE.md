@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 06-03 complete, 06-04 next
+current_plan: 06-04 complete, 06-05 next
 status: planning
-stopped_at: Completed 06-03-PLAN.md
-last_updated: "2026-03-19T03:20:31.100Z"
+stopped_at: Completed 06-04-PLAN.md
+last_updated: "2026-03-19T03:25:27.276Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # STATE.md — Project Memory
@@ -24,8 +24,8 @@ progress:
 ## Current Phase
 
 **Phase:** 6 — shadcn-ui-templates-interactive-sections (In Progress)
-**Current Plan:** 06-03 complete, 06-04 next
-**Next action:** Phase 6 Plan 04 — Dark mode + SSR hydration fixes
+**Current Plan:** 06-04 complete, 06-05 next
+**Next action:** Phase 6 Plan 05 — Final plan
 
 ## What's Built
 
@@ -85,6 +85,11 @@ progress:
 | SectionEditForm extended for all 11 section types (steps/ingredients/goals/flashcard/quiz) | Done | Plan 06-03 complete |
 | Them section Dialog flow + AI generation + loading skeleton in SectionsTab | Done | Plan 06-03 complete |
 | handleAddSection in EditorClient wired to /api/ai/regenerate-section | Done | Plan 06-03 complete |
+| Blog layout: Merriweather serif, max-w-3xl editorial, hr section dividers | Done | Plan 06-04 complete |
+| Portfolio layout: Inter, full-bleed dark hero bg-slate-900, max-w-7xl, primaryColor CTA band | Done | Plan 06-04 complete |
+| Fitness layout: Oswald condensed, border-l-4 accent, dark zinc-900 hero, edge-to-edge | Done | Plan 06-04 complete |
+| Cooking layout: Lora, warm #fdf8f3 bg, rounded-xl card containers for ingredients/steps | Done | Plan 06-04 complete |
+| Learning layout: Plus Jakarta Sans, bg-slate-50, card-wrapped non-hero sections | Done | Plan 06-04 complete |
 
 ## What's Left (by phase)
 
@@ -94,6 +99,14 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** In Progress — Plans 06-01, 06-02, 06-03 complete, 2 plans remaining
+
+## Key Decisions (06-04)
+
+- All 5 layouts use `--primary-color` CSS variable (not `--primary`) — consistent with UI-SPEC and public page injection
+- Cooking warm bg uses Tailwind arbitrary value `bg-[#fdf8f3]` so `dark:bg-background` can override via standard cascade
+- Fitness `border-l-4` applied on full-width section wrapper div (not inside content container) for true edge-to-edge left accent
+- Portfolio CTA band uses inline style `backgroundColor` for dynamic primaryColor at runtime — cannot use Tailwind arbitrary value for dynamic user values
+- All 5 layouts remain Server Components — no "use client" — interactive sections handle own client boundaries via SectionRenderer
 
 ## Key Decisions (06-03)
 
@@ -165,6 +178,7 @@ progress:
 | Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
 | Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
 | Phase 06 P03 | 3m 34s | 2 tasks | 4 files |
+| Phase 06 P04 | 2m | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -253,5 +267,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 06-03-PLAN.md
+**Stopped at:** Completed 06-04-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
