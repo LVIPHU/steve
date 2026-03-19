@@ -146,7 +146,7 @@ Plans:
   8. Code tab allows direct HTML editing with Apply button
   9. Landing page shows Vietnamese hero/features/how-it-works/footer
   10. Dashboard nav brand is "AppGen"
-**Plans:** 4 plans
+**Plans:** 2/4 plans executed
 
 Plans:
 - [ ] 07-01-PLAN.md — DB schema (htmlContent), PATCH extension, generate-html API, prompt utils + tests

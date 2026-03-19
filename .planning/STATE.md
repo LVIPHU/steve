@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 06-05 complete — all 5 plans done
-status: planning
+current_plan: 2
+status: executing
 stopped_at: Phase 7 UI-SPEC approved
-last_updated: "2026-03-19T04:52:39.908Z"
+last_updated: "2026-03-19T06:31:30.903Z"
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 20
-  completed_plans: 20
+  total_plans: 24
+  completed_plans: 22
 ---
 
 # STATE.md — Project Memory
@@ -19,13 +19,13 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Ready to plan
+**Status:** Executing Phase 07
 
 ## Current Phase
 
-**Phase:** 6 — shadcn-ui-templates-interactive-sections (COMPLETE)
-**Current Plan:** 06-05 complete — all 5 plans done
-**Next action:** All phases complete — project ready for v1.0 release
+**Phase:** 7 — html-first-ai-generation-and-lovable-style-editor (In Progress)
+**Current Plan:** 2
+**Next action:** Execute 07-02 (srcdoc editor UI)
 
 ## What's Built
 
@@ -93,6 +93,10 @@ progress:
 | ThemeProvider on public layout (next-themes, storageKey=theme-preference) | Done | Plan 06-05 complete |
 | DarkModeToggle component (mounted flag, Sun/Moon, Vietnamese aria-labels) | Done | Plan 06-05 complete |
 | Dark mode toggle integrated into all 5 template layouts | Done | Plan 06-05 complete |
+| htmlContent TEXT column on websites table | Done | Plan 07-01 complete |
+| PATCH /api/websites/[id] accepts html_content field | Done | Plan 07-01 complete |
+| html-prompts.ts: buildFreshSystemPrompt, buildEditSystemPrompt, stripMarkdownFences | Done | Plan 07-01 complete |
+| POST /api/ai/generate-html (GPT-4o HTML generation, 90s timeout, auto-save) | Done | Plan 07-01 complete |
 
 ## What's Left (by phase)
 
@@ -102,6 +106,14 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
+
+## Key Decisions (07-01)
+
+- htmlContent column applied via direct SQL ALTER TABLE — drizzle-kit push has upstream bug with CHECK constraints (same pattern as 05-01)
+- stripMarkdownFences regex uses `(?:html?)?` optional group to handle both bare and html-tagged fences
+- maxDuration=90 matches AbortSignal.timeout(90000) — HTML generation needs more time than JSON AST generation (30s)
+- No response_format on OpenAI call — HTML output is plain text, not JSON
+- Fresh vs edit mode selected by `Boolean(currentHtml)` — truthy check on the optional currentHtml field
 
 ## Key Decisions (06-05)
 
@@ -190,10 +202,13 @@ progress:
 | Phase 06 P03 | 3m 34s | 2 tasks | 4 files |
 | Phase 06 P04 | 2m | 2 tasks | 5 files |
 | Phase 06 P05 | 3m | 2 tasks | 7 files |
+| Phase 07 P01 | 3m 34s | 2 tasks | 5 files |
+| Phase 07 P02 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
 ### Roadmap Evolution
+
 - Phase 6 added: shadcn-ui templates interactive-sections
 - Phase 7 added: HTML-first AI generation and Lovable-style editor
 
