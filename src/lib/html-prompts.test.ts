@@ -29,6 +29,18 @@ describe("buildFreshSystemPrompt", () => {
   it("bans alert()", () => {
     expect(buildFreshSystemPrompt()).toContain("alert()");
   });
+
+  it("includes DaisyUI CDN", () => {
+    expect(buildFreshSystemPrompt()).toContain("daisyui");
+  });
+
+  it("includes all 4 template types", () => {
+    const prompt = buildFreshSystemPrompt();
+    expect(prompt).toContain("LANDING PAGE");
+    expect(prompt).toContain("PORTFOLIO / CV");
+    expect(prompt).toContain("DASHBOARD / TOOL");
+    expect(prompt).toContain("BLOG / DOCS");
+  });
 });
 
 describe("buildEditSystemPrompt", () => {
