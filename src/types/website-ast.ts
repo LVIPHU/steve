@@ -1,4 +1,15 @@
-export type SectionType = "hero" | "about" | "features" | "content" | "gallery" | "cta";
+export type SectionType =
+  | "hero"
+  | "about"
+  | "features"
+  | "content"
+  | "gallery"
+  | "cta"
+  | "steps"
+  | "quiz"
+  | "flashcard"
+  | "goals"
+  | "ingredients";
 
 export interface HeroContent {
   headline: string;
@@ -34,13 +45,47 @@ export interface CtaContent {
   buttonUrl: string;
 }
 
+export interface StepsContent {
+  title: string;
+  items: Array<{ label: string; description: string; imageUrl?: string }>;
+}
+
+export interface IngredientsContent {
+  title: string;
+  items: Array<{ name: string; quantity: string }>;
+}
+
+export interface GoalsContent {
+  title: string;
+  items: Array<{ label: string }>;
+}
+
+export interface FlashcardContent {
+  title: string;
+  cards: Array<{ front: string; back: string }>;
+}
+
+export interface QuizContent {
+  title: string;
+  questions: Array<{
+    question: string;
+    choices: [string, string, string, string];
+    correctIndex: 0 | 1 | 2 | 3;
+  }>;
+}
+
 export type SectionContent =
   | HeroContent
   | AboutContent
   | FeaturesContent
   | ContentContent
   | GalleryContent
-  | CtaContent;
+  | CtaContent
+  | StepsContent
+  | IngredientsContent
+  | GoalsContent
+  | FlashcardContent
+  | QuizContent;
 
 export interface Section {
   id: string;

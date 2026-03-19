@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseAndValidateAST, resolveField } from "@/lib/ast-utils";
+import { parseAndValidateAST, resolveField, VALID_SECTION_TYPES } from "@/lib/ast-utils";
 import type { Section } from "@/types/website-ast";
 
 const validASTFixture = {
@@ -80,6 +80,89 @@ describe("parseAndValidateAST", () => {
     const result = parseAndValidateAST(JSON.stringify(ast));
     expect(result.sections[0].manual_overrides).toEqual({});
   });
+
+  it("accepts section with type 'goals'", () => {
+    const ast = {
+      ...validASTFixture,
+      sections: [
+        {
+          id: "goals-1",
+          type: "goals",
+          ai_content: { title: "Goals", items: [{ label: "Goal 1" }] },
+          manual_overrides: {},
+        },
+      ],
+    };
+    const result = parseAndValidateAST(JSON.stringify(ast));
+    expect(result.sections[0].type).toBe("goals");
+  });
+
+  it("accepts section with type 'quiz'", () => {
+    const ast = {
+      ...validASTFixture,
+      sections: [
+        {
+          id: "quiz-1",
+          type: "quiz",
+          ai_content: {
+            title: "Quiz",
+            questions: [{ question: "Q1", choices: ["A", "B", "C", "D"], correctIndex: 0 }],
+          },
+          manual_overrides: {},
+        },
+      ],
+    };
+    const result = parseAndValidateAST(JSON.stringify(ast));
+    expect(result.sections[0].type).toBe("quiz");
+  });
+
+  it("accepts section with type 'flashcard'", () => {
+    const ast = {
+      ...validASTFixture,
+      sections: [
+        {
+          id: "flashcard-1",
+          type: "flashcard",
+          ai_content: { title: "Cards", cards: [{ front: "F", back: "B" }] },
+          manual_overrides: {},
+        },
+      ],
+    };
+    const result = parseAndValidateAST(JSON.stringify(ast));
+    expect(result.sections[0].type).toBe("flashcard");
+  });
+
+  it("accepts section with type 'steps'", () => {
+    const ast = {
+      ...validASTFixture,
+      sections: [
+        {
+          id: "steps-1",
+          type: "steps",
+          ai_content: { title: "Steps", items: [{ label: "S1", description: "D1" }] },
+          manual_overrides: {},
+        },
+      ],
+    };
+    const result = parseAndValidateAST(JSON.stringify(ast));
+    expect(result.sections[0].type).toBe("steps");
+  });
+
+  it("accepts section with type 'ingredients'", () => {
+    const ast = {
+      ...validASTFixture,
+      sections: [
+        {
+          id: "ingredients-1",
+          type: "ingredients",
+          ai_content: { title: "Ingredients", items: [{ name: "Salt", quantity: "1 tsp" }] },
+          manual_overrides: {},
+        },
+      ],
+    };
+    const result = parseAndValidateAST(JSON.stringify(ast));
+    expect(result.sections[0].type).toBe("ingredients");
+  });
 });
 
 describe("resolveField", () => {
@@ -112,5 +195,11 @@ describe("resolveField", () => {
     };
     // subtext not overridden — should come from ai_content
     expect(resolveField<string>(section, "subtext")).toBe("AI Subtext");
+  });
+});
+
+describe("VALID_SECTION_TYPES", () => {
+  it("has exactly 11 entries", () => {
+    expect(VALID_SECTION_TYPES).toHaveLength(11);
   });
 });

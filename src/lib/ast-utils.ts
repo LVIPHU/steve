@@ -7,6 +7,11 @@ export const VALID_SECTION_TYPES: SectionType[] = [
   "content",
   "gallery",
   "cta",
+  "steps",
+  "quiz",
+  "flashcard",
+  "goals",
+  "ingredients",
 ];
 
 export function parseAndValidateAST(raw: string): WebsiteAST {
