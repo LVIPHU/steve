@@ -4,6 +4,7 @@ import { profiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import DashboardSidebar from "@/components/sidebar";
 
 export default async function DashboardLayout({
   children,
@@ -22,5 +23,16 @@ export default async function DashboardLayout({
 
   if (!profile) redirect("/onboarding");
 
-  return <>{children}</>;
+  return (
+    <DashboardSidebar
+      user={{
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+      }}
+      username={profile.username}
+    >
+      {children}
+    </DashboardSidebar>
+  );
 }

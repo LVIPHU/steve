@@ -277,9 +277,9 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex flex-col h-screen bg-background overflow-hidden">
+    <div className="fixed inset-0 z-40 flex flex-col h-screen bg-background overflow-hidden">
       {/* Topbar */}
-      <header className="fixed top-0 left-0 right-0 h-12 z-10 flex items-center justify-between px-4 border-b border-border bg-background">
+      <header className="fixed top-0 left-0 right-0 h-12 z-50 flex items-center justify-between px-4 border-b border-border bg-background">
         {/* Left: Back button */}
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon-sm" asChild>
