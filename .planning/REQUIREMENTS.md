@@ -40,9 +40,9 @@ Tất cả đã ship và verified.
 ## v1.1 Requirements (Active — Phases 9-11)
 
 ### Pipeline — Component Library
-- [ ] **PIPE-01**: Component Library có ≥25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
-- [ ] **PIPE-02**: `selectComponents(analysis)` chọn tối đa 4 snippets phù hợp nhất bằng tag matching (không LLM, ~0ms)
-- [ ] **PIPE-03**: Component Library có unit tests cho tag-match logic (Vitest)
+- [x] **PIPE-01**: Component Library có ≥25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
+- [x] **PIPE-02**: `selectComponents(analysis)` chọn tối đa 4 snippets phù hợp nhất bằng tag matching (không LLM, ~0ms)
+- [x] **PIPE-03**: Component Library có unit tests cho tag-match logic (Vitest)
 
 ### Pipeline — Design Agent
 - [ ] **PIPE-04**: Design Agent (gpt-4o-mini + Zod Structured Output) trả về palette hex, typography Google Fonts, style preset, hero layout
@@ -104,9 +104,9 @@ Tất cả đã ship và verified.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | Phase 9 | Pending |
-| PIPE-02 | Phase 9 | Pending |
-| PIPE-03 | Phase 9 | Pending |
+| PIPE-01 | Phase 9 | Complete |
+| PIPE-02 | Phase 9 | Complete |
+| PIPE-03 | Phase 9 | Complete |
 | PIPE-04 | Phase 10 | Pending |
 | PIPE-05 | Phase 10 | Pending |
 | PIPE-06 | Phase 10 | Pending |
