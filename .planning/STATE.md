@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: completed
-stopped_at: Phase 8 UI-SPEC approved
-last_updated: "2026-03-19T10:25:38.932Z"
+current_plan: 1
+status: executing
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-19T11:40:13.537Z"
 progress:
   total_phases: 8
   completed_phases: 7
-  total_plans: 24
-  completed_plans: 24
+  total_plans: 28
+  completed_plans: 25
 ---
 
 # STATE.md — Project Memory
@@ -19,12 +19,12 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Milestone complete
+**Status:** Executing Phase 08
 
 ## Current Phase
 
 **Phase:** 7 — html-first-ai-generation-and-lovable-style-editor (COMPLETE)
-**Current Plan:** Not started
+**Current Plan:** 1
 **Next action:** Phase 7 complete — all plans executed
 
 ## What's Built
@@ -106,6 +106,8 @@ progress:
 | HtmlEditorClient stub with new props interface (Plan 04 compatible) | Done | Plan 07-03 complete |
 | shadcn components: textarea, scroll-area | Done | Plan 07-03 complete |
 | HtmlEditorClient — full Lovable-style editor (iframe + chat + code tabs) | Done | Plan 07-04 complete |
+| DB schema cleanup: chatHistory JSONB added, 5 legacy AST columns removed | Done | Plan 08-01 complete |
+| Codebase purged: 48+ old AST/template/sync/editor files deleted, typecheck clean | Done | Plan 08-01 complete |
 
 ## What's Left (by phase)
 
@@ -116,6 +118,16 @@ progress:
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
 - **Phase 7:** COMPLETE — All 4 plans done (07-01 through 07-04)
+- **Phase 8:** In Progress — Plan 08-01 complete (1/4)
+
+## Key Decisions (08-01)
+
+- chatHistory JSONB accepts null (array or null) — null used for clearing history on publish
+- Old AST editor components deleted entirely — HtmlEditorClient (from Plan 07-04) is the replacement
+- websites/[id]/page.tsx deleted — referenced TEMPLATES and WebsiteDetailClient; Phase 8 will provide new detail page
+- editor-utils.ts and sync-utils.ts deleted — both entirely typed around WebsiteAST with no Phase 8 consumers
+- Link /websites/new changed to /dashboard — website creation now happens via dashboard AI chat (Phase 8 design)
+- Direct SQL ALTER TABLE pattern used for chatHistory migration — same approach as Plans 05-01 and 07-01
 
 ## Key Decisions (07-04)
 
@@ -239,6 +251,7 @@ progress:
 | Phase 07 P03 | 3m 11s | 2 tasks | 6 files |
 | Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
 | Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
+| Phase 08 P01 | 7min | 2 tasks | 52 files |
 
 ## Accumulated Context
 
@@ -329,5 +342,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 8 UI-SPEC approved
+**Stopped at:** Completed 08-01-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
