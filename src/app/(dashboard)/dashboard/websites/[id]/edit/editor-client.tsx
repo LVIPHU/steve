@@ -93,13 +93,39 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     }, 500);
   }
 
-  // Generate HTML via AI
+  // Step labels shown in chat during pipeline
+  const STEP_LABELS: Record<string, string> = {
+    analyze: "Phân tích yêu cầu...",
+    research: "Tìm CSS patterns & components...",
+    generate: "Đang tạo HTML...",
+    validate: "Kiểm tra kết quả...",
+  };
+
+  // Generate HTML via AI (SSE pipeline)
   async function handleGenerate(prompt: string) {
     setIsGenerating(true);
     setMessages((prev) => [
       ...prev,
       { role: "user", content: prompt, timestamp: new Date() },
     ]);
+
+    // Track pipeline step message indices so we can update them in-place
+    const stepMessageIndices: Record<string, number> = {};
+
+    const addStepMessage = (content: string): number => {
+      let index = -1;
+      setMessages((prev) => {
+        index = prev.length;
+        return [...prev, { role: "assistant", content, timestamp: new Date() }];
+      });
+      return index;
+    };
+
+    const updateMessageAt = (index: number, content: string) => {
+      setMessages((prev) =>
+        prev.map((m, i) => (i === index ? { ...m, content } : m))
+      );
+    };
 
     try {
       const res = await fetch("/api/ai/generate-html", {
@@ -112,17 +138,60 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
         }),
       });
 
-      if (!res.ok) throw new Error("Generation failed");
-      const data = (await res.json()) as { html: string };
+      if (!res.ok || !res.body) throw new Error("Generation failed");
 
-      setHtmlContent(data.html);
-      setCodeValue(data.html);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Đã cập nhật!", timestamp: new Date() },
-      ]);
-      setHasUnsaved(false); // API already saved it
-      scheduleAutoSave(data.html); // Redundant save for safety
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          const dataLine = line.startsWith("data: ") ? line.slice(6) : null;
+          if (!dataLine) continue;
+
+          const event = JSON.parse(dataLine) as {
+            step: string;
+            status: string;
+            detail?: string;
+            html?: string;
+            fix_count?: number;
+            error?: string;
+          };
+
+          if (event.step === "complete" && event.html) {
+            setHtmlContent(event.html);
+            setCodeValue(event.html);
+            setHasUnsaved(false);
+            scheduleAutoSave(event.html);
+            setMessages((prev) => [
+              ...prev,
+              { role: "assistant", content: "✓ Xong! Preview đã cập nhật.", timestamp: new Date() },
+            ]);
+          } else if (event.step === "error") {
+            setMessages((prev) => [
+              ...prev,
+              {
+                role: "error",
+                content: event.error ?? "Không thể tạo nội dung. Vui lòng thử lại.",
+                timestamp: new Date(),
+              },
+            ]);
+          } else if (event.status === "start" && STEP_LABELS[event.step]) {
+            const idx = addStepMessage(`◆ ${STEP_LABELS[event.step]}`);
+            stepMessageIndices[event.step] = idx;
+          } else if (event.status === "done" && stepMessageIndices[event.step] !== undefined) {
+            const detail = event.detail ? ` — ${event.detail}` : "";
+            updateMessageAt(stepMessageIndices[event.step], `✓ ${STEP_LABELS[event.step].replace("...", "")}${detail}`);
+          }
+        }
+      }
     } catch {
       setMessages((prev) => [
         ...prev,

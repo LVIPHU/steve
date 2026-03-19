@@ -2,20 +2,26 @@ import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { websites } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
-import OpenAI from "openai";
-import { buildFreshSystemPrompt, buildEditSystemPrompt, stripMarkdownFences } from "@/lib/html-prompts";
+import { runGenerationPipeline } from "@/lib/ai-pipeline";
+import type { PipelineEvent } from "@/lib/ai-pipeline";
 
 export const maxDuration = 90;
 
-const openai = new OpenAI();
+function sseData(event: PipelineEvent): string {
+  return `data: ${JSON.stringify(event)}\n\n`;
+}
 
 export async function POST(request: Request) {
-  // 1. Auth check (same pattern as generate/route.ts)
+  // 1. Auth check
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   // 2. Parse body
-  const { websiteId, prompt, currentHtml } = await request.json();
+  const { websiteId, prompt, currentHtml } = await request.json() as {
+    websiteId: string;
+    prompt: string;
+    currentHtml?: string;
+  };
   if (!websiteId || !prompt) {
     return Response.json({ error: "websiteId and prompt are required" }, { status: 400 });
   }
@@ -28,39 +34,36 @@ export async function POST(request: Request) {
     return Response.json({ error: "Not found" }, { status: 404 });
   }
 
-  // 4. Build system prompt (fresh vs edit mode)
-  const isEdit = Boolean(currentHtml);
-  const systemPrompt = isEdit
-    ? buildEditSystemPrompt(currentHtml)
-    : buildFreshSystemPrompt();
+  // 4. SSE streaming response
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: PipelineEvent) => {
+        controller.enqueue(new TextEncoder().encode(sseData(event)));
+      };
 
-  try {
-    // 5. OpenAI call — NO response_format (text output)
-    const completion = await openai.chat.completions.create(
-      {
-        model: "gpt-4o",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
-        ],
-      },
-      { signal: AbortSignal.timeout(90000) }
-    );
+      try {
+        const html = await runGenerationPipeline(prompt, currentHtml || undefined, send);
 
-    const raw = completion.choices[0].message.content ?? "";
-    const html = stripMarkdownFences(raw);
+        // Auto-save to DB
+        await db.update(websites)
+          .set({ htmlContent: html, updatedAt: new Date() })
+          .where(eq(websites.id, websiteId));
 
-    // 6. Auto-save to DB
-    await db.update(websites)
-      .set({ htmlContent: html, updatedAt: new Date() })
-      .where(eq(websites.id, websiteId));
+        send({ step: "complete", status: "done", html });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Generation failed";
+        send({ step: "error", status: "done", error: message });
+      } finally {
+        controller.close();
+      }
+    },
+  });
 
-    return Response.json({ ok: true, html });
-  } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      return Response.json({ error: "Generation timed out" }, { status: 504 });
-    }
-    console.error("generate-html error:", error);
-    return Response.json({ error: "Generation failed" }, { status: 500 });
-  }
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
 }
