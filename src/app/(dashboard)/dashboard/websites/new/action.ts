@@ -7,37 +7,30 @@ import { generateSlug } from "@/lib/slugify";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function createWebsite(data: {
-  name: string;
-  templateId: string;
-  sourceNoteId?: string;
-  promptText?: string;
-}): Promise<{ error?: string }> {
+export async function createWebsite(formData: FormData): Promise<void> {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return { error: "Phien lam viec het han. Vui long dang nhap lai." };
+  if (!session) return;
 
-  const trimmedName = data.name.trim();
-  if (!trimmedName) return { error: "Vui long nhap ten website" };
-  if (!data.templateId) return { error: "Vui long chon mot template" };
+  const name = (formData.get("name") as string)?.trim();
+  const promptText = (formData.get("promptText") as string)?.trim() ?? "";
+
+  if (!name) return;
 
   const id = crypto.randomUUID();
-  const slug = generateSlug(trimmedName);
+  const slug = generateSlug(name);
 
-  try {
-    await db.insert(websites).values({
-      id,
-      userId: session.user.id,
-      name: trimmedName,
-      slug,
-      status: "draft",
-      sourceNoteId: data.sourceNoteId?.trim() || null,
-      templateId: data.templateId,
-      content: null,
-      seoMeta: null,
-    });
-  } catch {
-    return { error: "Co loi xay ra. Vui long thu lai." };
-  }
+  await db.insert(websites).values({
+    id,
+    userId: session.user.id,
+    name,
+    slug,
+    status: "draft",
+    templateId: null,
+    content: null,
+    seoMeta: null,
+    htmlContent: null,
+  });
 
-  redirect(`/dashboard/websites/${id}`);
+  // redirect outside try/catch — Next.js redirect throws NEXT_REDIRECT
+  redirect(`/dashboard/websites/${id}/edit?prompt=${encodeURIComponent(promptText.slice(0, 500))}`);
 }
