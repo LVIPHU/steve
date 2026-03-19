@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 05-01 complete, 05-02 next
 status: planning
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-03-18T14:38:37.016Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-19T03:13:50.494Z"
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 20
+  completed_plans: 16
 ---
 
 # STATE.md — Project Memory
@@ -23,9 +23,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 5 — note-sync-analytics (In Progress)
-**Current Plan:** 05-01 complete, 05-02 next
-**Next action:** Phase 5 Plan 02 — Umami analytics integration
+**Phase:** 6 — shadcn-ui-templates-interactive-sections (In Progress)
+**Current Plan:** 06-01 complete, 06-02 next
+**Next action:** Phase 6 Plan 02 — Cooking template layout (ingredients + steps sections)
 
 ## What's Built
 
@@ -75,6 +75,11 @@ progress:
 | SyncBadge on WebsiteCard (syncing/synced/sync_failed states) | Done | Plan 05-01 complete |
 | WebsitesPoller — 30s auto-refresh via router.refresh() | Done | Plan 05-01 complete |
 | Umami analytics conditional script in public page | Done | Plan 05-02 complete |
+| SectionType union extended to 11 types (+ steps/quiz/flashcard/goals/ingredients) | Done | Plan 06-01 complete |
+| 5 new content interfaces (StepsContent, IngredientsContent, GoalsContent, FlashcardContent, QuizContent) | Done | Plan 06-01 complete |
+| TEMPLATE_ALLOWED_SECTIONS map (per-template section type filtering) | Done | Plan 06-01 complete |
+| shadcn components: progress, accordion, carousel, toggle, switch, checkbox, radio-group | Done | Plan 06-01 complete |
+| AI prompts updated with new section schemas + template-specific rules | Done | Plan 06-01 complete |
 
 ## What's Left (by phase)
 
@@ -83,6 +88,14 @@ progress:
 - **Phase 3:** COMPLETE
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
+- **Phase 6:** In Progress — Plan 06-01 complete (type system + shadcn foundation), 4 plans remaining
+
+## Key Decisions (06-01)
+
+- TEMPLATE_ALLOWED_SECTIONS lives in templates.ts — template-specific data belongs with template config, not ast-utils validation
+- cooking TEMPLATE_PRESETS changed to [hero, ingredients, steps, cta] — new section types replace generic content sections
+- learning TEMPLATE_PRESETS changed to [hero, goals, content, flashcard, quiz] — interactive learning sections replace features/cta
+- buildSectionRegenPrompt schema hints added inline as schemaHints Record — avoids duplicating schema docs from buildSystemPrompt
 
 ## Key Decisions (05-02)
 
@@ -129,6 +142,7 @@ progress:
 | Phase 04 P03 | 4min | 2 tasks | 8 files |
 | Phase 05 P01 | 6m 13s | 3 tasks | 7 files |
 | Phase 05 P02 | 1min | 1 tasks | 2 files |
+| Phase 06 P01 | 6min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -217,5 +231,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Phase 6 UI-SPEC approved
+**Stopped at:** Completed 06-01-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
