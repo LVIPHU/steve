@@ -172,7 +172,7 @@ Plans:
   10. DB schema cleaned: 5 old columns removed, chatHistory added
   11. npm run typecheck passes after all changes
   12. /websites/new directory deleted, creation via dashboard chat only
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 08-01-PLAN.md — DB schema cleanup (drop 5 columns, add chatHistory), PATCH API update, delete old AST/template files + fix references

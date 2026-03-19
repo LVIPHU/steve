@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: executing
-stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-03-19T11:45:54.660Z"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-03-19T11:48:04.992Z"
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 28
-  completed_plans: 26
+  completed_plans: 27
 ---
 
 # STATE.md — Project Memory
@@ -110,6 +110,8 @@ progress:
 | POST /api/websites endpoint (auth, slug generation, 201) | Done | Plan 08-03 complete |
 | Dashboard AI onboarding chat (2-question state machine, no AI call) | Done | Plan 08-03 complete |
 | Codebase purged: 48+ old AST/template/sync/editor files deleted, typecheck clean | Done | Plan 08-01 complete |
+| DashboardSidebar (240px left sidebar, brand, nav, user area, mobile Sheet) | Done | Plan 08-02 complete |
+| (dashboard)/layout.tsx wired with sidebar, editor full-screen z-40 overlay | Done | Plan 08-02 complete |
 
 ## What's Left (by phase)
 
@@ -120,7 +122,13 @@ progress:
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
 - **Phase 7:** COMPLETE — All 4 plans done (07-01 through 07-04)
-- **Phase 8:** In Progress — Plan 08-01 complete (1/4)
+- **Phase 8:** In Progress — Plans 08-01, 08-02, 08-03 complete (3/4)
+
+## Key Decisions (08-02)
+
+- SidebarContent defined as inner function inside DashboardSidebar — shares mobileOpen state + isActive closure without prop drilling
+- Editor full-screen overlay uses fixed inset-0 z-40 on root div — new stacking context makes internal z-50 header correct relative to overlay parent
+- showCloseButton=false on mobile SheetContent — nav link clicks call setMobileOpen(false) directly, avoiding double close UI
 
 ## Key Decisions (08-03)
 
@@ -262,6 +270,7 @@ progress:
 | Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
 | Phase 08 P01 | 7min | 2 tasks | 52 files |
 | Phase 08 P03 | 2m 13s | 2 tasks | 3 files |
+| Phase 08 P02 | 8min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -352,5 +361,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 08-03-PLAN.md
+**Stopped at:** Completed 08-02-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
