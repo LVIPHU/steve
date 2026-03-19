@@ -264,7 +264,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
             </div>
           )}
 
-          {/* iframe — no sandbox so generated apps can use localStorage */}
+          {/* iframe without restrictions — generated apps need localStorage access */}
           <iframe
             className="w-full h-full border border-border rounded bg-white"
             srcDoc={htmlContent || undefined}
