@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 2
 status: executing
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-03-19T06:31:42.465Z"
+stopped_at: Completed 07-03-PLAN.md
+last_updated: "2026-03-19T06:38:10.138Z"
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 24
-  completed_plans: 22
+  completed_plans: 23
 ---
 
 # STATE.md — Project Memory
@@ -100,6 +100,11 @@ progress:
 | Public route.ts GET handler serving raw htmlContent | Done | Plan 07-02 complete |
 | Vietnamese landing page (hero, features, how-it-works, footer) | Done | Plan 07-02 complete |
 | Dashboard nav rebranded to AppGen | Done | Plan 07-02 complete |
+| Simplified creation form (name + prompt textarea, no template picker) | Done | Plan 07-03 complete |
+| Server action with FormData, null templateId, redirect to /edit?prompt=... | Done | Plan 07-03 complete |
+| Edit page reads searchParams.prompt + passes initialHtml/initialPrompt to editor | Done | Plan 07-03 complete |
+| HtmlEditorClient stub with new props interface (Plan 04 compatible) | Done | Plan 07-03 complete |
+| shadcn components: textarea, scroll-area | Done | Plan 07-03 complete |
 
 ## What's Left (by phase)
 
@@ -109,8 +114,7 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
-- **Phase 7:** In Progress — Plan 07-01 complete (htmlContent schema + generate-html API), Plan 07-02 complete (public route.ts, landing page, AppGen rebrand)
-
+- **Phase 7:** In Progress — Plan 07-01 complete (htmlContent schema + generate-html API), Plan 07-02 complete (public route.ts, landing page, AppGen rebrand), Plan 07-03 complete (simplified creation form + edit page props)
 
 ## Key Decisions (07-01)
 
@@ -119,6 +123,12 @@ progress:
 - maxDuration=90 matches AbortSignal.timeout(90000) — HTML generation needs more time than JSON AST generation (30s)
 - No response_format on OpenAI call — HTML output is plain text, not JSON
 - Fresh vs edit mode selected by `Boolean(currentHtml)` — truthy check on the optional currentHtml field
+
+## Key Decisions (07-03)
+
+- Server action changed to FormData param — required for Server Component form action attribute (type requires void return)
+- HtmlEditorClient stub replaces old AST-based EditorClient — new props interface (initialHtml, initialPrompt, websiteStatus) incompatible with old named export
+- scroll-area installed proactively — needed by Plan 04 editor, avoids blocking issue mid-execution
 
 ## Key Decisions (07-02)
 
@@ -217,6 +227,7 @@ progress:
 | Phase 06 P05 | 3m | 2 tasks | 7 files |
 | Phase 07 P01 | 3m 34s | 2 tasks | 5 files |
 | Phase 07 P02 | 5min | 2 tasks | 5 files |
+| Phase 07 P03 | 3m 11s | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -307,5 +318,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 07-02-PLAN.md
+**Stopped at:** Completed 07-03-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
