@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: executing
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-03-19T11:48:04.992Z"
+stopped_at: "Completed 08-04-PLAN.md (awaiting checkpoint:human-verify Task 2)"
+last_updated: "2026-03-19T11:54:14.037Z"
 progress:
   total_phases: 8
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 28
-  completed_plans: 27
+  completed_plans: 28
 ---
 
 # STATE.md — Project Memory
@@ -112,6 +112,7 @@ progress:
 | Codebase purged: 48+ old AST/template/sync/editor files deleted, typecheck clean | Done | Plan 08-01 complete |
 | DashboardSidebar (240px left sidebar, brand, nav, user area, mobile Sheet) | Done | Plan 08-02 complete |
 | (dashboard)/layout.tsx wired with sidebar, editor full-screen z-40 overlay | Done | Plan 08-02 complete |
+| Editor chat history load from DB (ISO->Date), auto-save (500ms debounce), publish clear | Done | Plan 08-04 complete |
 
 ## What's Left (by phase)
 
@@ -122,7 +123,14 @@ progress:
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
 - **Phase 7:** COMPLETE — All 4 plans done (07-01 through 07-04)
-- **Phase 8:** In Progress — Plans 08-01, 08-02, 08-03 complete (3/4)
+- **Phase 8:** In Progress — Plans 08-01, 08-02, 08-03, 08-04 Task 1 complete — awaiting checkpoint:human-verify (Task 2)
+
+## Key Decisions (08-04)
+
+- isFirstRender useRef guard prevents auto-save from firing on DB chat history load on mount
+- useState lazy initializer converts ISO string timestamps to Date objects at mount (no extra useEffect)
+- handlePublish sends status+chat_history in single PATCH — atomic, avoids partial DB state
+- saveChatHistory uses silent-fail catch — chat persistence is convenience feature, not critical path
 
 ## Key Decisions (08-02)
 
@@ -271,6 +279,7 @@ progress:
 | Phase 08 P01 | 7min | 2 tasks | 52 files |
 | Phase 08 P03 | 2m 13s | 2 tasks | 3 files |
 | Phase 08 P02 | 8min | 2 tasks | 6 files |
+| Phase 08 P04 | 2m 23s | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -361,5 +370,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 08-02-PLAN.md
+**Stopped at:** Completed 08-04-PLAN.md (awaiting checkpoint:human-verify Task 2)
 **Timestamp:** 2026-03-18T04:15:43Z
