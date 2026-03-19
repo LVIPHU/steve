@@ -50,11 +50,19 @@ UX patterns:
 - Never use alert() or confirm() — use DaisyUI <dialog class="modal"> instead
 - Navigation between pages/sections: use vanilla JS to toggle a CSS class on section elements
 
+CSS rules — common mistakes to avoid:
+- NEVER mix Tailwind utility names with CSS property syntax. Wrong: "justify-center: center". Correct CSS: "justify-content: center". Wrong: "items-center: center". Correct CSS: "align-items: center"
+- Flip card pattern: the .card wrapper MUST have an explicit height (e.g., height: 220px). Never use height: 100% on children when the parent has no fixed height — it resolves to 0
+- Correct flip card CSS: .card { perspective: 1000px; height: 220px; } — .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s; } — .card-front, .card-back { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+- Do NOT use Tailwind aspect-ratio utilities (aspect-w-*, aspect-h-*) — they require a plugin not available in the CDN version
+- When writing custom CSS inside <style> tags, always use real CSS property names, never Tailwind class names
+
 Anti-patterns — NEVER do these:
 - Do NOT use alert(), confirm(), or prompt()
 - Do NOT use Alpine.js x-for to render data arrays
 - Do NOT define global functions that rely on Alpine's 'this' context
-- Do NOT write custom CSS for things DaisyUI already provides (buttons, cards, navbar, footer, modal, table)`;
+- Do NOT write custom CSS for things DaisyUI already provides (buttons, cards, navbar, footer, modal, table)
+- Do NOT use aspect-w-* or aspect-h-* Tailwind classes`;
 }
 
 export function buildEditSystemPrompt(currentHtml: string): string {
