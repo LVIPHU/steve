@@ -59,7 +59,7 @@ Exceptions:
 - Topbar fixed height: 48px (matching Phase 4 editor topbar pattern — not on spacing scale, purely a layout dimension)
 - Chat input textarea: min-height 40px, max-height 120px (auto-grows with content)
 - iframe preview area: height = `calc(100vh - 48px)` (fills remaining vertical space below topbar)
-- Touch targets for all interactive controls: minimum 44px height (WCAG 2.5.5)
+- Touch targets for all interactive controls: minimum 48px height (WCAG 2.5.5 — 48px used to maintain 4px grid; exceeds the 44px minimum requirement)
 
 ---
 
@@ -129,7 +129,7 @@ Uses the same shadcn CSS variables. No separate color palette. Hero section uses
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  TOPBAR (fixed, 48px height, full width, bg=background)        │
-│  [← Back] [AppGen logo] [website name]     [Save] [Publish]    │
+│  [← Back] [AppGen logo] [website name]     [Lưu thay đổi] [Publish]    │
 ├────────────────────────────────┬────────────────────────────────┤
 │                                │  [Chat tab] [Code tab]         │
 │   IFRAME PREVIEW (60%)        │                                │
@@ -140,7 +140,7 @@ Uses the same shadcn CSS variables. No separate color palette. Hero section uses
 │                                │                                │
 │                                │  ── or when Code tab active ── │
 │                                │  [<textarea> raw HTML]        │
-│                                │  [Apply button]               │
+│                                │  [Áp dụng HTML button]        │
 └────────────────────────────────┴────────────────────────────────┘
 ```
 
@@ -178,8 +178,8 @@ Single-column layout, full-width sections, max-w-6xl content container centered.
 |-------------|---------|
 | Tab switch to Code | Textarea populated with current `htmlContent`. No code is executed. |
 | User edits textarea | Content is local state only — not auto-saved. |
-| Apply button | Updates iframe srcdoc with textarea value. Triggers PATCH save to DB. Toast "Đã lưu!" on success. |
-| Apply while generating | Apply button disabled during active AI generation. |
+| Áp dụng HTML button | Updates iframe srcdoc with textarea value. Triggers PATCH save to DB. Toast "Đã lưu!" on success. |
+| Apply while generating | Áp dụng HTML button disabled during active AI generation. |
 
 ### iframe Preview
 
@@ -194,13 +194,13 @@ Single-column layout, full-width sections, max-w-6xl content container centered.
 
 | Interaction | Behavior |
 |-------------|---------|
-| Save button | PATCH `/api/websites/${id}` with `{ html_content }`. Toast "Đã lưu!" on success, "Lưu thất bại, thử lại." on error. |
+| Lưu thay đổi button | PATCH `/api/websites/${id}` with `{ html_content }`. Toast "Đã lưu!" on success, "Lưu thất bại, thử lại." on error. |
 | Publish button | PATCH status to `published`. If `html_content` is empty: disabled with tooltip "Tạo nội dung trước khi xuất bản". |
 | Unsaved indicator | If `html_content` has local changes not yet saved: "•" dot next to website name in topbar. |
 
 ### Auto-save
 
-Triggered 500ms after any successful AI generation completes. Also triggered immediately on "Apply" in Code tab. No other auto-save triggers.
+Triggered 500ms after any successful AI generation completes. Also triggered immediately on "Áp dụng HTML" in Code tab. No other auto-save triggers.
 
 ---
 
@@ -212,8 +212,8 @@ All copy is in Vietnamese.
 |---------|------|--------|
 | Primary CTA (generate first) | "Tạo ngay" | CONTEXT.md: auto-trigger on mount |
 | Primary CTA (send chat prompt) | "Gửi tin" | Claude default |
-| Primary CTA (apply code) | "Áp dụng" | Claude default |
-| Primary CTA (save topbar) | "Lưu" | Consistent with Phase 4 |
+| Primary CTA (apply code) | "Áp dụng HTML" | Claude default (noun added for screen reader clarity) |
+| Primary CTA (save topbar) | "Lưu thay đổi" | BLOCK 1 fix — was "Lưu" (generic single word) |
 | Primary CTA (publish topbar) | "Xuất bản" | Consistent with Phase 3 |
 | Primary CTA (landing hero) | "Bắt đầu miễn phí" | CONTEXT.md decision |
 | Secondary CTA (landing hero) | "Đăng nhập" | CONTEXT.md decision |
