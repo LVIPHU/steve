@@ -37,7 +37,7 @@ Tất cả đã ship và verified.
 
 ---
 
-## v1.1 Requirements (Active — Phase 9)
+## v1.1 Requirements (Active — Phases 9-11)
 
 ### Pipeline — Component Library
 - [ ] **PIPE-01**: Component Library có ≥25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
@@ -104,32 +104,32 @@ Tất cả đã ship và verified.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | Phase 9-01 | Pending |
-| PIPE-02 | Phase 9-01 | Pending |
-| PIPE-03 | Phase 9-01 | Pending |
-| PIPE-04 | Phase 9-02 | Pending |
-| PIPE-05 | Phase 9-02 | Pending |
-| PIPE-06 | Phase 9-02 | Pending |
-| PIPE-07 | Phase 9-02 | Pending |
-| PIPE-08 | Phase 9-02 | Pending |
-| PIPE-09 | Phase 9-02 | Pending |
-| PIPE-10 | Phase 9-03 | Pending |
-| PIPE-11 | Phase 9-03 | Pending |
-| PIPE-12 | Phase 9-03 | Pending |
-| PIPE-13 | Phase 9-03 | Pending |
-| PIPE-14 | Phase 9-03 | Pending |
-| PIPE-15 | Phase 9-03 | Pending |
-| PIPE-16 | Phase 9-03 | Pending |
-| PIPE-17 | Phase 9-03 | Pending |
-| PIPE-18 | Phase 9-03 | Pending |
-| PIPE-19 | Phase 9-03 | Pending |
-| PIPE-20 | Phase 9-03 | Pending |
+| PIPE-01 | Phase 9 | Pending |
+| PIPE-02 | Phase 9 | Pending |
+| PIPE-03 | Phase 9 | Pending |
+| PIPE-04 | Phase 10 | Pending |
+| PIPE-05 | Phase 10 | Pending |
+| PIPE-06 | Phase 10 | Pending |
+| PIPE-07 | Phase 10 | Pending |
+| PIPE-08 | Phase 10 | Pending |
+| PIPE-09 | Phase 10 | Pending |
+| PIPE-10 | Phase 11 | Pending |
+| PIPE-11 | Phase 11 | Pending |
+| PIPE-12 | Phase 11 | Pending |
+| PIPE-13 | Phase 11 | Pending |
+| PIPE-14 | Phase 11 | Pending |
+| PIPE-15 | Phase 11 | Pending |
+| PIPE-16 | Phase 11 | Pending |
+| PIPE-17 | Phase 11 | Pending |
+| PIPE-18 | Phase 11 | Pending |
+| PIPE-19 | Phase 11 | Pending |
+| PIPE-20 | Phase 11 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 20 total
 - Mapped to phases: 20
-- Unmapped: 0 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-19 after milestone v1.1 start*
+*Last updated: 2026-03-19 — v1.1 roadmap created (Phases 9-11)*
