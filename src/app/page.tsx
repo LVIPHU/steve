@@ -1,65 +1,127 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Hero */}
+        <section className="py-24 text-center">
+          <h1
+            className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6"
+            style={{
+              animation: "fadeInUp 0.4s ease both",
+              animationDelay: "0s",
+            }}
+          >
+            Biến ghi chú thành website trong vài giây
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p
+            className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8"
+            style={{
+              animation: "fadeInUp 0.4s ease both",
+              animationDelay: "0.1s",
+            }}
+          >
+            Mô tả app của bạn, AI sẽ tạo ra một website hoàn chỉnh — không cần code.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <div
+            className="flex flex-col sm:flex-row gap-3 justify-center"
+            style={{
+              animation: "fadeInUp 0.4s ease both",
+              animationDelay: "0.2s",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <Button asChild>
+              <Link href="/register">Bắt đầu miễn phí</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/login">Đăng nhập</Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* Features */}
+        <section className="py-16">
+          <h2 className="text-2xl font-semibold text-center mb-10">
+            Tại sao chọn AppGen?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="rounded-xl border border-border p-6 hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-2">AI tạo website</h3>
+              <p className="text-sm text-muted-foreground">
+                Mô tả ý tưởng, AI sẽ tạo website hoàn chỉnh với HTML, CSS và JavaScript.
+              </p>
+            </div>
+            <div className="rounded-xl border border-border p-6 hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-2">Chỉnh sửa trực quan</h3>
+              <p className="text-sm text-muted-foreground">
+                Giao diện editor giống Lovable — xem trước trực tiếp và chỉnh sửa bằng chat.
+              </p>
+            </div>
+            <div className="rounded-xl border border-border p-6 hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-2">Xuất bản tức thì</h3>
+              <p className="text-sm text-muted-foreground">
+                Một click để website của bạn có URL công khai, sẵn sàng chia sẻ.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="py-16">
+          <h2 className="text-2xl font-semibold text-center mb-10">
+            Cách hoạt động
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div className="p-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center mx-auto mb-4 text-sm">
+                1
+              </div>
+              <h3 className="font-semibold mb-2">Mô tả website</h3>
+              <p className="text-sm text-muted-foreground">
+                Nhập mô tả ngắn về website bạn muốn tạo.
+              </p>
+            </div>
+            <div className="p-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center mx-auto mb-4 text-sm">
+                2
+              </div>
+              <h3 className="font-semibold mb-2">AI tạo nội dung</h3>
+              <p className="text-sm text-muted-foreground">
+                AI tự động sinh ra website hoàn chỉnh trong vài giây.
+              </p>
+            </div>
+            <div className="p-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-semibold flex items-center justify-center mx-auto mb-4 text-sm">
+                3
+              </div>
+              <h3 className="font-semibold mb-2">Xuất bản và chia sẻ</h3>
+              <p className="text-sm text-muted-foreground">
+                Xuất bản một click — nhận ngay URL công khai để chia sẻ.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-10 text-center text-sm text-muted-foreground border-t border-border">
+          AppGen — Tạo website bằng AI &copy; {new Date().getFullYear()}
+        </footer>
+      </div>
+
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }

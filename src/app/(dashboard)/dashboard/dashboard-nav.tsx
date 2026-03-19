@@ -20,7 +20,7 @@ export default function DashboardNav({ user }: { user: User }) {
     >
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
         <a href="/dashboard" className="font-medium">
-          Website Generator
+          AppGen
         </a>
         <div className="flex items-center gap-4">
           <a
