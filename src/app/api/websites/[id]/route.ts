@@ -76,6 +76,14 @@ export async function PATCH(
     }
   }
 
+  if ("html_content" in body) {
+    const htmlContent = body.html_content;
+    if (typeof htmlContent !== "string") {
+      return Response.json({ error: "html_content must be a string" }, { status: 400 });
+    }
+    updateSet.htmlContent = htmlContent;
+  }
+
   if (Object.keys(updateSet).length === 0) {
     return Response.json({ error: "No valid fields to update" }, { status: 400 });
   }
