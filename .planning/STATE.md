@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 06-04 complete, 06-05 next
-status: planning
-stopped_at: Completed 06-04-PLAN.md
-last_updated: "2026-03-19T03:25:27.276Z"
+current_plan: 06-05 complete — Phase 6 COMPLETE
+status: complete
+stopped_at: Completed 06-05-PLAN.md
+last_updated: "2026-03-19T03:30:56.672Z"
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 20
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # STATE.md — Project Memory
@@ -23,9 +23,9 @@ progress:
 
 ## Current Phase
 
-**Phase:** 6 — shadcn-ui-templates-interactive-sections (In Progress)
-**Current Plan:** 06-04 complete, 06-05 next
-**Next action:** Phase 6 Plan 05 — Final plan
+**Phase:** 6 — shadcn-ui-templates-interactive-sections (COMPLETE)
+**Current Plan:** 06-05 complete — all 5 plans done
+**Next action:** All phases complete — project ready for v1.0 release
 
 ## What's Built
 
@@ -90,6 +90,9 @@ progress:
 | Fitness layout: Oswald condensed, border-l-4 accent, dark zinc-900 hero, edge-to-edge | Done | Plan 06-04 complete |
 | Cooking layout: Lora, warm #fdf8f3 bg, rounded-xl card containers for ingredients/steps | Done | Plan 06-04 complete |
 | Learning layout: Plus Jakarta Sans, bg-slate-50, card-wrapped non-hero sections | Done | Plan 06-04 complete |
+| ThemeProvider on public layout (next-themes, storageKey=theme-preference) | Done | Plan 06-05 complete |
+| DarkModeToggle component (mounted flag, Sun/Moon, Vietnamese aria-labels) | Done | Plan 06-05 complete |
+| Dark mode toggle integrated into all 5 template layouts | Done | Plan 06-05 complete |
 
 ## What's Left (by phase)
 
@@ -98,7 +101,14 @@ progress:
 - **Phase 3:** COMPLETE
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
-- **Phase 6:** In Progress — Plans 06-01, 06-02, 06-03 complete, 2 plans remaining
+- **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
+
+## Key Decisions (06-05)
+
+- DarkModeToggle uses mounted flag (useState false + useEffect) to prevent SSR hydration mismatch — theme is client-only state unknown at server render time
+- Portfolio uses fixed top-right z-50 positioning for toggle — full-bleed sections leave no natural header slot
+- Blog/Fitness/Cooking/Learning use inline header bar with justify-end — constrained max-width layouts have natural top space
+- Cooking and Learning already had dark:bg-background overrides from Plan 04 — no additional dark mode CSS changes needed
 
 ## Key Decisions (06-04)
 
@@ -179,6 +189,7 @@ progress:
 | Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
 | Phase 06 P03 | 3m 34s | 2 tasks | 4 files |
 | Phase 06 P04 | 2m | 2 tasks | 5 files |
+| Phase 06 P05 | 3m | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -267,5 +278,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 06-04-PLAN.md
+**Stopped at:** Completed 06-05-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z

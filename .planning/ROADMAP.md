@@ -11,7 +11,7 @@ Building a companion web app for a mobile note-taking app. Users turn their note
 - [x] **Phase 3: AI Generation + Publish** - OpenAI GPT-4o generation, public SSR routes, SEO auto-gen (completed 2026-03-17)
 - [x] **Phase 4: Editor** - Sidebar editor, dnd-kit reorder, image upload, color/font customization (completed 2026-03-18)
 - [x] **Phase 5: Note Sync + Analytics** - Auto-sync API endpoint, merge logic, Umami analytics (completed 2026-03-18)
-- [ ] **Phase 6: shadcn-ui Templates Interactive Sections** - 5 new interactive section types, template visual redesign, dark mode, editor extensions
+- [x] **Phase 6: shadcn-ui Templates Interactive Sections** - 5 new interactive section types, template visual redesign, dark mode, editor extensions (completed 2026-03-19)
 
 ## Phase Details
 
@@ -121,7 +121,7 @@ Plans:
   8. All 5 templates have distinct visual identities (not just different fonts)
   9. Dark mode toggle works on all public template pages, preference persists
   10. No FOUC on dark mode page load
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 06-01-PLAN.md — Extend types/validation/AI prompts, install 7 shadcn components, add TEMPLATE_ALLOWED_SECTIONS
