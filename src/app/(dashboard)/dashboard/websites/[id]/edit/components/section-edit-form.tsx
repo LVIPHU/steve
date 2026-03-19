@@ -13,6 +13,11 @@ import type {
   HeroContent,
   FeaturesContent,
   GalleryContent,
+  StepsContent,
+  IngredientsContent,
+  GoalsContent,
+  FlashcardContent,
+  QuizContent,
 } from "@/types/website-ast";
 
 interface SectionEditFormProps {
@@ -429,6 +434,318 @@ export function SectionEditForm({
               placeholder="https://..."
             />
           </FieldGroup>
+        </div>
+        <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
+      </div>
+    );
+  }
+
+  if (type === "steps") {
+    const title = resolveField<string>(section, "title") ?? "";
+    const items = resolveField<StepsContent["items"]>(section, "items") ?? [];
+
+    return (
+      <div>
+        <div className="p-4 space-y-4">
+          <FieldGroup label="Tieu de">
+            <Input
+              value={title}
+              onChange={(e) => onUpdateField("title", e.target.value)}
+              placeholder="Tieu de..."
+            />
+          </FieldGroup>
+          {items.map((item, idx) => (
+            <div key={idx} className="border border-border rounded-md p-3 space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Buoc {idx + 1}</p>
+              <FieldGroup label="Tieu de">
+                <Input
+                  value={item.label}
+                  onChange={(e) => {
+                    const newItems = items.map((it, i) =>
+                      i === idx ? { ...it, label: e.target.value } : it
+                    );
+                    onUpdateField("items", newItems);
+                  }}
+                  placeholder="Ten buoc..."
+                />
+              </FieldGroup>
+              <FieldGroup label="Mo ta">
+                <textarea
+                  className={textareaClass}
+                  value={item.description}
+                  onChange={(e) => {
+                    const newItems = items.map((it, i) =>
+                      i === idx ? { ...it, description: e.target.value } : it
+                    );
+                    onUpdateField("items", newItems);
+                  }}
+                  placeholder="Mo ta buoc..."
+                />
+              </FieldGroup>
+              <ImageUploadField
+                label="Anh minh hoa"
+                url={item.imageUrl ?? ""}
+                onUpload={(url) => {
+                  const newItems = items.map((it, i) =>
+                    i === idx ? { ...it, imageUrl: url } : it
+                  );
+                  onUpdateField("items", newItems);
+                }}
+              />
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              onUpdateField("items", [...items, { label: "", description: "" }])
+            }
+          >
+            Them buoc
+          </Button>
+        </div>
+        <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
+      </div>
+    );
+  }
+
+  if (type === "ingredients") {
+    const title = resolveField<string>(section, "title") ?? "";
+    const items = resolveField<IngredientsContent["items"]>(section, "items") ?? [];
+
+    return (
+      <div>
+        <div className="p-4 space-y-4">
+          <FieldGroup label="Tieu de">
+            <Input
+              value={title}
+              onChange={(e) => onUpdateField("title", e.target.value)}
+              placeholder="Tieu de..."
+            />
+          </FieldGroup>
+          {items.map((item, idx) => (
+            <div key={idx} className="border border-border rounded-md p-3 space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Nguyen lieu {idx + 1}</p>
+              <FieldGroup label="Ten">
+                <Input
+                  value={item.name}
+                  onChange={(e) => {
+                    const newItems = items.map((it, i) =>
+                      i === idx ? { ...it, name: e.target.value } : it
+                    );
+                    onUpdateField("items", newItems);
+                  }}
+                  placeholder="Ten nguyen lieu..."
+                />
+              </FieldGroup>
+              <FieldGroup label="Luong">
+                <Input
+                  value={item.quantity}
+                  onChange={(e) => {
+                    const newItems = items.map((it, i) =>
+                      i === idx ? { ...it, quantity: e.target.value } : it
+                    );
+                    onUpdateField("items", newItems);
+                  }}
+                  placeholder="Vi du: 200g, 2 muong..."
+                />
+              </FieldGroup>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              onUpdateField("items", [...items, { name: "", quantity: "" }])
+            }
+          >
+            Them nguyen lieu
+          </Button>
+        </div>
+        <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
+      </div>
+    );
+  }
+
+  if (type === "goals") {
+    const title = resolveField<string>(section, "title") ?? "";
+    const items = resolveField<GoalsContent["items"]>(section, "items") ?? [];
+
+    return (
+      <div>
+        <div className="p-4 space-y-4">
+          <FieldGroup label="Tieu de">
+            <Input
+              value={title}
+              onChange={(e) => onUpdateField("title", e.target.value)}
+              placeholder="Tieu de..."
+            />
+          </FieldGroup>
+          {items.map((item, idx) => (
+            <FieldGroup key={idx} label={`Muc tieu ${idx + 1}`}>
+              <Input
+                value={item.label}
+                onChange={(e) => {
+                  const newItems = items.map((it, i) =>
+                    i === idx ? { ...it, label: e.target.value } : it
+                  );
+                  onUpdateField("items", newItems);
+                }}
+                placeholder="Muc tieu..."
+              />
+            </FieldGroup>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              onUpdateField("items", [...items, { label: "" }])
+            }
+          >
+            Them muc tieu
+          </Button>
+        </div>
+        <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
+      </div>
+    );
+  }
+
+  if (type === "flashcard") {
+    const title = resolveField<string>(section, "title") ?? "";
+    const cards = resolveField<FlashcardContent["cards"]>(section, "cards") ?? [];
+
+    return (
+      <div>
+        <div className="p-4 space-y-4">
+          <FieldGroup label="Tieu de">
+            <Input
+              value={title}
+              onChange={(e) => onUpdateField("title", e.target.value)}
+              placeholder="Tieu de..."
+            />
+          </FieldGroup>
+          {cards.map((card, idx) => (
+            <div key={idx} className="border border-border rounded-md p-3 space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">The {idx + 1}</p>
+              <FieldGroup label="Mat truoc">
+                <Input
+                  value={card.front}
+                  onChange={(e) => {
+                    const newCards = cards.map((c, i) =>
+                      i === idx ? { ...c, front: e.target.value } : c
+                    );
+                    onUpdateField("cards", newCards);
+                  }}
+                  placeholder="Mat truoc..."
+                />
+              </FieldGroup>
+              <FieldGroup label="Mat sau">
+                <Input
+                  value={card.back}
+                  onChange={(e) => {
+                    const newCards = cards.map((c, i) =>
+                      i === idx ? { ...c, back: e.target.value } : c
+                    );
+                    onUpdateField("cards", newCards);
+                  }}
+                  placeholder="Mat sau..."
+                />
+              </FieldGroup>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              onUpdateField("cards", [...cards, { front: "", back: "" }])
+            }
+          >
+            Them the
+          </Button>
+        </div>
+        <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
+      </div>
+    );
+  }
+
+  if (type === "quiz") {
+    const title = resolveField<string>(section, "title") ?? "";
+    const questions = resolveField<QuizContent["questions"]>(section, "questions") ?? [];
+
+    return (
+      <div>
+        <div className="p-4 space-y-4">
+          <FieldGroup label="Tieu de">
+            <Input
+              value={title}
+              onChange={(e) => onUpdateField("title", e.target.value)}
+              placeholder="Tieu de..."
+            />
+          </FieldGroup>
+          {questions.map((q, idx) => (
+            <div key={idx} className="border border-border rounded-md p-3 space-y-2">
+              <p className="text-xs text-muted-foreground font-medium">Cau hoi {idx + 1}</p>
+              <FieldGroup label="Cau hoi">
+                <Input
+                  value={q.question}
+                  onChange={(e) => {
+                    const newQuestions = questions.map((qu, i) =>
+                      i === idx ? { ...qu, question: e.target.value } : qu
+                    );
+                    onUpdateField("questions", newQuestions);
+                  }}
+                  placeholder="Noi dung cau hoi..."
+                />
+              </FieldGroup>
+              {([0, 1, 2, 3] as const).map((cIdx) => (
+                <FieldGroup key={cIdx} label={`Lua chon ${cIdx + 1}`}>
+                  <Input
+                    value={q.choices[cIdx]}
+                    onChange={(e) => {
+                      const newChoices = [...q.choices] as [string, string, string, string];
+                      newChoices[cIdx] = e.target.value;
+                      const newQuestions = questions.map((qu, i) =>
+                        i === idx ? { ...qu, choices: newChoices } : qu
+                      );
+                      onUpdateField("questions", newQuestions);
+                    }}
+                    placeholder={`Lua chon ${cIdx + 1}...`}
+                  />
+                </FieldGroup>
+              ))}
+              <FieldGroup label="Dap an dung">
+                <select
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={q.correctIndex}
+                  onChange={(e) => {
+                    const newQuestions = questions.map((qu, i) =>
+                      i === idx
+                        ? { ...qu, correctIndex: Number(e.target.value) as 0 | 1 | 2 | 3 }
+                        : qu
+                    );
+                    onUpdateField("questions", newQuestions);
+                  }}
+                >
+                  <option value={0}>Lua chon 1</option>
+                  <option value={1}>Lua chon 2</option>
+                  <option value={2}>Lua chon 3</option>
+                  <option value={3}>Lua chon 4</option>
+                </select>
+              </FieldGroup>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              onUpdateField("questions", [
+                ...questions,
+                { question: "", choices: ["", "", "", ""], correctIndex: 0 },
+              ])
+            }
+          >
+            Them cau hoi
+          </Button>
         </div>
         <RegenerateSection section={section} onRegenerateSection={onRegenerateSection} />
       </div>
