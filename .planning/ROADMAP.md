@@ -209,10 +209,10 @@ Plans:
   2. `selectComponents(analysis)` returns at most 4 snippets matching the analysis tags, runs without any LLM call
   3. When no tags match, `selectComponents()` returns a sensible fallback set (not empty)
   4. Vitest unit tests for tag-match logic pass with `npm run test`
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md — Component library data files (25+ snippets), ComponentSnippet interface, selectComponents() tag-match function + Vitest tests
+- [ ] 09-01-PLAN.md — ComponentSnippet interface, selectComponents() algorithm, 40+ snippet data files across 11 categories, Vitest unit tests
 
 ### Phase 10: Design Agent + Context Builder + Prompt Rewrite
 **Goal**: Design Agent quyết định visual identity per-domain; context builder tổng hợp user message; system prompt lean và cacheable; edit mode không bị reset về DaisyUI blue.
