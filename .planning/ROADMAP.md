@@ -156,10 +156,26 @@ Plans:
 
 ### Phase 8: Dashboard Sidebar và AI Onboarding Chat
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Thay top nav bang left sidebar co dinh, bien /dashboard/ thanh AI chat wizard tao website, them chat history persistence cho editor, doc dep codebase AST/template cu va schema DB.
+**Requirements**: P8-01, P8-02, P8-03, P8-04, P8-05, P8-06, P8-07, P8-08, P8-09, P8-10, P8-11, P8-12
 **Depends on:** Phase 7
-**Plans:** 0 plans
+**Success Criteria** (what must be TRUE):
+  1. Left sidebar (240px) visible on all dashboard pages with brand, 2 nav items, user area
+  2. Editor page remains full-screen with no sidebar
+  3. Mobile sidebar hidden, opens via hamburger + Sheet drawer
+  4. /dashboard/ shows AI onboarding chat (2 questions -> summary -> CTA)
+  5. CTA creates website via POST /api/websites and redirects to editor
+  6. Editor loads chat_history from DB on open
+  7. Editor auto-saves chat_history after each message (500ms debounce)
+  8. Publish clears chat_history in DB and resets chat UI
+  9. Old AST/template files deleted (sections, layouts, ast-utils, ai-prompts, templates)
+  10. DB schema cleaned: 5 old columns removed, chatHistory added
+  11. npm run typecheck passes after all changes
+  12. /websites/new directory deleted, creation via dashboard chat only
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 8 to break down)
+- [ ] 08-01-PLAN.md — DB schema cleanup (drop 5 columns, add chatHistory), PATCH API update, delete old AST/template files + fix references
+- [ ] 08-02-PLAN.md — Install shadcn avatar+sheet, create DashboardSidebar component, wire into layout, editor full-screen overlay
+- [ ] 08-03-PLAN.md — POST /api/websites endpoint, AI onboarding chat on /dashboard/ (2-question state machine + CTA)
+- [ ] 08-04-PLAN.md — Editor chat history persistence (load/auto-save/clear on publish) + human verification checkpoint
