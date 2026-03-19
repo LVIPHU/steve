@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 06-02 complete, 06-03 next
+current_plan: 06-03 complete, 06-04 next
 status: planning
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-19T03:19:08.884Z"
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-03-19T03:20:31.100Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # STATE.md — Project Memory
@@ -24,8 +24,8 @@ progress:
 ## Current Phase
 
 **Phase:** 6 — shadcn-ui-templates-interactive-sections (In Progress)
-**Current Plan:** 06-02 complete, 06-03 next
-**Next action:** Phase 6 Plan 03 — Cooking + Learning template layouts
+**Current Plan:** 06-03 complete, 06-04 next
+**Next action:** Phase 6 Plan 04 — Dark mode + SSR hydration fixes
 
 ## What's Built
 
@@ -82,6 +82,9 @@ progress:
 | AI prompts updated with new section schemas + template-specific rules | Done | Plan 06-01 complete |
 | GoalsSection (progress bar + localStorage) + QuizSection (radio + score + localStorage) + FlashcardSection (3D flip motion) + StepsSection + IngredientsSection | Done | Plan 06-02 complete |
 | SectionRenderer updated to dispatch all 11 section types | Done | Plan 06-02 complete |
+| SectionEditForm extended for all 11 section types (steps/ingredients/goals/flashcard/quiz) | Done | Plan 06-03 complete |
+| Them section Dialog flow + AI generation + loading skeleton in SectionsTab | Done | Plan 06-03 complete |
+| handleAddSection in EditorClient wired to /api/ai/regenerate-section | Done | Plan 06-03 complete |
 
 ## What's Left (by phase)
 
@@ -90,7 +93,14 @@ progress:
 - **Phase 3:** COMPLETE
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
-- **Phase 6:** In Progress — Plan 06-01 complete (type system + shadcn foundation), 4 plans remaining
+- **Phase 6:** In Progress — Plans 06-01, 06-02, 06-03 complete, 2 plans remaining
+
+## Key Decisions (06-03)
+
+- Edit forms for list-based sections use onUpdateField to append empty items to the array — no separate API call needed for add-item
+- handleAddSection reuses /api/ai/regenerate-section endpoint with a synthetic sectionId — server does not use sectionId for new section creation
+- onAddSection prop threaded through EditorClient -> EditorSidebar -> SectionsTab to centralize AI fetch logic in EditorClient
+- Quiz correctIndex select uses standard HTML select with Tailwind Input class styling — avoids adding a new shadcn component
 
 ## Key Decisions (06-02)
 
@@ -154,6 +164,7 @@ progress:
 | Phase 06 P01 | 6min | 2 tasks | 15 files |
 | Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
 | Phase 06 P02 | 2m 10s | 2 tasks | 6 files |
+| Phase 06 P03 | 3m 34s | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -242,5 +253,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 06-02-PLAN.md
+**Stopped at:** Completed 06-03-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
