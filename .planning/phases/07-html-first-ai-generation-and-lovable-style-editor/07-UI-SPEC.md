@@ -72,9 +72,9 @@ Dashboard and editor use `--font-geist-sans`. Code editor textarea uses `--font-
 | Body | 16px | 400 (regular) | 1.5 | Chat message content, form labels, description text |
 | Label | 14px | 400 (regular) | 1.4 | UI labels, button text, topbar metadata, badge text, timestamp |
 | Heading | 20px | 600 (semibold) | 1.25 | Panel section titles, topbar website name |
-| Display | 36px | 700 (bold) | 1.1 | Landing page hero headline only |
+| Display | 36px | 600 (semibold) | 1.1 | Landing page hero headline only |
 
-Maximum 2 font weights in dashboard/editor UI: 400 and 600. Landing page hero uses 700 — permitted only on the `(public)` home page, not inside the editor.
+Maximum 2 font weights across all UI: 400 (regular) and 600 (semibold).
 
 Code editor textarea font: `--font-geist-mono`, 14px, weight 400, line-height 1.6.
 
@@ -211,7 +211,7 @@ All copy is in Vietnamese.
 | Element | Copy | Source |
 |---------|------|--------|
 | Primary CTA (generate first) | "Tạo ngay" | CONTEXT.md: auto-trigger on mount |
-| Primary CTA (send chat prompt) | "Gửi" | Claude default |
+| Primary CTA (send chat prompt) | "Gửi tin" | Claude default |
 | Primary CTA (apply code) | "Áp dụng" | Claude default |
 | Primary CTA (save topbar) | "Lưu" | Consistent with Phase 4 |
 | Primary CTA (publish topbar) | "Xuất bản" | Consistent with Phase 3 |
