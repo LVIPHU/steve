@@ -17,6 +17,18 @@ describe("buildFreshSystemPrompt", () => {
   it("instructs to start with <!DOCTYPE html>", () => {
     expect(buildFreshSystemPrompt()).toContain("<!DOCTYPE html>");
   });
+
+  it("contains vanilla JavaScript instruction", () => {
+    expect(buildFreshSystemPrompt()).toContain("vanilla JavaScript");
+  });
+
+  it("bans Alpine.js x-for", () => {
+    expect(buildFreshSystemPrompt()).toContain("x-for");
+  });
+
+  it("bans alert()", () => {
+    expect(buildFreshSystemPrompt()).toContain("alert()");
+  });
 });
 
 describe("buildEditSystemPrompt", () => {
@@ -27,6 +39,10 @@ describe("buildEditSystemPrompt", () => {
 
   it("contains appgen- prefix preservation instruction", () => {
     expect(buildEditSystemPrompt("<p>x</p>")).toContain("appgen-");
+  });
+
+  it("bans alert() in edit mode", () => {
+    expect(buildEditSystemPrompt("<p>x</p>")).toContain("alert()");
   });
 });
 
