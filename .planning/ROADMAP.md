@@ -153,3 +153,13 @@ Plans:
 - [ ] 07-02-PLAN.md — Public route handler (raw HTML), landing page, dashboard nav rebrand
 - [ ] 07-03-PLAN.md — Simplified creation form (name + prompt), edit page searchParams
 - [ ] 07-04-PLAN.md — Lovable-style editor: iframe + chat + code tabs + auto-generate + save/publish
+
+### Phase 8: Dashboard Sidebar và AI Onboarding Chat
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 7
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 8 to break down)
