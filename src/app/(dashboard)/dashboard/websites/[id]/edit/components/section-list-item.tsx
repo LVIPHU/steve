@@ -15,6 +15,11 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   content: "Noi dung",
   gallery: "Thu vien",
   cta: "Keu goi",
+  steps: "Cac buoc",
+  ingredients: "Nguyen lieu",
+  goals: "Muc tieu",
+  flashcard: "The hoc",
+  quiz: "Cau hoi",
 };
 
 interface SortableSectionItemProps {

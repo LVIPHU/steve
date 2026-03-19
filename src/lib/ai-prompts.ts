@@ -4,8 +4,8 @@ export const TEMPLATE_PRESETS: Record<string, string[]> = {
   blog: ["hero", "content", "cta"],
   portfolio: ["hero", "about", "features", "cta"],
   fitness: ["hero", "features", "content", "cta"],
-  cooking: ["hero", "content", "gallery", "cta"],
-  learning: ["hero", "content", "features", "cta"],
+  cooking: ["hero", "ingredients", "steps", "cta"],
+  learning: ["hero", "goals", "content", "flashcard", "quiz"],
 };
 
 export const TEMPLATE_COLORS: Record<string, string> = {
@@ -66,6 +66,11 @@ Return this exact JSON structure:
 - "content": { "title": string, "body": string }
 - "gallery": { "title": string, "images": [{ "url": string, "caption": string }] }
 - "cta": { "title": string, "body": string, "buttonText": string, "buttonUrl": string }
+- "steps": { "title": string, "items": [{ "label": string, "description": string, "imageUrl": string (optional) }] }
+- "ingredients": { "title": string, "items": [{ "name": string, "quantity": string }] }
+- "goals": { "title": string, "items": [{ "label": string }] }
+- "flashcard": { "title": string, "cards": [{ "front": string, "back": string }] }
+- "quiz": { "title": string, "questions": [{ "question": string, "choices": [string, string, string, string], "correctIndex": 0|1|2|3 }] }
 
 ## Template: ${templateId}
 
@@ -73,10 +78,15 @@ Suggested sections in order: ${sections.join(", ")}
 
 You may adjust this order based on the content, but only use valid section types.
 
+## Template-Specific Section Rules
+- cooking template: MUST include "ingredients" and "steps" sections. Do NOT use "features" or "about".
+- learning template: MUST include "goals", "flashcard", and "quiz" sections. Do NOT use "gallery".
+- blog, portfolio, fitness: Do NOT use "steps", "ingredients", "goals", "flashcard", or "quiz" section types.
+
 ## Rules
 
 - ALL field values must be plain strings (no markdown syntax, no HTML tags)
-- Only use valid section types: hero, about, features, content, gallery, cta
+- Only use valid section types: hero, about, features, content, gallery, cta, steps, ingredients, goals, flashcard, quiz
 - Each section must have a unique id (e.g., "hero-1", "content-1")
 - The manual_overrides field must always be an empty object: {}
 - The theme primaryColor is ${primaryColor} and font is ${font} — use these values exactly
@@ -116,6 +126,16 @@ export function buildSectionRegenPrompt(
   currentContent?: Record<string, unknown>
 ): string {
   let result = `Regenerate ONLY the ${sectionType} section. Return a JSON object with ONLY the ai_content fields for this section type.`;
+  // Add schema hint for new section types
+  const schemaHints: Record<string, string> = {
+    steps: 'Return: { "title": string, "items": [{ "label": string, "description": string }] }',
+    ingredients: 'Return: { "title": string, "items": [{ "name": string, "quantity": string }] }',
+    goals: 'Return: { "title": string, "items": [{ "label": string }] }',
+    flashcard: 'Return: { "title": string, "cards": [{ "front": string, "back": string }] }',
+    quiz: 'Return: { "title": string, "questions": [{ "question": string, "choices": [string,string,string,string], "correctIndex": 0|1|2|3 }] }',
+  };
+  const hint = schemaHints[sectionType];
+  if (hint) result += ` Schema: ${hint}`;
   if (prompt) {
     result += ` Additional instructions: ${prompt}`;
   }

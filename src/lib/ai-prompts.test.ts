@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildSystemPrompt, buildUserPrompt } from "@/lib/ai-prompts";
+import { buildSystemPrompt, buildUserPrompt, TEMPLATE_PRESETS } from "@/lib/ai-prompts";
 
 describe("buildSystemPrompt", () => {
   it('blog template contains "hero", "content", "cta" section suggestions', () => {
@@ -42,6 +42,37 @@ describe("buildSystemPrompt", () => {
     const prompt = buildSystemPrompt("unknown-template");
     expect(prompt).toContain("hero");
     expect(prompt).toContain("#2563eb");
+  });
+});
+
+describe("TEMPLATE_PRESETS", () => {
+  it('cooking preset includes "ingredients" and "steps"', () => {
+    expect(TEMPLATE_PRESETS["cooking"]).toContain("ingredients");
+    expect(TEMPLATE_PRESETS["cooking"]).toContain("steps");
+  });
+
+  it('learning preset includes "goals", "flashcard", and "quiz"', () => {
+    expect(TEMPLATE_PRESETS["learning"]).toContain("goals");
+    expect(TEMPLATE_PRESETS["learning"]).toContain("flashcard");
+    expect(TEMPLATE_PRESETS["learning"]).toContain("quiz");
+  });
+});
+
+describe("buildSystemPrompt new section types", () => {
+  it('cooking template output contains "ingredients"', () => {
+    const prompt = buildSystemPrompt("cooking");
+    expect(prompt).toContain("ingredients");
+  });
+
+  it('learning template output contains "flashcard"', () => {
+    const prompt = buildSystemPrompt("learning");
+    expect(prompt).toContain("flashcard");
+  });
+
+  it('blog template output contains "steps" schema definition but not cooking MUST include rule', () => {
+    const prompt = buildSystemPrompt("blog");
+    expect(prompt).toContain("steps");
+    expect(prompt).not.toContain('blog template: MUST include');
   });
 });
 

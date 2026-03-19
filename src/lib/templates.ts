@@ -1,3 +1,5 @@
+import type { SectionType } from "@/types/website-ast";
+
 export const TEMPLATES = [
   { id: "blog", name: "Blog", icon: "\ud83d\udcdd" },
   { id: "portfolio", name: "Portfolio", icon: "\ud83d\udcbc" },
@@ -39,3 +41,11 @@ export function suggestTemplate(input: string): TemplateId | null {
   }
   return null;
 }
+
+export const TEMPLATE_ALLOWED_SECTIONS: Record<TemplateId, SectionType[]> = {
+  blog:      ["hero", "about", "content", "features", "gallery", "cta"],
+  portfolio: ["hero", "about", "content", "features", "gallery", "cta"],
+  fitness:   ["hero", "about", "content", "features", "gallery", "cta"],
+  cooking:   ["hero", "content", "gallery", "cta", "ingredients", "steps"],
+  learning:  ["hero", "about", "content", "features", "cta", "goals", "flashcard", "quiz"],
+};
