@@ -2,6 +2,7 @@ import { Oswald } from "next/font/google";
 import type { WebsiteAST } from "@/types/website-ast";
 import { SectionRenderer } from "@/components/sections";
 import { cn } from "@/lib/utils";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -18,6 +19,9 @@ export function FitnessLayout({ ast }: FitnessLayoutProps) {
       className={oswald.className}
       style={{ "--primary-color": ast.theme.primaryColor } as React.CSSProperties}
     >
+      <div className="max-w-5xl mx-auto px-6 py-4 flex justify-end">
+        <DarkModeToggle />
+      </div>
       {ast.sections.map((section) => {
         const isHero = section.type === "hero";
         return (

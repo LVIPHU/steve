@@ -2,6 +2,7 @@ import { Lora } from "next/font/google";
 import type { WebsiteAST } from "@/types/website-ast";
 import { SectionRenderer } from "@/components/sections";
 import { cn } from "@/lib/utils";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 const lora = Lora({ subsets: ["latin"] });
 
@@ -15,6 +16,9 @@ export function CookingLayout({ ast }: CookingLayoutProps) {
       className={cn(lora.className, "min-h-screen bg-[#fdf8f3] dark:bg-background")}
       style={{ "--primary-color": ast.theme.primaryColor } as React.CSSProperties}
     >
+      <div className="max-w-3xl mx-auto px-4 pt-4 flex justify-end">
+        <DarkModeToggle />
+      </div>
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
         {ast.sections.map((section) => {
           const isHero = section.type === "hero";

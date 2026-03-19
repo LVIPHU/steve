@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import type { WebsiteAST } from "@/types/website-ast";
 import { SectionRenderer } from "@/components/sections";
 import { cn } from "@/lib/utils";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,6 +19,9 @@ export function PortfolioLayout({ ast }: PortfolioLayoutProps) {
       className={inter.className}
       style={{ "--primary-color": ast.theme.primaryColor } as React.CSSProperties}
     >
+      <div className="fixed top-4 right-4 z-50">
+        <DarkModeToggle />
+      </div>
       {ast.sections.map((section) => {
         const isHero = section.type === "hero";
         const isCta = section.type === "cta";
