@@ -26,6 +26,7 @@ interface HtmlEditorClientProps {
   initialHtml: string | null;
   initialPrompt: string;
   websiteStatus: string;
+  initialChatHistory: Array<{ role: "user" | "assistant" | "error"; content: string; timestamp: string }> | null;
 }
 
 // ─── Sub-components (module-scope to avoid re-render issues) ──────────────────
@@ -69,7 +70,14 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   const [htmlContent, setHtmlContent] = useState<string>(props.initialHtml ?? "");
   const [codeValue, setCodeValue] = useState<string>(props.initialHtml ?? "");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (!props.initialChatHistory || props.initialChatHistory.length === 0) return [];
+    return props.initialChatHistory.map((item) => ({
+      role: item.role,
+      content: item.content,
+      timestamp: new Date(item.timestamp),
+    }));
+  });
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -77,7 +85,9 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   const [status, setStatus] = useState(props.websiteStatus);
 
   const autoGenTriggered = useRef(false);
+  const isFirstRender = useRef(true);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const chatSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to newest message
@@ -85,12 +95,55 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Auto-save chat history on message changes (skip initial render from DB load)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (messages.length > 0) {
+      scheduleChatHistorySave(messages);
+    }
+  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cleanup chat save timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (chatSaveTimeoutRef.current) clearTimeout(chatSaveTimeoutRef.current);
+    };
+  }, []);
+
   // Auto-save helper (500ms debounce after generation)
   function scheduleAutoSave(html: string) {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
       void handleSave(html);
     }, 500);
+  }
+
+  // Chat history auto-save (500ms debounce after message changes)
+  function scheduleChatHistorySave(msgs: ChatMessage[]) {
+    if (chatSaveTimeoutRef.current) clearTimeout(chatSaveTimeoutRef.current);
+    chatSaveTimeoutRef.current = setTimeout(() => {
+      void saveChatHistory(msgs);
+    }, 500);
+  }
+
+  async function saveChatHistory(msgs: ChatMessage[]) {
+    try {
+      const serialized = msgs.map((m) => ({
+        role: m.role,
+        content: m.content,
+        timestamp: m.timestamp.toISOString(),
+      }));
+      await fetch(`/api/websites/${props.websiteId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_history: serialized }),
+      });
+    } catch {
+      // Silent fail for chat history save — not critical
+    }
   }
 
   // Step labels shown in chat during pipeline
@@ -225,15 +278,16 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     }
   }
 
-  // Publish website
+  // Publish website (also clears chat history in DB and UI)
   async function handlePublish() {
     const res = await fetch(`/api/websites/${props.websiteId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "published" }),
+      body: JSON.stringify({ status: "published", chat_history: [] }),
     });
     if (res.ok) {
       setStatus("published");
+      setMessages([]);
       toast("Đã xuất bản!");
     }
   }

@@ -39,6 +39,9 @@ export default async function EditPage({
       initialHtml={(website.htmlContent as string | null) ?? null}
       initialPrompt={prompt ?? ""}
       websiteStatus={website.status}
+      initialChatHistory={
+        (website.chatHistory as Array<{ role: "user" | "assistant" | "error"; content: string; timestamp: string }>) ?? null
+      }
     />
   );
 }
