@@ -8,7 +8,6 @@ import {
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import DashboardNav from "./dashboard-nav";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -16,7 +15,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardNav user={session.user} />
       <main className="mx-auto max-w-4xl px-4 py-8">
         <Card>
           <CardHeader>

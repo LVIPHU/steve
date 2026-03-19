@@ -5,7 +5,6 @@ import { eq, desc } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import DashboardNav from "../dashboard-nav";
 import WebsiteCard from "@/components/website-card";
 import WebsitesPoller from "./websites-poller";
 import { Button } from "@/components/ui/button";
@@ -22,11 +21,10 @@ export default async function WebsitesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardNav user={session.user} />
       <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold">Websites</h1>
-          <Link href="/dashboard/websites/new">
+          <Link href="/dashboard">
             <Button>Tao website moi</Button>
           </Link>
         </div>
@@ -38,7 +36,7 @@ export default async function WebsitesPage() {
             <p className="text-sm text-muted-foreground mb-6">
               Tao website dau tien de bat dau chia se noi dung cua ban.
             </p>
-            <Link href="/dashboard/websites/new">
+            <Link href="/dashboard">
               <Button size="lg">Tao website moi</Button>
             </Link>
           </div>
