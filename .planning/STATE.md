@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 2
 status: executing
-stopped_at: Completed 07-03-PLAN.md
-last_updated: "2026-03-19T06:38:10.138Z"
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-03-19T06:40:59.949Z"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 24
-  completed_plans: 23
+  completed_plans: 24
 ---
 
 # STATE.md — Project Memory
@@ -19,13 +19,13 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Executing Phase 07
+**Status:** Phase 07 Complete — All 7 phases done
 
 ## Current Phase
 
-**Phase:** 7 — html-first-ai-generation-and-lovable-style-editor (In Progress)
-**Current Plan:** 2
-**Next action:** Execute 07-02 (srcdoc editor UI)
+**Phase:** 7 — html-first-ai-generation-and-lovable-style-editor (COMPLETE)
+**Current Plan:** 4 (all 4 plans done)
+**Next action:** Phase 7 complete — all plans executed
 
 ## What's Built
 
@@ -105,6 +105,7 @@ progress:
 | Edit page reads searchParams.prompt + passes initialHtml/initialPrompt to editor | Done | Plan 07-03 complete |
 | HtmlEditorClient stub with new props interface (Plan 04 compatible) | Done | Plan 07-03 complete |
 | shadcn components: textarea, scroll-area | Done | Plan 07-03 complete |
+| HtmlEditorClient — full Lovable-style editor (iframe + chat + code tabs) | Done | Plan 07-04 complete |
 
 ## What's Left (by phase)
 
@@ -114,7 +115,15 @@ progress:
 - **Phase 4:** COMPLETE (3/3 plans done) — awaiting human visual verification (Task 3 checkpoint)
 - **Phase 5:** COMPLETE — Plan 05-01 (sync API + dashboard polling) + Plan 05-02 (Umami analytics) done
 - **Phase 6:** COMPLETE — All 5 plans done (06-01 through 06-05)
-- **Phase 7:** In Progress — Plan 07-01 complete (htmlContent schema + generate-html API), Plan 07-02 complete (public route.ts, landing page, AppGen rebrand), Plan 07-03 complete (simplified creation form + edit page props)
+- **Phase 7:** COMPLETE — All 4 plans done (07-01 through 07-04)
+
+## Key Decisions (07-04)
+
+- No sandbox attribute on iframe — generated apps need localStorage, IndexedDB, and browser APIs for full functionality
+- srcDoc={htmlContent || undefined} — empty string "" renders a blank HTML document; undefined prevents any render, preserving empty state
+- MessageBubble defined at module scope — inline component would reset motion.div animation state on every parent re-render
+- autoGenTriggered useRef guard prevents double fire in React StrictMode (double-invokes effects in development)
+- handleTabChange syncs codeValue from htmlContent on Code tab switch — ensures code editor always shows latest AI output
 
 ## Key Decisions (07-01)
 
@@ -228,6 +237,8 @@ progress:
 | Phase 07 P01 | 3m 34s | 2 tasks | 5 files |
 | Phase 07 P02 | 5min | 2 tasks | 5 files |
 | Phase 07 P03 | 3m 11s | 2 tasks | 6 files |
+| Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
+| Phase 07 P04 | 5m 37s | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -318,5 +329,5 @@ progress:
 
 ## Last Session
 
-**Stopped at:** Completed 07-03-PLAN.md
+**Stopped at:** Completed 07-04-PLAN.md
 **Timestamp:** 2026-03-18T04:15:43Z
