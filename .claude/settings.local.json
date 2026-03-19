@@ -21,7 +21,11 @@
       "Bash(grep -n 'updateSection\\\\|onUpdateSection' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/section-edit-form.tsx)",
       "Bash(grep -n 'TODO\\\\|FIXME\\\\|XXX\\\\|HACK\\\\|PLACEHOLDER\\\\|placeholder\\\\|coming soon\\\\|will be here' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/editor-sidebar.tsx 2)",
       "Bash(/dev/null -i)",
-      "Bash(git -C D:/STEVE/steve log --oneline 189e120 f39de9d fff4a67 7c1779e dc1c990 0aae20d 66c4b0a)"
+      "Bash(git -C D:/STEVE/steve log --oneline 189e120 f39de9d fff4a67 7c1779e dc1c990 0aae20d 66c4b0a)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''''scripts'''',{}\\), indent=2\\)\\)\")",
+      "Skill(gsd:add-phase)",
+      "Skill(gsd:discuss-phase)",
+      "Skill(gsd:ui-phase)"
     ]
   }
 }
