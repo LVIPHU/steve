@@ -1,93 +1,135 @@
-# REQUIREMENTS.md — Website Generator v1
+# Requirements: Website Generator
 
-## Functional Requirements
+**Defined:** 2026-03-16
+**Core Value:** Người dùng có thể tạo website đẹp, publish được, từ note hoặc prompt — không cần biết code.
 
-### Must Have
+---
 
-| # | Yêu cầu | Mô tả |
-|---|---|---|
-| F-01 | Auth: email/password | Đăng nhập bằng email/password — dùng chung credentials với mobile app |
-| F-02 | Auth: token login | Mobile app tạo link với token → web app tự động đăng nhập user |
-| F-03 | Username enforcement | Bắt buộc chọn username khi đăng ký, validate không trùng reserved words |
-| F-04 | Website list | Trang danh sách tất cả website của user (`/dashboard/websites`) |
-| F-05 | Create website | Tạo mới: chọn note JSON + template + prompt tuỳ chọn |
-| F-06 | Website status | Ba trạng thái: Draft / Published / Archived |
-| F-07 | Website CRUD | Đổi tên, xóa, duplicate |
-| F-08 | Template system | 5 template cố định: blog, portfolio, fitness, cooking, learning |
-| F-09 | AI template suggestion | Gợi ý template dựa trên keyword matching từ note content |
-| F-10 | AI generation | OpenAI GPT-4o: note JSON + template + prompt → Website AST (JSON) |
-| F-11 | Regenerate website | Gen lại toàn bộ website |
-| F-12 | Visual editor | Sidebar form: click section → edit fields → lưu |
-| F-13 | Image upload | Upload ảnh lên Supabase Storage |
-| F-14 | Section reorder | Kéo thả thứ tự section (dnd-kit) |
-| F-15 | Responsive preview | Toggle Desktop / Tablet / Mobile (iframe) |
-| F-16 | Publish | Website có URL công khai: `/[username]/[slug]` (SSR) |
-| F-17 | SEO auto-gen | Meta title, description, OG image (Next.js ImageResponse), slug |
-| F-18 | Note sync API | `POST /api/sync/trigger` — nhận note update, cập nhật ai_content, giữ manual_overrides |
-| F-19 | Analytics | Umami self-hosted embed trong website được publish |
+## v1.0 Requirements (Validated — Phases 1–8)
 
-### Should Have
+Tất cả đã ship và verified.
 
-| # | Yêu cầu | Mô tả |
-|---|---|---|
-| S-01 | Per-section regenerate | Gen lại 1 section cụ thể |
-| S-02 | Prompt refinement | Nhập thêm prompt để AI tinh chỉnh sau khi gen |
-| S-03 | Sync notification | Thông báo trong app khi note sync xảy ra |
-| S-04 | Slug editing | Chỉnh sửa slug URL trước khi publish |
-| S-05 | Color/font customization | Tùy chỉnh màu chủ đạo, font chữ |
+### Auth
+- ✓ **F-01**: User có thể đăng nhập bằng email/password — Phase 1
+- ✓ **F-02**: Mobile app tạo token link → web app auto đăng nhập — Phase 1
+- ✓ **F-03**: Bắt buộc chọn username khi đăng ký, validate reserved words — Phase 1
 
-### Out of Scope (v1)
+### Website CRUD
+- ✓ **F-04**: Dashboard hiển thị danh sách websites với status badges — Phase 2
+- ✓ **F-05**: Tạo website với name + prompt (no template picker) — Phase 7/8
+- ✓ **F-06**: Ba trạng thái: Draft / Published / Archived — Phase 2
+- ✓ **F-07**: Đổi tên, xóa website — Phase 2
 
-- Freemium / plan tiers / payment / Stripe
-- Admin panel
-- Custom domains
-- Version history
-- Multi-user collaboration
-- Export source code
-- Template marketplace
-- Push notifications
+### AI Generation
+- ✓ **F-10**: GPT-4o tạo complete HTML từ prompt — Phase 7
+- ✓ **F-11**: Public route serve raw HTML cho published websites — Phase 7
+- ✓ **F-16**: SEO meta auto-generated — Phase 3
 
-## Non-Functional Requirements
+### Editor
+- ✓ **F-12**: Lovable-style editor: iframe preview + chat + code tabs — Phase 7
+- ✓ **F-13**: Chat gửi prompt → AI update HTML → iframe live — Phase 7
+- ✓ **F-14**: Code tab cho phép edit HTML trực tiếp — Phase 7
 
-| # | Yêu cầu |
-|---|---|
-| NF-01 | AI generation ≤ 30 giây trong điều kiện bình thường |
-| NF-02 | Published URL hoạt động ngay sau khi nhấn Publish (không delay) |
-| NF-03 | Website được gen phải responsive (mobile / tablet / desktop) |
-| NF-04 | SEO meta tags tự động khi publish |
+### Dashboard
+- ✓ **P8-01**: Left sidebar 240px với brand, nav items, user area — Phase 8
+- ✓ **P8-03**: Dashboard AI onboarding chat (2-question → tạo website) — Phase 8
+- ✓ **P8-04**: Editor load/save chat history từ DB — Phase 8
 
-## Business Rules
+---
 
-1. Khi note nguồn bị xóa trong mobile app → website vẫn tồn tại với nội dung cuối cùng
-2. Draft website → không thể truy cập qua URL công khai (404)
-3. Archived website → URL vẫn tồn tại nhưng hiển thị trang "Website không còn hoạt động"
-4. Khi auto-sync: chỉ cập nhật `ai_content`, không bao giờ ghi đè `manual_overrides`
-5. Slug do AI tạo tự động nhưng user có thể sửa trước khi publish
-6. Reserved usernames: `dashboard`, `editor`, `api`, `login`, `register`, `settings`, `pricing`, `about`, `admin`
+## v1.1 Requirements (Active — Phase 9)
 
-## Website AST Schema
+### Pipeline — Component Library
+- [ ] **PIPE-01**: Component Library có ≥25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
+- [ ] **PIPE-02**: `selectComponents(analysis)` chọn tối đa 4 snippets phù hợp nhất bằng tag matching (không LLM, ~0ms)
+- [ ] **PIPE-03**: Component Library có unit tests cho tag-match logic (Vitest)
 
-```json
-{
-  "theme": {
-    "primaryColor": "#2563eb",
-    "backgroundColor": "#ffffff",
-    "font": "Inter"
-  },
-  "sections": [
-    {
-      "id": "hero-1",
-      "type": "hero",
-      "ai_content": { "headline": "...", "subtext": "..." },
-      "manual_overrides": {}
-    }
-  ],
-  "seo": {
-    "title": "...",
-    "description": "...",
-    "slug": "..."
-  }
-}
-```
+### Pipeline — Design Agent
+- [ ] **PIPE-04**: Design Agent (gpt-4o-mini + Zod Structured Output) trả về palette hex, typography Google Fonts, style preset, hero layout
+- [ ] **PIPE-05**: Design Agent map đúng domain → style preset (SaaS → bold-dark, food → warm-organic, v.v.)
+- [ ] **PIPE-06**: CSS variables (`--color-primary`, `--color-secondary`, `--color-accent`, `--color-bg`) được inject vào HTML output; Google Fonts `@import` đặt đầu tiên trong `<style>` block
 
-**Quy tắc render:** Dùng `manual_overrides[field]` nếu tồn tại, ngược lại dùng `ai_content[field]`.
+### Pipeline — Context Optimization
+- [ ] **PIPE-07**: System prompt lean ~800 tokens (invariant rules only), mọi per-request context chuyển sang user message
+- [ ] **PIPE-08**: `buildUserMessage()` tổng hợp design brief + component references + analysis + user prompt thành structured user message
+- [ ] **PIPE-09**: Edit mode nhận instruction "preserve existing colors and typography" khi không có DesignResult
+
+### Pipeline — Review + Refine
+- [ ] **PIPE-10**: Reviewer (gpt-4o-mini) chấm điểm HTML 0-100 theo 3 dimensions: visual (40), content (30), technical (30)
+- [ ] **PIPE-11**: Refine pass (gpt-4o) chỉ fire khi score < threshold hoặc `must_fix[]` non-empty
+- [ ] **PIPE-12**: Refine sử dụng separate message builder (không re-inject component snippets)
+- [ ] **PIPE-13**: Review threshold exposed qua env var `REVIEW_THRESHOLD` (default 75)
+
+### Pipeline — Orchestration
+- [ ] **PIPE-14**: Fresh mode chạy đúng 7 bước: analyze → components → design → generate → review → refine (conditional) → validate
+- [ ] **PIPE-15**: Edit mode chạy đúng 4 bước: analyze → components → generate → validate (skip design/review/refine)
+- [ ] **PIPE-16**: `PipelineEvent.step` union type extended với `"components"`, `"design"`, `"review"`, `"refine"`
+- [ ] **PIPE-17**: `STEP_LABELS` trong editor-client.tsx updated với labels tiếng Việt cho tất cả 7 bước
+- [ ] **PIPE-18**: Verify Vercel plan tier trước khi tăng maxDuration — nếu Pro: set 120s; nếu Hobby: disable refine hoặc gate bằng env var `ENABLE_REFINE`
+- [ ] **PIPE-19**: `researcher.ts` (step cũ) bị xóa khỏi pipeline và imports
+- [ ] **PIPE-20**: Calibration pass (≥10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
+
+---
+
+## v2 Requirements (Deferred)
+
+### Multi-page Generation
+- **MULTI-01**: Progressive generation cho website nhiều trang — scaffold + per-page + JS hash router
+- **MULTI-02**: SSE events riêng cho từng trang (page_index, page_total)
+- **MULTI-03**: maxDuration 180s cho multi-page mode
+
+### Resources Gallery
+- **RES-01**: DB table `resources` cho community templates
+- **RES-02**: Trang `/resources` public — browse + preview trong iframe
+- **RES-03**: Nút "Publish as template" trong editor
+- **RES-04**: Vector embeddings (pgvector) cho semantic search khi generate
+
+---
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Freemium / plan tiers | Không trong scope v1 |
+| Admin panel | Không trong scope v1 |
+| Custom domains | Không trong scope v1 |
+| Version history | Defer indefinitely |
+| Multi-user collaboration | Không trong scope v1 |
+| User-visible style selector | Defer đến sau khi Design Agent quality validated |
+| Design Agent trong edit mode (extract colors từ HTML) | Chỉ làm nếu users report style drift sau v1.1 |
+
+---
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| PIPE-01 | Phase 9-01 | Pending |
+| PIPE-02 | Phase 9-01 | Pending |
+| PIPE-03 | Phase 9-01 | Pending |
+| PIPE-04 | Phase 9-02 | Pending |
+| PIPE-05 | Phase 9-02 | Pending |
+| PIPE-06 | Phase 9-02 | Pending |
+| PIPE-07 | Phase 9-02 | Pending |
+| PIPE-08 | Phase 9-02 | Pending |
+| PIPE-09 | Phase 9-02 | Pending |
+| PIPE-10 | Phase 9-03 | Pending |
+| PIPE-11 | Phase 9-03 | Pending |
+| PIPE-12 | Phase 9-03 | Pending |
+| PIPE-13 | Phase 9-03 | Pending |
+| PIPE-14 | Phase 9-03 | Pending |
+| PIPE-15 | Phase 9-03 | Pending |
+| PIPE-16 | Phase 9-03 | Pending |
+| PIPE-17 | Phase 9-03 | Pending |
+| PIPE-18 | Phase 9-03 | Pending |
+| PIPE-19 | Phase 9-03 | Pending |
+| PIPE-20 | Phase 9-03 | Pending |
+
+**Coverage:**
+- v1.1 requirements: 20 total
+- Mapped to phases: 20
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-03-16*
+*Last updated: 2026-03-19 after milestone v1.1 start*
