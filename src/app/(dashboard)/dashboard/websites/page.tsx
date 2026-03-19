@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { websites } from "@/db/schema";
+import { websites, profiles } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -13,11 +13,12 @@ export default async function WebsitesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
-  const userWebsites = await db
-    .select()
-    .from(websites)
-    .where(eq(websites.userId, session.user.id))
-    .orderBy(desc(websites.createdAt));
+  const [userWebsites, profileResult] = await Promise.all([
+    db.select().from(websites).where(eq(websites.userId, session.user.id)).orderBy(desc(websites.createdAt)),
+    db.select({ username: profiles.username }).from(profiles).where(eq(profiles.id, session.user.id)).limit(1),
+  ]);
+
+  const username = profileResult[0]?.username ?? "";
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -43,7 +44,7 @@ export default async function WebsitesPage() {
         <WebsitesPoller>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
             {userWebsites.map((site, index) => (
-              <WebsiteCard key={site.id} website={site} index={index} />
+              <WebsiteCard key={site.id} website={site} index={index} username={username} />
             ))}
           </div>
         </WebsitesPoller>

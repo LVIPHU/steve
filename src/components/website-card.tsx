@@ -37,9 +37,10 @@ function StatusBadge({ status }: { status: string }) {
 interface WebsiteCardProps {
   website: Website;
   index: number;
+  username: string;
 }
 
-export default function WebsiteCard({ website, index }: WebsiteCardProps) {
+export default function WebsiteCard({ website, index, username }: WebsiteCardProps) {
   const router = useRouter();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -234,8 +235,17 @@ export default function WebsiteCard({ website, index }: WebsiteCardProps) {
           )}
         </div>
 
-        {/* Card body link */}
-        <Link href={`/dashboard/websites/${website.id}`} className="block">
+        {/* Card body link — published opens public view, others open editor */}
+        <Link
+          href={
+            website.status === "published" && username
+              ? `/${username}/${website.slug}`
+              : `/dashboard/websites/${website.id}/edit`
+          }
+          target={website.status === "published" ? "_blank" : undefined}
+          rel={website.status === "published" ? "noopener noreferrer" : undefined}
+          className="block"
+        >
           <CardHeader className="pb-2">
             {renaming ? (
               <Input
