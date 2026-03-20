@@ -241,7 +241,7 @@ Plans:
   4. `REVIEW_THRESHOLD` env var controls the refine trigger point (default 75); `ENABLE_REFINE` env var can disable refine entirely (Hobby plan safety)
   5. `researcher.ts` no longer exists in the codebase and all its imports are removed — `npm run typecheck` passes clean
   6. Calibration pass completed: review scores logged for 10+ generated websites, threshold 75 validated or adjusted before shipping
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 11-01-PLAN.md — reviewer.ts (gpt-4o-mini, Zod schema, 3-dimension scoring), extend PipelineEvent.step union type, update STEP_LABELS in editor-client.tsx
