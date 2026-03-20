@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# calibration log (AI reviewer output, developer-only)
+.calibration.jsonl
