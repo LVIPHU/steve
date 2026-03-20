@@ -224,7 +224,7 @@ Plans:
   3. System prompt is static (no per-request data) and fits within ~800 tokens
   4. Editing an existing website does not reset its colors to DaisyUI blue defaults — the "preserve existing colors and typography" instruction is active in edit mode
   5. `buildUserMessage()` assembles design brief + component references + analysis + user prompt into a single structured message
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 10-01-PLAN.md — Zod v3 install, DesignResult + ReviewResult types, design-agent.ts (gpt-4o-mini + zodResponseFormat), domain-to-preset mapping
