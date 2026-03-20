@@ -1,60 +1,79 @@
 import { describe, it, expect } from "vitest";
 import {
+  buildSystemPrompt,
   buildFreshSystemPrompt,
   buildEditSystemPrompt,
   stripMarkdownFences,
 } from "./html-prompts";
 
-describe("buildFreshSystemPrompt", () => {
+describe("buildSystemPrompt", () => {
   it("contains cdn.tailwindcss.com", () => {
-    expect(buildFreshSystemPrompt()).toContain("cdn.tailwindcss.com");
+    expect(buildSystemPrompt()).toContain("cdn.tailwindcss.com");
   });
 
   it("contains appgen- prefix instruction", () => {
-    expect(buildFreshSystemPrompt()).toContain("appgen-");
+    expect(buildSystemPrompt()).toContain("appgen-");
   });
 
   it("instructs to start with <!DOCTYPE html>", () => {
-    expect(buildFreshSystemPrompt()).toContain("<!DOCTYPE html>");
+    expect(buildSystemPrompt()).toContain("<!DOCTYPE html>");
   });
 
   it("contains vanilla JavaScript instruction", () => {
-    expect(buildFreshSystemPrompt()).toContain("vanilla JavaScript");
+    expect(buildSystemPrompt()).toContain("vanilla JavaScript");
   });
 
   it("bans Alpine.js x-for", () => {
-    expect(buildFreshSystemPrompt()).toContain("x-for");
+    expect(buildSystemPrompt()).toContain("x-for");
   });
 
   it("bans alert()", () => {
-    expect(buildFreshSystemPrompt()).toContain("alert()");
+    expect(buildSystemPrompt()).toContain("alert()");
   });
 
   it("includes DaisyUI CDN", () => {
-    expect(buildFreshSystemPrompt()).toContain("daisyui");
+    expect(buildSystemPrompt()).toContain("daisyui");
   });
 
-  it("includes all 4 template types", () => {
-    const prompt = buildFreshSystemPrompt();
-    expect(prompt).toContain("LANDING PAGE");
-    expect(prompt).toContain("PORTFOLIO / CV");
-    expect(prompt).toContain("DASHBOARD / TOOL");
-    expect(prompt).toContain("BLOG / DOCS");
+  it("does NOT contain template structure hints", () => {
+    const prompt = buildSystemPrompt();
+    expect(prompt).not.toContain("LANDING PAGE");
+    expect(prompt).not.toContain("PORTFOLIO / CV");
+    expect(prompt).not.toContain("DASHBOARD / TOOL");
+    expect(prompt).not.toContain("BLOG / DOCS");
+  });
+
+  it("contains CSS custom property instruction", () => {
+    expect(buildSystemPrompt()).toContain("--color-primary");
+  });
+
+  it("contains Component References instruction", () => {
+    expect(buildSystemPrompt()).toContain("Component References");
+  });
+
+  it("contains flip card CSS rules", () => {
+    expect(buildSystemPrompt()).toContain("perspective: 1000px");
   });
 });
 
-describe("buildEditSystemPrompt", () => {
-  it("contains the provided currentHtml verbatim", () => {
+describe("buildFreshSystemPrompt (backward-compat alias)", () => {
+  it("returns the same result as buildSystemPrompt", () => {
+    expect(buildFreshSystemPrompt()).toBe(buildSystemPrompt());
+  });
+});
+
+describe("buildEditSystemPrompt (backward-compat wrapper)", () => {
+  it("contains the provided currentHtml", () => {
     const html = "<div>test</div>";
     expect(buildEditSystemPrompt(html)).toContain("<div>test</div>");
   });
 
-  it("contains appgen- prefix preservation instruction", () => {
-    expect(buildEditSystemPrompt("<p>x</p>")).toContain("appgen-");
+  it("contains preserve instruction", () => {
+    expect(buildEditSystemPrompt("<p>x</p>")).toContain("Preserve existing colors and typography");
   });
 
-  it("bans alert() in edit mode", () => {
-    expect(buildEditSystemPrompt("<p>x</p>")).toContain("alert()");
+  it("contains the base system prompt content", () => {
+    expect(buildEditSystemPrompt("<p>x</p>")).toContain("cdn.tailwindcss.com");
   });
 });
 

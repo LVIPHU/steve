@@ -1,4 +1,4 @@
-export function buildFreshSystemPrompt(): string {
+export function buildSystemPrompt(): string {
   return `You are an expert web developer. Generate a complete, self-contained website as a Single HTML file with ALL CSS embedded in <style> tags and ALL JavaScript in <script> tags.
 
 Rules:
@@ -12,6 +12,8 @@ Rules:
 - Make the design visually polished and professional using DaisyUI components
 - Output ONLY the raw HTML — no explanation, no markdown, no commentary
 - Start your response with <!DOCTYPE html>
+- Use the Design Brief from the user message to set CSS custom properties (--color-primary, --color-secondary, --color-accent, --color-bg) and Google Fonts @import at the top of your <style> block
+- Adapt the Component References from the user message as structural inspiration — do not copy them verbatim
 
 DaisyUI components to use:
 - Navigation: <div class="navbar bg-base-100 shadow-sm"> with logo and links
@@ -23,21 +25,6 @@ DaisyUI components to use:
 - Modal: <dialog class="modal"> with modal-box (use dialog.showModal() in JS)
 - Table: <table class="table table-zebra">
 - Stats: <div class="stats shadow"> with stat, stat-title, stat-value, stat-desc
-
-Template selection — detect the type from the user's request and use the matching structure:
-
-LANDING PAGE (keywords: landing, product, service, startup, SaaS, giới thiệu, dịch vụ):
-  Structure: navbar → hero (headline + subtext + CTA button) → features (3-col cards) → how-it-works (steps) → testimonials or stats → CTA section → footer
-
-PORTFOLIO / CV (keywords: portfolio, CV, resume, personal, freelance, about me, giới thiệu bản thân):
-  Structure: navbar → hero (name + role + avatar placeholder + CTA) → about section → skills (badge grid) → projects (cards with links) → contact form → footer
-
-DASHBOARD / TOOL (keywords: dashboard, tool, app, calculator, quiz, flashcard, tracker, manager, bảng, công cụ, học):
-  Structure: topbar (title + actions) → main content area with sidebar or tabs → data display (table/cards/chart) → action buttons
-  Use: table table-zebra for data, tabs for switching views, stats for summary numbers
-
-BLOG / DOCS (keywords: blog, article, docs, guide, tutorial, documentation, bài viết, hướng dẫn):
-  Structure: navbar → hero (title + description) → content grid (article cards with avatar + title + excerpt + date) → sidebar (optional, categories/tags) → footer
 
 JavaScript framework rules:
 - Use vanilla JavaScript for any app that renders lists, arrays, or data (flashcards, tables, todo lists, quizzes, etc.)
@@ -65,20 +52,22 @@ Anti-patterns — NEVER do these:
 - Do NOT use aspect-w-* or aspect-h-* Tailwind classes`;
 }
 
-export function buildEditSystemPrompt(currentHtml: string): string {
-  return `You are an expert web developer editing an existing website. Here is the current HTML:
+// Backward-compat aliases — generator.ts still imports these names
+// Phase 11 will update generator.ts and remove these aliases
+export { buildSystemPrompt as buildFreshSystemPrompt };
 
+export function buildEditSystemPrompt(currentHtml: string): string {
+  // Thin wrapper for backward compat — generator.ts still calls this
+  // Phase 11 will remove this function and update generator.ts to use
+  // buildSystemPrompt() + buildEditUserMessage() from context-builder.ts
+  return `${buildSystemPrompt()}
+
+=== CURRENT HTML TO EDIT ===
 ${currentHtml}
 
-Rules:
-- Apply the requested changes while preserving the overall structure and style
-- Keep ALL CSS in <style> tags and ALL JavaScript in <script> tags
-- Preserve all localStorage usage with the "appgen-" prefix — do not change key names
-- Output the complete updated HTML file — not a diff, not a partial snippet
-- Output ONLY the raw HTML — no explanation, no markdown, no commentary
-- Start your response with <!DOCTYPE html>
-- Do NOT use alert(), confirm(), or prompt() — replace with inline modals if needed
-- Keep vanilla JS patterns; do not introduce Alpine.js if not already present`;
+Preserve existing colors and typography. Do not reset to DaisyUI defaults.
+Apply the requested changes while keeping the overall structure and style.
+Output the complete updated HTML file — not a diff, not a partial snippet.`;
 }
 
 export function stripMarkdownFences(raw: string): string {
