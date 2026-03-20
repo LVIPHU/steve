@@ -195,7 +195,7 @@ Plans:
 **Milestone Goal:** Nâng cấp pipeline AI để tạo website có visual identity riêng — domain-aware design, quality gate, no more generic blue DaisyUI output.
 
 - [x] **Phase 9: Component Library** - Static HTML/DaisyUI snippet library with tag-match selection (~0ms, no LLM) (completed 2026-03-19)
-- [ ] **Phase 10: Design Agent + Context Builder + Prompt Rewrite** - Domain-to-visual-identity mapping, CSS variable injection, lean cacheable system prompt
+- [x] **Phase 10: Design Agent + Context Builder + Prompt Rewrite** - Domain-to-visual-identity mapping, CSS variable injection, lean cacheable system prompt (completed 2026-03-20)
 - [ ] **Phase 11: Reviewer + Pipeline Rewire + UI Update** - Quality gate (score 0-100), 7-step fresh / 4-step edit orchestrator, updated SSE labels
 
 ## Phase Details
@@ -263,5 +263,5 @@ Phases execute in numeric order: 9 → 10 → 11
 | 7. HTML-first AI Generation + Lovable-style Editor | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 8. Dashboard Sidebar + AI Onboarding Chat | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 9. Component Library | 1/1 | Complete   | 2026-03-19 | - |
-| 10. Design Agent + Context Builder + Prompt Rewrite | 1/2 | In Progress|  | - |
+| 10. Design Agent + Context Builder + Prompt Rewrite | 2/2 | Complete   | 2026-03-20 | - |
 | 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 0/2 | Not started | - |

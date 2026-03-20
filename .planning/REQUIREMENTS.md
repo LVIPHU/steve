@@ -47,12 +47,12 @@ Tất cả đã ship và verified.
 ### Pipeline — Design Agent
 - [x] **PIPE-04**: Design Agent (gpt-4o-mini + Zod Structured Output) trả về palette hex, typography Google Fonts, style preset, hero layout
 - [x] **PIPE-05**: Design Agent map đúng domain → style preset (SaaS → bold-dark, food → warm-organic, v.v.)
-- [ ] **PIPE-06**: CSS variables (`--color-primary`, `--color-secondary`, `--color-accent`, `--color-bg`) được inject vào HTML output; Google Fonts `@import` đặt đầu tiên trong `<style>` block
+- [x] **PIPE-06**: CSS variables (`--color-primary`, `--color-secondary`, `--color-accent`, `--color-bg`) được inject vào HTML output; Google Fonts `@import` đặt đầu tiên trong `<style>` block
 
 ### Pipeline — Context Optimization
-- [ ] **PIPE-07**: System prompt lean ~800 tokens (invariant rules only), mọi per-request context chuyển sang user message
-- [ ] **PIPE-08**: `buildUserMessage()` tổng hợp design brief + component references + analysis + user prompt thành structured user message
-- [ ] **PIPE-09**: Edit mode nhận instruction "preserve existing colors and typography" khi không có DesignResult
+- [x] **PIPE-07**: System prompt lean ~800 tokens (invariant rules only), mọi per-request context chuyển sang user message
+- [x] **PIPE-08**: `buildUserMessage()` tổng hợp design brief + component references + analysis + user prompt thành structured user message
+- [x] **PIPE-09**: Edit mode nhận instruction "preserve existing colors and typography" khi không có DesignResult
 
 ### Pipeline — Review + Refine
 - [ ] **PIPE-10**: Reviewer (gpt-4o-mini) chấm điểm HTML 0-100 theo 3 dimensions: visual (40), content (30), technical (30)
@@ -109,10 +109,10 @@ Tất cả đã ship và verified.
 | PIPE-03 | Phase 9 | Complete |
 | PIPE-04 | Phase 10 | Complete |
 | PIPE-05 | Phase 10 | Complete |
-| PIPE-06 | Phase 10 | Pending |
-| PIPE-07 | Phase 10 | Pending |
-| PIPE-08 | Phase 10 | Pending |
-| PIPE-09 | Phase 10 | Pending |
+| PIPE-06 | Phase 10 | Complete |
+| PIPE-07 | Phase 10 | Complete |
+| PIPE-08 | Phase 10 | Complete |
+| PIPE-09 | Phase 10 | Complete |
 | PIPE-10 | Phase 11 | Pending |
 | PIPE-11 | Phase 11 | Pending |
 | PIPE-12 | Phase 11 | Pending |
