@@ -56,17 +56,17 @@ Tất cả đã ship và verified.
 
 ### Pipeline — Review + Refine
 - [x] **PIPE-10**: Reviewer (gpt-4o-mini) chấm điểm HTML 0-100 theo 3 dimensions: visual (40), content (30), technical (30)
-- [ ] **PIPE-11**: Refine pass (gpt-4o) chỉ fire khi score < threshold hoặc `must_fix[]` non-empty
-- [ ] **PIPE-12**: Refine sử dụng separate message builder (không re-inject component snippets)
-- [ ] **PIPE-13**: Review threshold exposed qua env var `REVIEW_THRESHOLD` (default 75)
+- [x] **PIPE-11**: Refine pass (gpt-4o) chỉ fire khi score < threshold hoặc `must_fix[]` non-empty
+- [x] **PIPE-12**: Refine sử dụng separate message builder (không re-inject component snippets)
+- [x] **PIPE-13**: Review threshold exposed qua env var `REVIEW_THRESHOLD` (default 75)
 
 ### Pipeline — Orchestration
-- [ ] **PIPE-14**: Fresh mode chạy đúng 7 bước: analyze → components → design → generate → review → refine (conditional) → validate
-- [ ] **PIPE-15**: Edit mode chạy đúng 4 bước: analyze → components → generate → validate (skip design/review/refine)
+- [x] **PIPE-14**: Fresh mode chạy đúng 7 bước: analyze → components → design → generate → review → refine (conditional) → validate
+- [x] **PIPE-15**: Edit mode chạy đúng 4 bước: analyze → components → generate → validate (skip design/review/refine)
 - [x] **PIPE-16**: `PipelineEvent.step` union type extended với `"components"`, `"design"`, `"review"`, `"refine"`
 - [x] **PIPE-17**: `STEP_LABELS` trong editor-client.tsx updated với labels tiếng Việt cho tất cả 7 bước
-- [ ] **PIPE-18**: Verify Vercel plan tier trước khi tăng maxDuration — nếu Pro: set 120s; nếu Hobby: disable refine hoặc gate bằng env var `ENABLE_REFINE`
-- [ ] **PIPE-19**: `researcher.ts` (step cũ) bị xóa khỏi pipeline và imports
+- [x] **PIPE-18**: Verify Vercel plan tier trước khi tăng maxDuration — nếu Pro: set 120s; nếu Hobby: disable refine hoặc gate bằng env var `ENABLE_REFINE`
+- [x] **PIPE-19**: `researcher.ts` (step cũ) bị xóa khỏi pipeline và imports
 - [ ] **PIPE-20**: Calibration pass (≥10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
 
 ---
@@ -114,15 +114,15 @@ Tất cả đã ship và verified.
 | PIPE-08 | Phase 10 | Complete |
 | PIPE-09 | Phase 10 | Complete |
 | PIPE-10 | Phase 11 | Complete |
-| PIPE-11 | Phase 11 | Pending |
-| PIPE-12 | Phase 11 | Pending |
-| PIPE-13 | Phase 11 | Pending |
-| PIPE-14 | Phase 11 | Pending |
-| PIPE-15 | Phase 11 | Pending |
+| PIPE-11 | Phase 11 | Complete |
+| PIPE-12 | Phase 11 | Complete |
+| PIPE-13 | Phase 11 | Complete |
+| PIPE-14 | Phase 11 | Complete |
+| PIPE-15 | Phase 11 | Complete |
 | PIPE-16 | Phase 11 | Complete |
 | PIPE-17 | Phase 11 | Complete |
-| PIPE-18 | Phase 11 | Pending |
-| PIPE-19 | Phase 11 | Pending |
+| PIPE-18 | Phase 11 | Complete |
+| PIPE-19 | Phase 11 | Complete |
 | PIPE-20 | Phase 11 | Pending |
 
 **Coverage:**

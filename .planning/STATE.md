@@ -3,14 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
 status: executing
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-20T08:44:43.053Z"
+stopped_at: "Completed 11-02-PLAN.md (Tasks 1-2); checkpoint:human-verify pending for Task 3 calibration pass"
+last_updated: "2026-03-20T08:52:13.696Z"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 4
-  percent: 80
+  completed_plans: 5
 ---
 
 # STATE.md — Project Memory
@@ -30,12 +29,12 @@ Plan: 2 of 2
 
 - **Phase 9:** COMPLETE — Component Library (PIPE-01, PIPE-02, PIPE-03) → 1/1 plans done
 - **Phase 10:** COMPLETE — Design Agent + Context Builder + Prompt Rewrite (PIPE-04 through PIPE-09) → 2/2 plans done
-- **Phase 11:** In Progress — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 1/2 plans done
+- **Phase 11:** In Progress — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 2/2 automated plans done; Task 3 calibration pass (checkpoint:human-verify) pending
 
 ## Blockers/Concerns
 
-- **[Phase 11]** Vercel plan tier must be confirmed before setting `maxDuration: 120` — Hobby plan has 60s hard wall; current `maxDuration: 90` already exceeds it silently
-- **[Phase 11]** Review score calibration (threshold 75 is provisional) — must run 10+ website calibration pass before shipping; miscalibration makes the quality gate non-functional
+- ~~**[Phase 11]** Vercel plan tier must be confirmed before setting `maxDuration: 120`~~ — RESOLVED in 11-02 (maxDuration = 60, Hobby-safe)
+- **[Phase 11]** Review score calibration (threshold 75 is provisional) — must run 10+ website calibration pass before shipping; miscalibration makes the quality gate non-functional (PIPE-20 pending)
 - ~~**[Phase 10]** Zod v3 (`^3.24.x`) must be added as direct dep~~ — RESOLVED in 10-01 (zod@^3.25.76 installed)
 - ~~**[Phase 10]** Edit mode must inject "preserve existing colors and typography" when no DesignResult~~ — RESOLVED in 10-02 (buildEditUserMessage() starts with preserve instruction)
 
@@ -56,6 +55,10 @@ Plan: 2 of 2
 - [11-01] FALLBACK_REVIEW score=100 — error during review means assume OK to prevent broken API key blocking all generation
 - [11-01] Lazy OpenAI init pattern in reviewer.ts mirrors design-agent.ts — prevents test import failures without API key
 - [11-01] index.ts "research" step events bridged to "components" to fix type break — full orchestrator rewire deferred to Plan 02
+- [11-02] refineHtml sends only must_fix list + current HTML — no component snippets/design brief re-injected (PIPE-12 contract)
+- [11-02] ENABLE_REFINE=false default — Hobby plan users get 5-step pipeline; quality gate opt-in via env var
+- [11-02] maxDuration = 60 to match Vercel Hobby plan hard limit (was 90, silently exceeded)
+- [11-02] REVIEW_THRESHOLD read inside function body (not module level) — enables per-request test isolation
 
 ## What's Built (v1.0 — all complete)
 
@@ -73,9 +76,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 10 P01 | 257 | 2 tasks | 4 files |
 | Phase 10 P02 | 7 | 2 tasks | 4 files |
 | Phase 11 P01 | 3 | 2 tasks | 6 files |
+| Phase 11 P02 | 15 | 2 tasks | 9 files |
 
 ## Session Continuity
 
-Last session: 2026-03-20T08:44:43.049Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-03-20T08:52:13.692Z
+Stopped at: Completed 11-02-PLAN.md (Tasks 1-2); checkpoint:human-verify pending for Task 3 calibration pass
 Resume file: None
