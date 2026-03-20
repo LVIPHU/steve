@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: executing
-stopped_at: "Completed 11-02-PLAN.md (Tasks 1-2); checkpoint:human-verify pending for Task 3 calibration pass"
-last_updated: "2026-03-20T08:52:13.696Z"
+status: complete
+stopped_at: "Completed 11-02-PLAN.md (all 3 tasks including calibration pass PIPE-20 — v1.1 milestone done)"
+last_updated: "2026-03-20T09:10:00Z"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,23 +18,23 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Executing Phase 11
+**Status:** v1.1 COMPLETE
 
 ## Current Position
 
-Phase: 11 (Reviewer + Pipeline Rewire + UI Update) — EXECUTING
+Phase: 11 (Reviewer + Pipeline Rewire + UI Update) — COMPLETE
 Plan: 2 of 2
 
 ## What's Left (v1.1)
 
 - **Phase 9:** COMPLETE — Component Library (PIPE-01, PIPE-02, PIPE-03) → 1/1 plans done
 - **Phase 10:** COMPLETE — Design Agent + Context Builder + Prompt Rewrite (PIPE-04 through PIPE-09) → 2/2 plans done
-- **Phase 11:** In Progress — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 2/2 automated plans done; Task 3 calibration pass (checkpoint:human-verify) pending
+- **Phase 11:** COMPLETE — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 2/2 plans done, calibration pass approved
 
 ## Blockers/Concerns
 
 - ~~**[Phase 11]** Vercel plan tier must be confirmed before setting `maxDuration: 120`~~ — RESOLVED in 11-02 (maxDuration = 60, Hobby-safe)
-- **[Phase 11]** Review score calibration (threshold 75 is provisional) — must run 10+ website calibration pass before shipping; miscalibration makes the quality gate non-functional (PIPE-20 pending)
+- ~~**[Phase 11]** Review score calibration (threshold 75 is provisional)~~ — RESOLVED: calibration pass approved, REVIEW_THRESHOLD=75 confirmed
 - ~~**[Phase 10]** Zod v3 (`^3.24.x`) must be added as direct dep~~ — RESOLVED in 10-01 (zod@^3.25.76 installed)
 - ~~**[Phase 10]** Edit mode must inject "preserve existing colors and typography" when no DesignResult~~ — RESOLVED in 10-02 (buildEditUserMessage() starts with preserve instruction)
 
@@ -59,6 +59,7 @@ Plan: 2 of 2
 - [11-02] ENABLE_REFINE=false default — Hobby plan users get 5-step pipeline; quality gate opt-in via env var
 - [11-02] maxDuration = 60 to match Vercel Hobby plan hard limit (was 90, silently exceeded)
 - [11-02] REVIEW_THRESHOLD read inside function body (not module level) — enables per-request test isolation
+- [11-02] REVIEW_THRESHOLD=75 calibration-approved; calibration observation: component feature detection depth could be richer to reduce unnecessary refine triggers
 
 ## What's Built (v1.0 — all complete)
 
@@ -80,6 +81,6 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 
 ## Session Continuity
 
-Last session: 2026-03-20T08:52:13.692Z
-Stopped at: Completed 11-02-PLAN.md (Tasks 1-2); checkpoint:human-verify pending for Task 3 calibration pass
+Last session: 2026-03-20T09:10:00Z
+Stopped at: Completed 11-02-PLAN.md (all tasks, PIPE-20 calibration approved) — v1.1 milestone complete
 Resume file: None

@@ -67,7 +67,7 @@ Tất cả đã ship và verified.
 - [x] **PIPE-17**: `STEP_LABELS` trong editor-client.tsx updated với labels tiếng Việt cho tất cả 7 bước
 - [x] **PIPE-18**: Verify Vercel plan tier trước khi tăng maxDuration — nếu Pro: set 120s; nếu Hobby: disable refine hoặc gate bằng env var `ENABLE_REFINE`
 - [x] **PIPE-19**: `researcher.ts` (step cũ) bị xóa khỏi pipeline và imports
-- [ ] **PIPE-20**: Calibration pass (≥10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
+- [x] **PIPE-20**: Calibration pass (≥10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
 
 ---
 
@@ -123,7 +123,7 @@ Tất cả đã ship và verified.
 | PIPE-17 | Phase 11 | Complete |
 | PIPE-18 | Phase 11 | Complete |
 | PIPE-19 | Phase 11 | Complete |
-| PIPE-20 | Phase 11 | Pending |
+| PIPE-20 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 20 total

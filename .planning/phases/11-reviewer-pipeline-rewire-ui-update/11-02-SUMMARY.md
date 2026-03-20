@@ -58,7 +58,7 @@ patterns-established:
   - "Pipeline env vars (ENABLE_REFINE, REVIEW_THRESHOLD) read inside function body for test isolation"
   - "Orchestrator pattern: isEditMode branches pipeline into 4-step vs 5/7-step flow"
 
-requirements-completed: [PIPE-11, PIPE-12, PIPE-13, PIPE-14, PIPE-15, PIPE-18, PIPE-19]
+requirements-completed: [PIPE-11, PIPE-12, PIPE-13, PIPE-14, PIPE-15, PIPE-18, PIPE-19, PIPE-20]
 
 # Metrics
 duration: 15min
@@ -74,7 +74,7 @@ completed: 2026-03-20
 - **Duration:** ~15 min
 - **Started:** 2026-03-20T08:45:00Z
 - **Completed:** 2026-03-20T08:50:49Z
-- **Tasks:** 2 of 3 automated (Task 3 is checkpoint:human-verify pending)
+- **Tasks:** 3 of 3 (Task 3 calibration pass approved by human)
 - **Files modified:** 8 (1 deleted)
 
 ## Accomplishments
@@ -92,6 +92,7 @@ Each task was committed atomically:
 
 1. **Task 1: Implement refineHtml(), migrate generator.ts, clean html-prompts.ts** - `ec54fce` (feat)
 2. **Task 2: Rewire orchestrator, delete researcher.ts, fix maxDuration** - `0f5afeb` (feat)
+3. **Task 3: Calibration pass — PIPE-20** - human-approved checkpoint (no code commit; calibration runs live)
 
 **Plan metadata:** (final commit below)
 
@@ -135,23 +136,26 @@ Each task was committed atomically:
 
 - Pre-existing typecheck error in `src/app/api/auth/token-login/route.ts` (missing `better-call` type declarations) — confirmed present before this plan's changes, out of scope per deviation rules. Logged to deferred items.
 
+## Calibration Pass (PIPE-20) — Human Approved
+
+Task 3 calibration checkpoint was approved. REVIEW_THRESHOLD=75 confirmed as the working threshold.
+
+**Calibration observation (user note):** "research ve data va tinh nang can nhieu hon" — the research/data/feature context injected into the generation prompt needs more depth. This is a known limitation of the current component selection approach; richer feature detection could improve initial HTML quality and reduce how often refine triggers.
+
+This observation is deferred to a future enhancement (not blocking Phase 11 completion).
+
 ## User Setup Required
 
-**PIPE-20 calibration pass requires user action:**
+None — calibration pass completed. For reference, to re-run calibration at any time:
 1. Set `ENABLE_REFINE=true` in `.env`
-2. Start dev server: `npm run dev`
-3. Generate 10+ websites with diverse prompts
-4. Inspect `.calibration.jsonl` — verify score distribution (expected 60-95 range)
-5. Verify threshold 75 is appropriate; adjust `REVIEW_THRESHOLD` in `.env` if needed
-6. Confirm edit mode shows exactly 4 steps (no design/review/refine)
-7. Confirm fresh + ENABLE_REFINE=false shows exactly 5 steps
-8. Confirm fresh + ENABLE_REFINE=true shows 7 steps (refine step appears when score < 75 or must_fix non-empty)
+2. Run `npm run dev`, generate websites
+3. Check `.calibration.jsonl` for score distribution
 
 ## Next Phase Readiness
 
-- Pipeline fully wired: all 11 PIPE requirements met in code (PIPE-20 pending calibration human-verify)
-- PIPE-20 calibration pass is the only remaining blocker before Phase 11 is complete
-- After calibration approval: Phase 11 is done and v1.1 milestone is complete
+- All 11 PIPE requirements complete (PIPE-11 through PIPE-20 inclusive)
+- Phase 11 complete; v1.1 milestone fully delivered
+- Deferred observation: component feature detection depth could be improved in a future phase to reduce unnecessary refine triggers
 
 ---
 *Phase: 11-reviewer-pipeline-rewire-ui-update*
