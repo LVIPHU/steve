@@ -2,14 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: planning
-stopped_at: Phase 11 UI-SPEC approved
-last_updated: "2026-03-20T07:43:54.119Z"
+status: executing
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-20T08:44:43.053Z"
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 5
+  completed_plans: 4
+  percent: 80
 ---
 
 # STATE.md — Project Memory
@@ -18,18 +19,18 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Ready to plan
+**Status:** Executing Phase 11
 
 ## Current Position
 
-Phase: 10 (design-agent-context-builder-prompt-rewrite) — COMPLETE
-Plan: 2 of 2 (all done)
+Phase: 11 (Reviewer + Pipeline Rewire + UI Update) — EXECUTING
+Plan: 2 of 2
 
 ## What's Left (v1.1)
 
 - **Phase 9:** COMPLETE — Component Library (PIPE-01, PIPE-02, PIPE-03) → 1/1 plans done
 - **Phase 10:** COMPLETE — Design Agent + Context Builder + Prompt Rewrite (PIPE-04 through PIPE-09) → 2/2 plans done
-- **Phase 11:** Not started — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 2 plans
+- **Phase 11:** In Progress — Reviewer + Pipeline Rewire + UI Update (PIPE-10 through PIPE-20) → 1/2 plans done
 
 ## Blockers/Concerns
 
@@ -52,6 +53,9 @@ Plan: 2 of 2 (all done)
 - [10-02] buildSystemPrompt() is zero-parameter invariant — enables OpenAI prompt caching (75% cost reduction on cached tokens)
 - [10-02] Template structure hints removed from system prompt; Page Structure section in buildUserMessage() carries that info
 - [10-02] Backward-compat aliases (buildFreshSystemPrompt, buildEditSystemPrompt) retained in html-prompts.ts — generator.ts migration deferred to Phase 11
+- [11-01] FALLBACK_REVIEW score=100 — error during review means assume OK to prevent broken API key blocking all generation
+- [11-01] Lazy OpenAI init pattern in reviewer.ts mirrors design-agent.ts — prevents test import failures without API key
+- [11-01] index.ts "research" step events bridged to "components" to fix type break — full orchestrator rewire deferred to Plan 02
 
 ## What's Built (v1.0 — all complete)
 
@@ -68,9 +72,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 09 P01 | 1252 | 2 tasks | 15 files |
 | Phase 10 P01 | 257 | 2 tasks | 4 files |
 | Phase 10 P02 | 7 | 2 tasks | 4 files |
+| Phase 11 P01 | 3 | 2 tasks | 6 files |
 
 ## Session Continuity
 
-Last session: 2026-03-20T07:43:54.115Z
-Stopped at: Phase 11 UI-SPEC approved
-Resume file: .planning/phases/11-reviewer-pipeline-rewire-ui-update/11-UI-SPEC.md
+Last session: 2026-03-20T08:44:43.049Z
+Stopped at: Completed 11-01-PLAN.md
+Resume file: None
