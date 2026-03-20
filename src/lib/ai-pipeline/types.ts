@@ -5,12 +5,6 @@ export interface AnalysisResult {
   structured_data: string; // formatted data extracted from prompt (vocab table, etc.)
 }
 
-export interface ResearchResult {
-  css_patterns: string; // specific CSS rules for detected features
-  daisyui_components: string; // which DaisyUI classes to use per section
-  layout_rules: string; // explicit constraints (card heights, grid cols, etc.)
-}
-
 export interface ValidationResult {
   html: string;
   fixes: string[];

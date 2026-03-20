@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   buildSystemPrompt,
-  buildFreshSystemPrompt,
-  buildEditSystemPrompt,
   stripMarkdownFences,
 } from "./html-prompts";
 
@@ -54,26 +52,13 @@ describe("buildSystemPrompt", () => {
   it("contains flip card CSS rules", () => {
     expect(buildSystemPrompt()).toContain("perspective: 1000px");
   });
-});
 
-describe("buildFreshSystemPrompt (backward-compat alias)", () => {
-  it("returns the same result as buildSystemPrompt", () => {
-    expect(buildFreshSystemPrompt()).toBe(buildSystemPrompt());
-  });
-});
-
-describe("buildEditSystemPrompt (backward-compat wrapper)", () => {
-  it("contains the provided currentHtml", () => {
-    const html = "<div>test</div>";
-    expect(buildEditSystemPrompt(html)).toContain("<div>test</div>");
-  });
-
-  it("contains preserve instruction", () => {
-    expect(buildEditSystemPrompt("<p>x</p>")).toContain("Preserve existing colors and typography");
-  });
-
-  it("contains the base system prompt content", () => {
-    expect(buildEditSystemPrompt("<p>x</p>")).toContain("cdn.tailwindcss.com");
+  it("does NOT contain backward-compat alias references in source", () => {
+    // buildFreshSystemPrompt and buildEditSystemPrompt were removed in Phase 11
+    // This test verifies buildSystemPrompt is the canonical export
+    const result = buildSystemPrompt();
+    expect(typeof result).toBe("string");
+    expect(result.length).toBeGreaterThan(100);
   });
 });
 

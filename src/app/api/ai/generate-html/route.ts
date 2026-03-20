@@ -5,7 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { runGenerationPipeline } from "@/lib/ai-pipeline";
 import type { PipelineEvent } from "@/lib/ai-pipeline";
 
-export const maxDuration = 90;
+export const maxDuration = 60; // Hobby plan limit; set to 120 when upgrading to Pro
 
 function sseData(event: PipelineEvent): string {
   return `data: ${JSON.stringify(event)}\n\n`;
