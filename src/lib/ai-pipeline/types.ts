@@ -17,8 +17,31 @@ export interface ValidationResult {
   warnings: string[];
 }
 
+export interface DesignResult {
+  preset: "bold-dark" | "warm-organic" | "clean-minimal" | "playful-bright" | "professional-blue";
+  palette: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    bg: string;
+  };
+  fonts: {
+    heading: string;
+    body: string;
+  };
+}
+
+export interface ReviewResult {
+  score: number;
+  visual: number;
+  content: number;
+  technical: number;
+  must_fix: string[];
+  suggestions: string[];
+}
+
 export interface PipelineEvent {
-  step: "analyze" | "research" | "generate" | "validate" | "complete" | "error";
+  step: "analyze" | "research" | "design" | "generate" | "validate" | "complete" | "error";
   status: "start" | "done";
   detail?: string; // shown in chat panel
   html?: string; // only on complete
