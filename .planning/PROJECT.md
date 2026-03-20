@@ -49,6 +49,10 @@ Người dùng app note mobile, muốn chia sẻ kiến thức dưới dạng we
 
 **Out of scope (v1.1):** Multi-page progressive generation → defer v1.2
 
+**Progress:**
+- Phase 10 complete (2026-03-20): Design Agent (`runDesignAgent`, `DesignResultSchema`, `FALLBACK_DESIGN`), Context Builder (`buildUserMessage`, `buildEditUserMessage`, `buildGoogleFontsImport`, `refineHtml` stub), lean invariant `buildSystemPrompt()` — PIPE-04 through PIPE-09 validated
+- Next: Phase 11 — Reviewer + Pipeline Rewire + UI Update
+
 ## Out of Scope (v1)
 
 - Freemium / plan tiers / payment processing
