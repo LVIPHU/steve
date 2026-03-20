@@ -8,7 +8,6 @@ import { ArrowLeft, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -149,8 +148,11 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   // Step labels shown in chat during pipeline
   const STEP_LABELS: Record<string, string> = {
     analyze: "Phân tích yêu cầu...",
-    research: "Tìm CSS patterns & components...",
+    components: "Chọn components phù hợp...",
+    design: "Thiết kế visual identity...",
     generate: "Đang tạo HTML...",
+    review: "Kiểm tra chất lượng...",
+    refine: "Tinh chỉnh kết quả...",
     validate: "Kiểm tra kết quả...",
   };
 
@@ -431,7 +433,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
               className="flex flex-col flex-1 overflow-hidden m-0 p-0"
             >
               {/* Message list */}
-              <ScrollArea className="flex-1 px-4 py-3">
+              <div className="flex-1 overflow-y-auto px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {messages.length === 0 ? (
                   <div className="flex items-center justify-center h-24">
                     <p className="text-sm text-muted-foreground text-center">
@@ -444,7 +446,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
                   ))
                 )}
                 <div ref={messagesEndRef} />
-              </ScrollArea>
+              </div>
 
               {/* Chat input */}
               <div className="border-t border-border p-4 flex flex-col gap-2">

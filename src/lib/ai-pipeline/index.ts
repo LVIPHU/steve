@@ -20,11 +20,11 @@ export async function runGenerationPipeline(
     detail: `Loại: ${analysis.type} · Sections: ${analysis.sections.slice(0, 4).join(", ") || "auto"}`,
   });
 
-  // Step 2: Research
-  onEvent({ step: "research", status: "start" });
+  // Step 2: Research (legacy — will be replaced in Plan 02 orchestrator rewire)
+  onEvent({ step: "components", status: "start" });
   const research = await researchContext(analysis);
   onEvent({
-    step: "research",
+    step: "components",
     status: "done",
     detail: `CSS patterns ready · DaisyUI components mapped`,
   });

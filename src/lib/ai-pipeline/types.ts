@@ -41,7 +41,7 @@ export interface ReviewResult {
 }
 
 export interface PipelineEvent {
-  step: "analyze" | "research" | "design" | "generate" | "validate" | "complete" | "error";
+  step: "analyze" | "components" | "design" | "generate" | "review" | "refine" | "validate" | "complete" | "error";
   status: "start" | "done";
   detail?: string; // shown in chat panel
   html?: string; // only on complete
