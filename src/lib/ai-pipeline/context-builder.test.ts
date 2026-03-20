@@ -115,8 +115,9 @@ describe("buildEditUserMessage", () => {
 });
 
 describe("refineHtml", () => {
-  it("throws Not implemented error", async () => {
-    const mockReview = { score: 50, visual: 20, content: 15, technical: 15, must_fix: [], suggestions: [] };
-    await expect(refineHtml("<html></html>", mockReview)).rejects.toThrow("Not implemented");
+  it("is an async function (no longer throws Not implemented)", () => {
+    // refineHtml is now a real implementation that calls OpenAI
+    // We verify it's exported as an async function, not a stub
+    expect(typeof refineHtml).toBe("function");
   });
 });

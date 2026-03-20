@@ -52,24 +52,6 @@ Anti-patterns — NEVER do these:
 - Do NOT use aspect-w-* or aspect-h-* Tailwind classes`;
 }
 
-// Backward-compat aliases — generator.ts still imports these names
-// Phase 11 will update generator.ts and remove these aliases
-export { buildSystemPrompt as buildFreshSystemPrompt };
-
-export function buildEditSystemPrompt(currentHtml: string): string {
-  // Thin wrapper for backward compat — generator.ts still calls this
-  // Phase 11 will remove this function and update generator.ts to use
-  // buildSystemPrompt() + buildEditUserMessage() from context-builder.ts
-  return `${buildSystemPrompt()}
-
-=== CURRENT HTML TO EDIT ===
-${currentHtml}
-
-Preserve existing colors and typography. Do not reset to DaisyUI defaults.
-Apply the requested changes while keeping the overall structure and style.
-Output the complete updated HTML file — not a diff, not a partial snippet.`;
-}
-
 export function stripMarkdownFences(raw: string): string {
   return raw.replace(/^```(?:html?)?\s*/i, "").replace(/\s*```$/i, "").trim();
 }

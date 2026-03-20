@@ -1,5 +1,13 @@
+import OpenAI from "openai";
+import { buildSystemPrompt, stripMarkdownFences } from "@/lib/html-prompts";
 import type { AnalysisResult, DesignResult, ReviewResult } from "./types";
 import type { ComponentSnippet } from "@/lib/component-library/types";
+
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) _openai = new OpenAI();
+  return _openai;
+}
 
 export function buildGoogleFontsImport(fonts: { heading: string; body: string }): string {
   const families = [fonts.heading, fonts.body]
@@ -46,5 +54,20 @@ ${prompt}`;
 }
 
 export async function refineHtml(html: string, reviewResult: ReviewResult): Promise<string> {
-  throw new Error("Not implemented \u2014 Phase 11");
+  const mustFixList = reviewResult.must_fix
+    .map((issue, i) => `${i + 1}. ${issue}`)
+    .join("\n");
+  const userMessage = `Fix the following issues in the HTML:\n\n${mustFixList}\n\nCurrent HTML:\n${html}`;
+
+  const completion = await getOpenAI().chat.completions.create(
+    {
+      model: "gpt-4o",
+      messages: [
+        { role: "system", content: buildSystemPrompt() },
+        { role: "user", content: userMessage },
+      ],
+    },
+    { signal: AbortSignal.timeout(60000) }
+  );
+  return stripMarkdownFences(completion.choices[0].message.content ?? html);
 }
