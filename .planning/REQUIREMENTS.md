@@ -45,8 +45,8 @@ Tất cả đã ship và verified.
 - [x] **PIPE-03**: Component Library có unit tests cho tag-match logic (Vitest)
 
 ### Pipeline — Design Agent
-- [ ] **PIPE-04**: Design Agent (gpt-4o-mini + Zod Structured Output) trả về palette hex, typography Google Fonts, style preset, hero layout
-- [ ] **PIPE-05**: Design Agent map đúng domain → style preset (SaaS → bold-dark, food → warm-organic, v.v.)
+- [x] **PIPE-04**: Design Agent (gpt-4o-mini + Zod Structured Output) trả về palette hex, typography Google Fonts, style preset, hero layout
+- [x] **PIPE-05**: Design Agent map đúng domain → style preset (SaaS → bold-dark, food → warm-organic, v.v.)
 - [ ] **PIPE-06**: CSS variables (`--color-primary`, `--color-secondary`, `--color-accent`, `--color-bg`) được inject vào HTML output; Google Fonts `@import` đặt đầu tiên trong `<style>` block
 
 ### Pipeline — Context Optimization
@@ -107,8 +107,8 @@ Tất cả đã ship và verified.
 | PIPE-01 | Phase 9 | Complete |
 | PIPE-02 | Phase 9 | Complete |
 | PIPE-03 | Phase 9 | Complete |
-| PIPE-04 | Phase 10 | Pending |
-| PIPE-05 | Phase 10 | Pending |
+| PIPE-04 | Phase 10 | Complete |
+| PIPE-05 | Phase 10 | Complete |
 | PIPE-06 | Phase 10 | Pending |
 | PIPE-07 | Phase 10 | Pending |
 | PIPE-08 | Phase 10 | Pending |
