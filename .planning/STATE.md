@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
 status: planning
-stopped_at: Phase 11 context gathered
-last_updated: "2026-03-20T07:38:26.278Z"
+stopped_at: Phase 11 UI-SPEC approved
+last_updated: "2026-03-20T07:43:54.119Z"
 progress:
   total_phases: 3
   completed_phases: 2
@@ -71,6 +71,6 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 
 ## Session Continuity
 
-Last session: 2026-03-20T07:38:26.266Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-reviewer-pipeline-rewire-ui-update/11-CONTEXT.md
+Last session: 2026-03-20T07:43:54.115Z
+Stopped at: Phase 11 UI-SPEC approved
+Resume file: .planning/phases/11-reviewer-pipeline-rewire-ui-update/11-UI-SPEC.md
