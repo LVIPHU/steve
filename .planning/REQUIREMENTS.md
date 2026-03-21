@@ -5,7 +5,7 @@
 
 ---
 
-## v1.0 Requirements (Validated — Phases 1–8)
+## v1.0 Requirements (Validated — Phases 1-8)
 
 Tất cả đã ship và verified.
 
@@ -37,10 +37,10 @@ Tất cả đã ship và verified.
 
 ---
 
-## v1.1 Requirements (Active — Phases 9-11)
+## v1.1 Requirements (Active — Phases 9-12)
 
 ### Pipeline — Component Library
-- [x] **PIPE-01**: Component Library có ≥25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
+- [x] **PIPE-01**: Component Library có >=25 HTML/DaisyUI snippets phân loại theo hero, navbar, features, cards, footer, stats, testimonials
 - [x] **PIPE-02**: `selectComponents(analysis)` chọn tối đa 4 snippets phù hợp nhất bằng tag matching (không LLM, ~0ms)
 - [x] **PIPE-03**: Component Library có unit tests cho tag-match logic (Vitest)
 
@@ -67,7 +67,17 @@ Tất cả đã ship và verified.
 - [x] **PIPE-17**: `STEP_LABELS` trong editor-client.tsx updated với labels tiếng Việt cho tất cả 7 bước
 - [x] **PIPE-18**: Verify Vercel plan tier trước khi tăng maxDuration — nếu Pro: set 120s; nếu Hobby: disable refine hoặc gate bằng env var `ENABLE_REFINE`
 - [x] **PIPE-19**: `researcher.ts` (step cũ) bị xóa khỏi pipeline và imports
-- [x] **PIPE-20**: Calibration pass (≥10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
+- [x] **PIPE-20**: Calibration pass (>=10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
+
+### Snippet Library Migration (Phase 12)
+- [ ] **SNIP-01**: Tất cả snippet HTML hiện tại rewrite từ DaisyUI sang Tailwind utilities + Preline data-hs-* patterns
+- [ ] **SNIP-02**: 11 category hiện tại mở rộng thêm 2-3 snippets mỗi category
+- [ ] **SNIP-03**: 6 category mới (forms, ui-elements, cta, media, pricing, notifications) với 6-9 snippets mỗi category
+- [ ] **SNIP-04**: `buildSystemPrompt()` rewrite với Tailwind CDN + Preline JS CDN, zero DaisyUI references
+- [ ] **SNIP-05**: Tất cả snippets hỗ trợ dark mode qua Tailwind `dark:` prefix
+- [ ] **SNIP-06**: Zero DaisyUI class names còn lại trong toàn bộ snippet library
+- [ ] **SNIP-07**: ALL_SNIPPETS chứa 100+ snippets across 17 categories
+- [ ] **SNIP-08**: Tests updated (threshold 100+, DaisyUI remnant detector) và pass clean
 
 ---
 
@@ -124,12 +134,20 @@ Tất cả đã ship và verified.
 | PIPE-18 | Phase 11 | Complete |
 | PIPE-19 | Phase 11 | Complete |
 | PIPE-20 | Phase 11 | Complete |
+| SNIP-01 | Phase 12 | Planned |
+| SNIP-02 | Phase 12 | Planned |
+| SNIP-03 | Phase 12 | Planned |
+| SNIP-04 | Phase 12 | Planned |
+| SNIP-05 | Phase 12 | Planned |
+| SNIP-06 | Phase 12 | Planned |
+| SNIP-07 | Phase 12 | Planned |
+| SNIP-08 | Phase 12 | Planned |
 
 **Coverage:**
-- v1.1 requirements: 20 total
-- Mapped to phases: 20
+- v1.1 requirements: 28 total
+- Mapped to phases: 28
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-19 — v1.1 roadmap created (Phases 9-11)*
+*Last updated: 2026-03-21 — Phase 12 requirements added (SNIP-01 through SNIP-08)*

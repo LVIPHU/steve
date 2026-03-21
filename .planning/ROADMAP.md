@@ -190,7 +190,7 @@ Plans:
 
 </details>
 
-### 🚧 v1.1 Enhanced AI Pipeline (In Progress)
+### v1.1 Enhanced AI Pipeline (In Progress)
 
 **Milestone Goal:** Nâng cấp pipeline AI để tạo website có visual identity riêng — domain-aware design, quality gate, no more generic blue DaisyUI output.
 
@@ -247,10 +247,29 @@ Plans:
 - [ ] 11-01-PLAN.md — reviewer.ts (gpt-4o-mini, Zod schema, 3-dimension scoring), extend PipelineEvent.step union type, update STEP_LABELS in editor-client.tsx
 - [ ] 11-02-PLAN.md — Rewire index.ts orchestrator (7-step fresh / 4-step edit, conditional refine, remove researcher.ts), Vercel plan verification + maxDuration, calibration pass
 
+### Phase 12: Migrate snippet library from DaisyUI to Preline UI
+
+**Goal:** Migrate all snippet HTML from DaisyUI to Tailwind utilities + Preline data-hs-* patterns. Expand all 11 existing categories, add 6 new categories. Rewrite buildSystemPrompt() with Preline CDN + guidance. End state: 100+ snippets, 17 categories, zero DaisyUI remnants.
+**Requirements**: SNIP-01, SNIP-02, SNIP-03, SNIP-04, SNIP-05, SNIP-06, SNIP-07, SNIP-08
+**Depends on:** Phase 11
+**Success Criteria** (what must be TRUE):
+  1. All 17 snippet files contain zero DaisyUI class names
+  2. buildSystemPrompt() references Tailwind CDN + Preline JS CDN, zero DaisyUI mentions
+  3. ALL_SNIPPETS contains 100+ snippets across 17 categories
+  4. Every snippet includes dark: prefix classes for dark mode
+  5. Preline data-hs-* patterns used for interactive components (accordion, tabs, modal, dropdown, collapse)
+  6. All existing tests pass including new DaisyUI remnant detector
+  7. npm run typecheck passes clean
+**Plans:** 2 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — Test updates + buildSystemPrompt() rewrite + rewrite 5 high-impact snippet files (hero, navbar, features, cards, footer)
+- [ ] 12-02-PLAN.md — Rewrite 6 remaining snippet files + create 6 new categories (forms, ui-elements, cta, media, pricing, notifications) + register in index.ts
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 → 10 → 11
+Phases execute in numeric order: 9 → 10 → 11 → 12
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -262,6 +281,7 @@ Phases execute in numeric order: 9 → 10 → 11
 | 6. shadcn-ui Templates Interactive Sections | v1.0 | 5/5 | Complete | 2026-03-19 |
 | 7. HTML-first AI Generation + Lovable-style Editor | v1.0 | 4/4 | Complete | 2026-03-19 |
 | 8. Dashboard Sidebar + AI Onboarding Chat | v1.0 | 4/4 | Complete | 2026-03-19 |
-| 9. Component Library | 1/1 | Complete   | 2026-03-19 | - |
-| 10. Design Agent + Context Builder + Prompt Rewrite | 2/2 | Complete    | 2026-03-20 | - |
-| 11. Reviewer + Pipeline Rewire + UI Update | 2/2 | Complete   | 2026-03-20 | - |
+| 9. Component Library | v1.1 | 1/1 | Complete | 2026-03-19 |
+| 10. Design Agent + Context Builder + Prompt Rewrite | v1.1 | 2/2 | Complete | 2026-03-20 |
+| 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 2/2 | Complete | 2026-03-20 |
+| 12. Migrate snippet library from DaisyUI to Preline UI | v1.1 | 0/2 | Planning | - |
