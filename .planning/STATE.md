@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: complete
-stopped_at: "Completed 11-02-PLAN.md (all 3 tasks including calibration pass PIPE-20 — v1.1 milestone done)"
-last_updated: "2026-03-20T09:10:00Z"
+status: completed
+stopped_at: Phase 12 context gathered
+last_updated: "2026-03-21T03:23:55.848Z"
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 3
   total_plans: 5
   completed_plans: 5
@@ -61,6 +61,12 @@ Plan: 2 of 2
 - [11-02] REVIEW_THRESHOLD read inside function body (not module level) — enables per-request test isolation
 - [11-02] REVIEW_THRESHOLD=75 calibration-approved; calibration observation: component feature detection depth could be richer to reduce unnecessary refine triggers
 
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 12 added: Migrate snippet library from DaisyUI to Preline UI
+
 ## What's Built (v1.0 — all complete)
 
 All Phases 1-8 complete. See ROADMAP.md Phase Details for full inventory.
@@ -81,6 +87,6 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 
 ## Session Continuity
 
-Last session: 2026-03-20T09:10:00Z
-Stopped at: Completed 11-02-PLAN.md (all tasks, PIPE-20 calibration approved) — v1.1 milestone complete
-Resume file: None
+Last session: 2026-03-21T03:23:55.844Z
+Stopped at: Phase 12 context gathered
+Resume file: .planning/phases/12-migrate-snippet-library-from-daisyui-to-preline-ui/12-CONTEXT.md
