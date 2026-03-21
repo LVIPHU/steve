@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
 status: complete
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-21T06:10:00.000Z"
+stopped_at: Completed 12-03-PLAN.md (gap closure)
+last_updated: "2026-03-21T14:45:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -23,7 +23,7 @@ progress:
 ## Current Position
 
 Phase: 12 (migrate-snippet-library-from-daisyui-to-preline-ui) — COMPLETE
-Plan: 2 of 2 (ALL COMPLETE)
+Plan: 3 of 3 (ALL COMPLETE, including gap-closure plan 03)
 
 ## What's Left (v1.1)
 
@@ -65,6 +65,9 @@ Plan: 2 of 2 (ALL COMPLETE)
 - [12-02] DaisyUI JS class strings replaced with multiple classList.add() calls using Tailwind color classes (btn-success → bg-teal-100, border-teal-300, text-teal-800 pattern)
 - [12-02] <progress> DaisyUI elements replaced with div-based bars; JS updated to use style.width instead of .value property
 - [12-02] hsl(var(--p)) CSS vars replaced with hardcoded #2563eb for reading-progress bar — Preline has no DaisyUI design token equivalents
+- [12-03] hs-accordion-active: variant replaced with vanilla JS classList.toggle('rotate-180') on click — CDN-incompatible variant silently broken chevron rotation
+- [12-03] Stepper snippets replaced with full vanilla JS implementation (data-step/data-panel selectors) — data-hs-stepper requires Preline JS build step, entirely non-functional via CDN
+- [12-03] bannedHsVariants detector test added covering 7 CDN-incompatible hs-* variant prefixes — prevents future regressions
 
 ## Accumulated Context
 
@@ -91,9 +94,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 11 P02 | 15 | 2 tasks | 9 files |
 | Phase 12 P01 | 9 | 3 tasks | 13 files |
 | Phase 12 P02 | 10 | 2 tasks | 12 files |
+| Phase 12 P03 (gap) | 15 | 2 tasks | 5 files |
 
 ## Session Continuity
 
-Last session: 2026-03-21T06:10:00.000Z
-Stopped at: Completed 12-02-PLAN.md
+Last session: 2026-03-21T14:45:00.000Z
+Stopped at: Completed 12-03-PLAN.md (gap closure)
 Resume file: None

@@ -260,11 +260,12 @@ Plans:
   5. Preline data-hs-* patterns used for interactive components (accordion, tabs, modal, dropdown, collapse)
   6. All existing tests pass including new DaisyUI remnant detector
   7. npm run typecheck passes clean
-**Plans:** 2/2 plans complete
+**Plans:** 3/3 plans complete (including gap-closure plan 03)
 
 Plans:
-- [ ] 12-01-PLAN.md — Test updates + buildSystemPrompt() rewrite + rewrite 5 high-impact snippet files (hero, navbar, features, cards, footer)
-- [ ] 12-02-PLAN.md — Rewrite 6 remaining snippet files + create 6 new categories (forms, ui-elements, cta, media, pricing, notifications) + register in index.ts
+- [x] 12-01-PLAN.md — Test updates + buildSystemPrompt() rewrite + rewrite 5 high-impact snippet files (hero, navbar, features, cards, footer)
+- [x] 12-02-PLAN.md — Rewrite 6 remaining snippet files + create 6 new categories (forms, ui-elements, cta, media, pricing, notifications) + register in index.ts
+- [x] 12-03-PLAN.md (gap closure) — Replace hs-accordion-active: and hs-stepper-active:/hs-stepper-completed: variants with vanilla JS, add bannedHsVariants detector test
 
 ## Progress
 
@@ -284,4 +285,4 @@ Phases execute in numeric order: 9 → 10 → 11 → 12
 | 9. Component Library | v1.1 | 1/1 | Complete | 2026-03-19 |
 | 10. Design Agent + Context Builder + Prompt Rewrite | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 2/2 | Complete | 2026-03-20 |
-| 12. Migrate snippet library from DaisyUI to Preline UI | 2/2 | Complete   | 2026-03-21 | - |
+| 12. Migrate snippet library from DaisyUI to Preline UI | 3/3 | Complete   | 2026-03-21 | - |
