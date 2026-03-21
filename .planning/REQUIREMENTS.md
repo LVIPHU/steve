@@ -70,14 +70,14 @@ Tất cả đã ship và verified.
 - [x] **PIPE-20**: Calibration pass (>=10 websites) verify review score distribution trước khi ship — threshold 75 là provisional, điều chỉnh nếu cần
 
 ### Snippet Library Migration (Phase 12)
-- [ ] **SNIP-01**: Tất cả snippet HTML hiện tại rewrite từ DaisyUI sang Tailwind utilities + Preline data-hs-* patterns
-- [ ] **SNIP-02**: 11 category hiện tại mở rộng thêm 2-3 snippets mỗi category
+- [x] **SNIP-01**: Tất cả snippet HTML hiện tại rewrite từ DaisyUI sang Tailwind utilities + Preline data-hs-* patterns
+- [x] **SNIP-02**: 11 category hiện tại mở rộng thêm 2-3 snippets mỗi category
 - [ ] **SNIP-03**: 6 category mới (forms, ui-elements, cta, media, pricing, notifications) với 6-9 snippets mỗi category
-- [ ] **SNIP-04**: `buildSystemPrompt()` rewrite với Tailwind CDN + Preline JS CDN, zero DaisyUI references
-- [ ] **SNIP-05**: Tất cả snippets hỗ trợ dark mode qua Tailwind `dark:` prefix
-- [ ] **SNIP-06**: Zero DaisyUI class names còn lại trong toàn bộ snippet library
+- [x] **SNIP-04**: `buildSystemPrompt()` rewrite với Tailwind CDN + Preline JS CDN, zero DaisyUI references
+- [x] **SNIP-05**: Tất cả snippets hỗ trợ dark mode qua Tailwind `dark:` prefix
+- [x] **SNIP-06**: Zero DaisyUI class names còn lại trong toàn bộ snippet library
 - [ ] **SNIP-07**: ALL_SNIPPETS chứa 100+ snippets across 17 categories
-- [ ] **SNIP-08**: Tests updated (threshold 100+, DaisyUI remnant detector) và pass clean
+- [x] **SNIP-08**: Tests updated (threshold 100+, DaisyUI remnant detector) và pass clean
 
 ---
 

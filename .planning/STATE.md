@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: completed
-stopped_at: Phase 12 context gathered
-last_updated: "2026-03-21T03:23:55.848Z"
+status: executing
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-03-21T05:53:37.674Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 7
+  completed_plans: 6
 ---
 
 # STATE.md — Project Memory
@@ -18,11 +18,11 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** v1.1 COMPLETE
+**Status:** Executing Phase 12
 
 ## Current Position
 
-Phase: 11 (Reviewer + Pipeline Rewire + UI Update) — COMPLETE
+Phase: 12 (migrate-snippet-library-from-daisyui-to-preline-ui) — EXECUTING
 Plan: 2 of 2
 
 ## What's Left (v1.1)
@@ -60,6 +60,8 @@ Plan: 2 of 2
 - [11-02] maxDuration = 60 to match Vercel Hobby plan hard limit (was 90, silently exceeded)
 - [11-02] REVIEW_THRESHOLD read inside function body (not module level) — enables per-request test isolation
 - [11-02] REVIEW_THRESHOLD=75 calibration-approved; calibration observation: component feature detection depth could be richer to reduce unnecessary refine triggers
+- [12-01] Wave 0 test guardrails set before snippets rewritten — DaisyUI detector and 80% dark: threshold intentionally fail until Plan 02 completes remaining files
+- [12-01] buildSystemPrompt() rewritten for Preline/Tailwind CDN — zero-parameter signature preserved for OpenAI prompt caching
 
 ## Accumulated Context
 
@@ -84,9 +86,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 10 P02 | 7 | 2 tasks | 4 files |
 | Phase 11 P01 | 3 | 2 tasks | 6 files |
 | Phase 11 P02 | 15 | 2 tasks | 9 files |
+| Phase 12 P01 | 9 | 3 tasks | 13 files |
 
 ## Session Continuity
 
-Last session: 2026-03-21T03:23:55.844Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-migrate-snippet-library-from-daisyui-to-preline-ui/12-CONTEXT.md
+Last session: 2026-03-21T05:53:37.669Z
+Stopped at: Completed 12-01-PLAN.md
+Resume file: None
