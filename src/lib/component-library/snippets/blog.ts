@@ -350,7 +350,7 @@ export const blogSnippets: ComponentSnippet[] = [
       <div class="hs-accordion active" id="toc-accordion">
         <button class="hs-accordion-toggle w-full flex items-center justify-between gap-x-3 py-4 px-6 font-semibold text-start text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" aria-controls="toc-accordion-content">
           Table of Contents
-          <svg class="hs-accordion-active:rotate-180 size-4 text-gray-600 dark:text-gray-300 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="rotate-180 size-4 text-gray-600 dark:text-gray-300 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="toc-accordion-content" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="toc-accordion">
           <div class="bg-white dark:bg-gray-800 px-6 pb-5">
@@ -373,6 +373,14 @@ export const blogSnippets: ComponentSnippet[] = [
       <p>Before you begin, ensure your development environment meets the minimum requirements listed in the prerequisites section.</p>
     </div>
   </div>
-</section>`,
+</section>
+<script>
+document.querySelectorAll('.hs-accordion-toggle').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var svg = this.querySelector('svg');
+    if(svg) svg.classList.toggle('rotate-180');
+  });
+});
+</script>`,
   },
 ];

@@ -211,7 +211,7 @@ export const pricingSnippets: ComponentSnippet[] = [
       <div class="hs-accordion active bg-white dark:bg-gray-800" id="faq-1">
         <button class="hs-accordion-toggle w-full flex items-center justify-between gap-x-3 py-4 px-6 font-semibold text-start text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" aria-controls="faq-content-1">
           Can I try before I buy?
-          <svg class="hs-accordion-active:rotate-180 size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="rotate-180 size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="faq-content-1" class="hs-accordion-content overflow-hidden transition-[height] duration-300">
           <div class="px-6 pb-4 text-sm text-gray-600 dark:text-gray-400">Yes! Every plan comes with a 14-day free trial. No credit card required. You'll have full access to all features during the trial.</div>
@@ -220,7 +220,7 @@ export const pricingSnippets: ComponentSnippet[] = [
       <div class="hs-accordion bg-white dark:bg-gray-800" id="faq-2">
         <button class="hs-accordion-toggle w-full flex items-center justify-between gap-x-3 py-4 px-6 font-semibold text-start text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" aria-controls="faq-content-2">
           Can I change plans at any time?
-          <svg class="hs-accordion-active:rotate-180 size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="faq-content-2" class="hs-accordion-content hidden overflow-hidden transition-[height] duration-300">
           <div class="px-6 pb-4 text-sm text-gray-600 dark:text-gray-400">Absolutely. You can upgrade or downgrade at any time from your account settings. Changes take effect immediately.</div>
@@ -229,7 +229,7 @@ export const pricingSnippets: ComponentSnippet[] = [
       <div class="hs-accordion bg-white dark:bg-gray-800" id="faq-3">
         <button class="hs-accordion-toggle w-full flex items-center justify-between gap-x-3 py-4 px-6 font-semibold text-start text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" aria-controls="faq-content-3">
           Is there a long-term commitment?
-          <svg class="hs-accordion-active:rotate-180 size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="faq-content-3" class="hs-accordion-content hidden overflow-hidden transition-[height] duration-300">
           <div class="px-6 pb-4 text-sm text-gray-600 dark:text-gray-400">No long-term commitment required. Monthly plans can be cancelled at any time. Annual plans are billed upfront but can be cancelled for the remaining period.</div>
@@ -238,7 +238,7 @@ export const pricingSnippets: ComponentSnippet[] = [
       <div class="hs-accordion bg-white dark:bg-gray-800" id="faq-4">
         <button class="hs-accordion-toggle w-full flex items-center justify-between gap-x-3 py-4 px-6 font-semibold text-start text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" aria-controls="faq-content-4">
           Do you offer discounts for non-profits?
-          <svg class="hs-accordion-active:rotate-180 size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <svg class="size-4 text-gray-600 dark:text-gray-300 shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="faq-content-4" class="hs-accordion-content hidden overflow-hidden transition-[height] duration-300">
           <div class="px-6 pb-4 text-sm text-gray-600 dark:text-gray-400">Yes! We offer a 50% discount for registered non-profits and educational institutions. Contact us at support@example.com with proof of eligibility.</div>
@@ -246,7 +246,15 @@ export const pricingSnippets: ComponentSnippet[] = [
       </div>
     </div>
   </div>
-</section>`,
+</section>
+<script>
+document.querySelectorAll('.hs-accordion-toggle').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var svg = this.querySelector('svg');
+    if(svg) svg.classList.toggle('rotate-180');
+  });
+});
+</script>`,
   },
   {
     id: "pricing-enterprise",
