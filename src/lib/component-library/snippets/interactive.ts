@@ -582,40 +582,40 @@ export const interactiveSnippets: ComponentSnippet[] = [
     fallback_for: [],
     html: `<section class="py-10 px-6 bg-gray-50 dark:bg-gray-900">
   <div class="max-w-2xl mx-auto">
-    <div data-hs-stepper>
+    <div id="stepper-wizard">
       <ul class="relative flex flex-row gap-x-2 mb-8">
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 1}'>
-          <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle focus:outline-none disabled:opacity-50 disabled:pointer-events-none">
-            <span class="size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full group-focus:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:group-focus:bg-gray-600 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-completed:bg-blue-600 hs-stepper-completed:text-white">
-              <span class="hs-stepper-active:hidden hs-stepper-completed:hidden">1</span>
-              <svg class="hidden shrink-0 size-3 hs-stepper-completed:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="1">
+          <span class="min-w-7 min-h-7 inline-flex items-center text-xs align-middle">
+            <span class="step-circle size-7 flex justify-center items-center flex-shrink-0 bg-blue-600 text-white font-medium rounded-full">
+              <span class="step-num hidden">1</span>
+              <svg class="step-check shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span class="ms-2 text-sm font-medium text-gray-800 dark:text-gray-200">Account</span>
           </span>
-          <div class="w-full h-px flex-1 bg-gray-200 dark:bg-gray-700 group-last:hidden hs-stepper-completed:bg-blue-600"></div>
+          <div class="step-connector w-full h-px flex-1 bg-blue-600"></div>
         </li>
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 2}'>
-          <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
-            <span class="size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full dark:bg-gray-700 dark:text-gray-300 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-completed:bg-blue-600 hs-stepper-completed:text-white">
-              <span class="hs-stepper-active:hidden hs-stepper-completed:hidden">2</span>
-              <svg class="hidden shrink-0 size-3 hs-stepper-completed:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="2">
+          <span class="min-w-7 min-h-7 inline-flex items-center text-xs align-middle">
+            <span class="step-circle size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium rounded-full">
+              <span class="step-num">2</span>
+              <svg class="step-check hidden shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span class="ms-2 text-sm font-medium text-gray-800 dark:text-gray-200">Profile</span>
           </span>
-          <div class="w-full h-px flex-1 bg-gray-200 dark:bg-gray-700 group-last:hidden hs-stepper-completed:bg-blue-600"></div>
+          <div class="step-connector w-full h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
         </li>
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 3}'>
-          <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
-            <span class="size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full dark:bg-gray-700 dark:text-gray-300 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-completed:bg-blue-600 hs-stepper-completed:text-white">
-              <span class="hs-stepper-active:hidden hs-stepper-completed:hidden">3</span>
-              <svg class="hidden shrink-0 size-3 hs-stepper-completed:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="3">
+          <span class="min-w-7 min-h-7 inline-flex items-center text-xs align-middle">
+            <span class="step-circle size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium rounded-full">
+              <span class="step-num">3</span>
+              <svg class="step-check hidden shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span class="ms-2 text-sm font-medium text-gray-800 dark:text-gray-200">Done</span>
           </span>
         </li>
       </ul>
       <div>
-        <div data-hs-stepper-content-item='{"index": 1}'>
+        <div class="step-panel" data-panel="1">
           <div class="bg-white border border-gray-200 rounded-xl p-6 dark:bg-gray-800 dark:border-gray-700">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Create your account</h3>
             <div class="space-y-4">
@@ -630,7 +630,7 @@ export const interactiveSnippets: ComponentSnippet[] = [
             </div>
           </div>
         </div>
-        <div data-hs-stepper-content-item='{"index": 2}' class="hidden">
+        <div class="step-panel hidden" data-panel="2">
           <div class="bg-white border border-gray-200 rounded-xl p-6 dark:bg-gray-800 dark:border-gray-700">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tell us about yourself</h3>
             <div class="space-y-4">
@@ -650,7 +650,7 @@ export const interactiveSnippets: ComponentSnippet[] = [
             </div>
           </div>
         </div>
-        <div data-hs-stepper-content-item='{"index": 3}' class="hidden">
+        <div class="step-panel hidden" data-panel="3">
           <div class="bg-white border border-gray-200 rounded-xl p-6 text-center dark:bg-gray-800 dark:border-gray-700">
             <div class="text-5xl mb-4">🎉</div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">You're all set!</h3>
@@ -658,16 +658,61 @@ export const interactiveSnippets: ComponentSnippet[] = [
           </div>
         </div>
         <div class="mt-5 flex justify-between items-center">
-          <button type="button" class="py-2 px-4 inline-flex items-center text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none transition-colors" data-hs-stepper-back-btn>Back</button>
-          <button type="button" class="py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors" data-hs-stepper-next-btn>
-            <span class="[.hs-stepper-last-step-active_&]:hidden">Next</span>
-            <span class="hidden [.hs-stepper-last-step-active_&]:inline-flex">Finish</span>
-          </button>
+          <button type="button" id="stepper-wizard-back" class="py-2 px-4 inline-flex items-center text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none transition-colors" disabled>Back</button>
+          <button type="button" id="stepper-wizard-next" class="py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors">Next</button>
         </div>
       </div>
     </div>
   </div>
-</section>`,
+</section>
+<script>
+(function(){
+  var stepper = document.getElementById('stepper-wizard');
+  if (!stepper) return;
+  var totalSteps = 3;
+  var current = 1;
+  function updateStepper() {
+    var navItems = stepper.querySelectorAll('[data-step]');
+    navItems.forEach(function(li) {
+      var idx = parseInt(li.getAttribute('data-step'), 10);
+      var circle = li.querySelector('.step-circle');
+      var num = li.querySelector('.step-num');
+      var check = li.querySelector('.step-check');
+      var connector = li.querySelector('.step-connector');
+      if (idx < current) {
+        circle.className = 'step-circle size-7 flex justify-center items-center flex-shrink-0 bg-blue-600 text-white font-medium rounded-full';
+        if (num) num.classList.add('hidden');
+        if (check) check.classList.remove('hidden');
+        if (connector) { connector.classList.remove('bg-gray-200', 'dark:bg-gray-700'); connector.classList.add('bg-blue-600'); }
+      } else if (idx === current) {
+        circle.className = 'step-circle size-7 flex justify-center items-center flex-shrink-0 bg-blue-600 text-white font-medium rounded-full';
+        if (num) num.classList.remove('hidden');
+        if (check) check.classList.add('hidden');
+        if (connector) { connector.classList.remove('bg-blue-600'); connector.classList.add('bg-gray-200', 'dark:bg-gray-700'); }
+      } else {
+        circle.className = 'step-circle size-7 flex justify-center items-center flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium rounded-full';
+        if (num) num.classList.remove('hidden');
+        if (check) check.classList.add('hidden');
+        if (connector) { connector.classList.remove('bg-blue-600'); connector.classList.add('bg-gray-200', 'dark:bg-gray-700'); }
+      }
+    });
+    stepper.querySelectorAll('.step-panel').forEach(function(panel) {
+      panel.classList.toggle('hidden', parseInt(panel.getAttribute('data-panel'), 10) !== current);
+    });
+    var backBtn = document.getElementById('stepper-wizard-back');
+    var nextBtn = document.getElementById('stepper-wizard-next');
+    if (backBtn) backBtn.disabled = current === 1;
+    if (nextBtn) nextBtn.textContent = current === totalSteps ? 'Finish' : 'Next';
+  }
+  document.getElementById('stepper-wizard-next').addEventListener('click', function() {
+    if (current < totalSteps) { current++; updateStepper(); }
+  });
+  document.getElementById('stepper-wizard-back').addEventListener('click', function() {
+    if (current > 1) { current--; updateStepper(); }
+  });
+  updateStepper();
+})();
+</script>`,
   },
   {
     id: "interactive-count-up",

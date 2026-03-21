@@ -85,37 +85,40 @@ export const formsSnippets: ComponentSnippet[] = [
     html: `<section class="py-10 px-6 bg-white dark:bg-gray-900">
   <div class="max-w-lg mx-auto">
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Create Account</h2>
-    <div data-hs-stepper>
+    <div id="stepper-reg">
       <ul class="relative flex flex-row gap-x-2 mb-8">
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 1}'>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="1">
           <span class="min-w-7 min-h-7 inline-flex items-center gap-x-2 text-xs">
-            <span class="size-7 flex justify-center items-center rounded-full bg-gray-100 font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-completed:bg-blue-600 hs-stepper-completed:text-white">
-              <span class="hs-stepper-active:hidden hs-stepper-completed:hidden">1</span>
-              <svg class="hidden shrink-0 size-3 hs-stepper-completed:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="step-circle size-7 flex justify-center items-center rounded-full bg-blue-600 text-white font-medium">
+              <span class="step-num hidden">1</span>
+              <svg class="step-check shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Account</span>
           </span>
-          <div class="w-full h-px flex-1 bg-gray-200 dark:bg-gray-700 hs-stepper-completed:bg-blue-600 group-last:hidden"></div>
+          <div class="step-connector w-full h-px flex-1 bg-blue-600"></div>
         </li>
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 2}'>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="2">
           <span class="min-w-7 min-h-7 inline-flex items-center gap-x-2 text-xs">
-            <span class="size-7 flex justify-center items-center rounded-full bg-gray-100 font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-completed:bg-blue-600 hs-stepper-completed:text-white">
-              <span class="hs-stepper-active:hidden hs-stepper-completed:hidden">2</span>
-              <svg class="hidden shrink-0 size-3 hs-stepper-completed:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="step-circle size-7 flex justify-center items-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium">
+              <span class="step-num">2</span>
+              <svg class="step-check hidden shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
             <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Profile</span>
           </span>
-          <div class="w-full h-px flex-1 bg-gray-200 dark:bg-gray-700 hs-stepper-completed:bg-blue-600 group-last:hidden"></div>
+          <div class="step-connector w-full h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
         </li>
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 3}'>
+        <li class="flex items-center gap-x-2 shrink basis-0 flex-1" data-step="3">
           <span class="min-w-7 min-h-7 inline-flex items-center gap-x-2 text-xs">
-            <span class="size-7 flex justify-center items-center rounded-full bg-gray-100 font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white">3</span>
+            <span class="step-circle size-7 flex justify-center items-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium">
+              <span class="step-num">3</span>
+              <svg class="step-check hidden shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
             <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Done</span>
           </span>
         </li>
       </ul>
       <div>
-        <div data-hs-stepper-content-item='{"index": 1}'>
+        <div class="step-panel" data-panel="1">
           <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 dark:bg-gray-800 dark:border-gray-700 space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
@@ -127,7 +130,7 @@ export const formsSnippets: ComponentSnippet[] = [
             </div>
           </div>
         </div>
-        <div data-hs-stepper-content-item='{"index": 2}' class="hidden">
+        <div class="step-panel hidden" data-panel="2">
           <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 dark:bg-gray-800 dark:border-gray-700 space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
@@ -139,7 +142,7 @@ export const formsSnippets: ComponentSnippet[] = [
             </div>
           </div>
         </div>
-        <div data-hs-stepper-content-item='{"index": 3}' class="hidden">
+        <div class="step-panel hidden" data-panel="3">
           <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center dark:bg-gray-800 dark:border-gray-700">
             <div class="text-5xl mb-4">🎉</div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Account Created!</h3>
@@ -147,16 +150,61 @@ export const formsSnippets: ComponentSnippet[] = [
           </div>
         </div>
         <div class="mt-5 flex justify-between">
-          <button type="button" class="py-2 px-4 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none transition-colors" data-hs-stepper-back-btn>Back</button>
-          <button type="button" class="py-2.5 px-5 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors" data-hs-stepper-next-btn>
-            <span class="[.hs-stepper-last-step-active_&]:hidden">Next</span>
-            <span class="hidden [.hs-stepper-last-step-active_&]:inline-flex">Finish</span>
-          </button>
+          <button type="button" id="stepper-reg-back" class="py-2 px-4 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none transition-colors" disabled>Back</button>
+          <button type="button" id="stepper-reg-next" class="py-2.5 px-5 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">Next</button>
         </div>
       </div>
     </div>
   </div>
-</section>`,
+</section>
+<script>
+(function(){
+  var stepper = document.getElementById('stepper-reg');
+  if (!stepper) return;
+  var totalSteps = 3;
+  var current = 1;
+  function updateStepper() {
+    var navItems = stepper.querySelectorAll('[data-step]');
+    navItems.forEach(function(li) {
+      var idx = parseInt(li.getAttribute('data-step'), 10);
+      var circle = li.querySelector('.step-circle');
+      var num = li.querySelector('.step-num');
+      var check = li.querySelector('.step-check');
+      var connector = li.querySelector('.step-connector');
+      if (idx < current) {
+        circle.className = 'step-circle size-7 flex justify-center items-center rounded-full bg-blue-600 text-white font-medium';
+        if (num) num.classList.add('hidden');
+        if (check) check.classList.remove('hidden');
+        if (connector) { connector.classList.remove('bg-gray-200', 'dark:bg-gray-700'); connector.classList.add('bg-blue-600'); }
+      } else if (idx === current) {
+        circle.className = 'step-circle size-7 flex justify-center items-center rounded-full bg-blue-600 text-white font-medium';
+        if (num) num.classList.remove('hidden');
+        if (check) check.classList.add('hidden');
+        if (connector) { connector.classList.remove('bg-blue-600'); connector.classList.add('bg-gray-200', 'dark:bg-gray-700'); }
+      } else {
+        circle.className = 'step-circle size-7 flex justify-center items-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 font-medium';
+        if (num) num.classList.remove('hidden');
+        if (check) check.classList.add('hidden');
+        if (connector) { connector.classList.remove('bg-blue-600'); connector.classList.add('bg-gray-200', 'dark:bg-gray-700'); }
+      }
+    });
+    stepper.querySelectorAll('.step-panel').forEach(function(panel) {
+      panel.classList.toggle('hidden', parseInt(panel.getAttribute('data-panel'), 10) !== current);
+    });
+    var backBtn = document.getElementById('stepper-reg-back');
+    var nextBtn = document.getElementById('stepper-reg-next');
+    if (backBtn) backBtn.disabled = current === 1;
+    if (nextBtn) nextBtn.textContent = current === totalSteps ? 'Finish' : 'Next';
+  }
+  document.getElementById('stepper-reg-next').addEventListener('click', function() {
+    if (current < totalSteps) { current++; updateStepper(); }
+  });
+  document.getElementById('stepper-reg-back').addEventListener('click', function() {
+    if (current > 1) { current--; updateStepper(); }
+  });
+  updateStepper();
+})();
+</script>`,
   },
   {
     id: "forms-login",

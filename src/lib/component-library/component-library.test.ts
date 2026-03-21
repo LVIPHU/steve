@@ -28,7 +28,7 @@ describe("snippet data validation", () => {
     expect(ALL_SNIPPETS.length).toBeGreaterThanOrEqual(100);
   });
 
-  it("no snippet contains DaisyUI class patterns", () => {
+  it("no snippet contains banned class patterns (DaisyUI + hs-* variants)", () => {
     const daisyUIPatterns = [
       'btn-primary', 'btn-secondary', 'btn-outline', 'btn-ghost', 'btn-accent',
       'card-body', 'card-title', 'card-actions',
@@ -43,9 +43,21 @@ describe("snippet data validation", () => {
       'progress progress-primary',
       'checkbox checkbox-primary',
     ];
+    const bannedHsVariants = [
+      'hs-accordion-active:',
+      'hs-collapse-open:',
+      'hs-overlay-open:',
+      'hs-dropdown-open:',
+      'hs-tab-active:',
+      'hs-stepper-active:',
+      'hs-stepper-completed:',
+    ];
     ALL_SNIPPETS.forEach((s: ComponentSnippet) => {
       daisyUIPatterns.forEach((pattern) => {
         expect(s.html, `${s.id}: contains DaisyUI pattern "${pattern}"`).not.toContain(pattern);
+      });
+      bannedHsVariants.forEach((pattern) => {
+        expect(s.html, `${s.id}: contains banned hs-* variant "${pattern}"`).not.toContain(pattern);
       });
     });
   });
