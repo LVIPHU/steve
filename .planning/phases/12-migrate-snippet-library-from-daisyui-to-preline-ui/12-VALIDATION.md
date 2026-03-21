@@ -18,9 +18,9 @@ created: 2026-03-21
 | Property | Value |
 |----------|-------|
 | **Framework** | Vitest |
-| **Config file** | vitest.config.ts |
+| **Config file** | `package.json` (scripts.test) |
 | **Quick run command** | `npm run test -- component-library` |
-| **Full suite command** | `npm run test` |
+| **Full suite command** | `npm run test && npm run typecheck` |
 | **Estimated runtime** | ~5 seconds (component-library suite) |
 
 ---
@@ -28,7 +28,7 @@ created: 2026-03-21
 ## Sampling Rate
 
 - **After every task commit:** Run `npm run test -- component-library`
-- **After every plan wave:** Run `npm run test`
+- **After every plan wave:** Run `npm run test && npm run typecheck`
 - **Before `/gsd:verify-work`:** Full suite must be green + `npm run typecheck` pass
 - **Max feedback latency:** ~5 seconds
 
@@ -38,15 +38,15 @@ created: 2026-03-21
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| W0-threshold | 01 | 0 | SNIP-05 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
-| W0-daisy-guard | 01 | 0 | SNIP-06 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
-| 12-01-01 | 01 | 1 | SNIP-10 | grep | `grep -r "daisyui" src/lib/html-prompts.ts` | ✅ | ⬜ pending |
-| 12-01-02 | 01 | 1 | SNIP-09 | typecheck | `npm run typecheck` | ✅ | ⬜ pending |
-| 12-02-01 | 01 | 1 | SNIP-01,04 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
-| 12-02-02 | 01 | 1 | SNIP-06 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
-| 12-03-01 | 01 | 1 | SNIP-01,04 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
-| 12-04-01 | 01 | 2 | SNIP-05 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
-| 12-phase-gate | 01 | final | all | full suite | `npm run test && npm run typecheck` | ✅ | ⬜ pending |
+| W0-threshold | 01 | 0 | SNIP-07 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
+| W0-daisy-guard | 01 | 0 | SNIP-01,06 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
+| W0-dark-coverage | 01 | 0 | SNIP-05 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
+| W0-new-files | 01 | 0 | SNIP-03 | unit | `npm run test -- component-library` | ❌ W0 | ⬜ pending |
+| 12-01-task1 | 01 | 1 | SNIP-04 | grep | `grep -r "daisyui\|btn-primary\|card-body\|navbar-start" src/lib/html-prompts.ts` | ✅ | ⬜ pending |
+| 12-01-task2 | 01 | 1 | SNIP-01,02 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
+| 12-02-task1 | 02 | 2 | SNIP-01,02 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
+| 12-02-task2 | 02 | 2 | SNIP-03,07 | unit | `npm run test -- component-library` | ✅ | ⬜ pending |
+| 12-phase-gate | 02 | final | SNIP-08 | full suite | `npm run test && npm run typecheck` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -54,10 +54,31 @@ created: 2026-03-21
 
 ## Wave 0 Requirements
 
-- [ ] `src/lib/component-library/component-library.test.ts` line 27 — update `toBeGreaterThanOrEqual(40)` → `toBeGreaterThanOrEqual(100)` for 100+ snippet target
-- [ ] `src/lib/component-library/component-library.test.ts` — add DaisyUI class remnant detector test: grep snippet HTML for known DaisyUI prefixes (`btn `, `badge `, `card `, `navbar-`, `hero `, `footer `, `stat-`, `mockup`, `daisy`, `daisyui`, `[class*="btn-"]`, `[class*="badge-"]`) and assert none found
+Changes to `src/lib/component-library/component-library.test.ts`:
 
-*Note: Existing infrastructure covers structural and behavior tests. Only threshold update and DaisyUI guard are new requirements.*
+- [ ] Update: `"library has at least 40 snippets"` → `toBeGreaterThanOrEqual(100)` (SNIP-07)
+- [ ] New test: DaisyUI remnant detector — iterate ALL_SNIPPETS, assert none contain DaisyUI patterns:
+  ```typescript
+  const daisyUIPatterns = [
+    'btn-primary', 'btn-secondary', 'btn-outline', 'btn-ghost', 'btn-accent',
+    'card-body', 'card-title', 'card-actions',
+    'navbar-start', 'navbar-center', 'navbar-end',
+    'hero-content', 'hero min-h',
+    'badge-primary', 'badge-outline', 'badge-secondary', 'badge-accent',
+    'bg-base-100', 'bg-base-200', 'bg-base-300',
+    'text-base-content',
+    'stat-value', 'stat-title', 'stat-desc',
+    'footer-center', 'footer footer',
+    'menu menu-horizontal', 'dropdown-content',
+    'progress progress-primary',
+    'checkbox checkbox-primary',
+  ];
+  ```
+- [ ] New test: dark mode coverage — at least 80% of snippets include `dark:` prefix
+- [ ] Create stubs: `src/lib/component-library/snippets/forms.ts`, `ui-elements.ts`, `cta.ts`, `media.ts`, `pricing.ts`, `notifications.ts`
+- [ ] Update: `src/lib/component-library/snippets/index.ts` — add 6 new imports + spread into ALL_SNIPPETS
+
+*These must pass before Wave 1 snippet rewrites begin.*
 
 ---
 
