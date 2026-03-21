@@ -1,7 +1,7 @@
-# Phase 12: Migrate Snippet Library from DaisyUI to Preline UI — Research
+# Phase 12: Migrate Snippet Library from DaisyUI to Preline UI - Research
 
 **Researched:** 2026-03-21
-**Domain:** Component snippet library rewrite — DaisyUI → Preline UI + Tailwind utilities
+**Domain:** HTML snippet authoring — Preline UI + Tailwind CDN, DaisyUI removal, dark mode, interactive JS patterns
 **Confidence:** HIGH
 
 ---
@@ -11,30 +11,39 @@
 
 ### Locked Decisions
 
-- Rewrite all 47 existing HTML snippets (11 files) — replace DaisyUI classes with Tailwind utilities + Preline `data-hs-*` behaviors
-- Expand all 11 existing categories: add 2-3 new Preline-specific snippets per category
+- Rewrite all 47 existing snippets (DaisyUI → Preline/Tailwind)
+- All 11 existing categories expanded: add 2-3 new Preline-specific snippets per category
 - 4 new categories added: `forms`, `ui-elements`, `cta`, `media` — each with 8-10 snippets
-- Additional categories from Preline docs that fit generated websites — researcher identifies
-- Priority order for rewriting: hero, navbar, features, cards first → then the rest
+- Additional categories from Preline docs that fit generated websites — researcher identifies and adds
+- Priority order: hero → navbar → features → cards → then the rest
 - All snippets support dark mode via Tailwind `dark:` prefix
 - Dark mode mechanism: `class="dark"` on `<html>` element
-- Toggle placement: GPT-4o decides based on layout (hint in system prompt)
 - Dark background palette: `dark:bg-gray-900` (page), `dark:bg-gray-800` (cards), `dark:bg-gray-700` (hover/nested)
-- Text in dark: `dark:text-white` / `dark:text-gray-300` / `dark:text-gray-400`
-- LocalStorage persistence for dark mode; default light mode on first load; localStorage key: `hs_theme`
-- Existing 6 interactive snippets: rewrite CSS (DaisyUI → Tailwind), add Preline `data-hs-*` where applicable, preserve ALL JS functionality
-- New interactive snippets: Before/After image slider, Typing animation hero, Multi-step stepper/wizard, Count-up animation on scroll
-- External CDN libraries: allowed (Chart.js, GSAP, etc.)
-- `buildSystemPrompt()`: full rewrite — delete all DaisyUI references, zero-parameter invariant preserved
-- CDN setup: `<script src="https://cdn.tailwindcss.com"></script>` + `<script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>`
+- Dark text: `dark:text-white` / `dark:text-gray-300` / `dark:text-gray-400`
+- LocalStorage persistence for dark mode preference in generated sites
+- Default: light mode on first load
+- Existing 6 interactive snippets: rewrite CSS classes only, add Preline `data-hs-*` where applicable, preserve ALL JS functionality
+- New interactive snippets: Before/After image slider, Typing animation hero, Multi-step stepper/wizard, Count-up animation on scroll, plus other Preline interactive patterns
+- External CDN libraries allowed: Chart.js CDN, GSAP, etc.
+- Hero-dashboard chart: Claude decides (Chart.js CDN recommended)
+- Preline plugins to use: HSStaticMethods, HSAccordion, HSDropdown, HSOverlay/HSModal
+- `buildSystemPrompt()`: full rewrite, delete all DaisyUI references
+- CDN setup replacing DaisyUI:
+  ```html
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>
+  ```
 - System prompt language: English
 - Preline guidance depth: full — explain `data-hs-*` attributes, `hs-*` state classes, CDN setup, dark mode toggle pattern
-- Colors: snippets use placeholder Tailwind colors (blue-600/indigo-600 as primary); GPT-4o replaces with DesignResult palette
-- No semantic token colors (bg-primary, bg-layer, etc.) in snippets — not CDN-compatible
-- Typography: snippets use `font-sans`; font injected via `buildGoogleFontsImport()` from DesignResult
-- No HTML comments in snippets; all AI guidance in `buildSystemPrompt()` and `buildUserMessage()`
-- `component-library.test.ts` (57 tests): remove DaisyUI class name assertions; behavior-level tests unchanged
-- Dashboard app (Tailwind v4 custom) is NOT touched
+- Explicit instruction: "Use Tailwind utility classes for styling, Preline `data-hs-*` for interactive behaviors, `dark:` prefix for dark mode"
+- Add accessibility hints: aria-label, role attributes, semantic HTML5 tags
+- Colors: always follow DesignResult palette; FALLBACK_DESIGN handles missing DesignResult
+- Typography: follow DesignResult font via `buildGoogleFontsImport()` — no hardcoded font in snippets
+- Snippets use `font-sans` as default class
+- Snippets use placeholder Tailwind colors (blue-600/indigo-600 as primary, gray-900 for text, white for background)
+- No semantic token colors (bg-primary, bg-layer, etc.) — these require npm build step, not CDN-compatible
+- No HTML comments in snippets — all AI guidance lives in `buildSystemPrompt()` and `buildUserMessage()`
+- `component-library.test.ts`: remove DaisyUI class assertions, behavior-level tests unchanged, no new Preline class assertions
 - Build pass + typecheck must pass after migration
 
 ### Claude's Discretion
@@ -53,532 +62,407 @@
 
 ---
 
+<phase_requirements>
+## Phase Requirements
+
+| ID | Description | Research Support |
+|----|-------------|-----------------|
+| SNIP-01 | All current snippet HTML rewritten from DaisyUI to Tailwind utilities + Preline data-hs-* patterns | DaisyUI class audit documented; Preline CDN-compatible patterns catalogued below |
+| SNIP-02 | 11 existing categories expanded with 2-3 new snippets each | Preline component inventory maps directly to expansion opportunities per category |
+| SNIP-03 | 6 new categories (forms, ui-elements, cta, media, pricing, notifications) with 6-9 snippets each | Preline's full component library covers all 6 categories; patterns documented |
+| SNIP-04 | `buildSystemPrompt()` rewritten with Tailwind CDN + Preline JS CDN, zero DaisyUI references | Current prompt structure audited; new structure specified |
+| SNIP-05 | All snippets support dark mode via Tailwind `dark:` prefix | Dark mode strategy documented: plain Tailwind dark: with class="dark" toggle |
+| SNIP-06 | Zero DaisyUI class names remaining in snippet library | Full audit of DaisyUI class patterns to eliminate listed |
+| SNIP-07 | ALL_SNIPPETS contains 100+ snippets across 17 categories | Snippet math validated: 47 rewrites + 22-33 expansions + 36-54 new = 105-134 total |
+| SNIP-08 | Tests updated (threshold 100+, DaisyUI remnant detector) and pass clean | Existing test structure fully audited; required changes specified |
+</phase_requirements>
+
+---
+
 ## Summary
 
-Phase 12 rewrites the component snippet library from DaisyUI (41 current snippets, 11 files) to Preline UI + vanilla Tailwind utilities. The migration has three layers: (1) CSS class replacement — every DaisyUI utility class (`btn`, `card`, `badge`, `navbar`, `hero`, `stats`, `progress`, `modal`, `form-control`, `input-bordered`, etc.) must be replaced with Tailwind utility equivalents and optionally Preline `data-hs-*` wired behaviors; (2) library expansion — each of the 11 existing categories gains 2-3 new snippets, and 4+ new categories are added for a 100+ snippet target; (3) `html-prompts.ts` system prompt rewrite replacing all DaisyUI CDN/guidance with Preline CDN/guidance.
+Phase 12 is a bulk content migration phase — rewriting 47 existing HTML snippets from DaisyUI to pure Tailwind utilities + Preline `data-hs-*` patterns, then massively expanding the library from 47 to 100+ snippets across 17 categories. The technical challenge is not architectural: the `ComponentSnippet` type, `selectComponents()` logic, and test infrastructure all stay unchanged. The challenge is volume and correctness — every snippet must use CDN-compatible Tailwind (no semantic tokens from Preline's npm-only theming system), include dark mode via `dark:` prefix, and be syntactically clean HTML.
 
-The critical constraint is CDN compatibility: Preline's semantic token system (bg-primary, bg-layer, text-foreground, etc.) requires the npm build pipeline and is NOT available via CDN. Snippets must use raw Tailwind palette classes (blue-600, gray-900, white) with `dark:` prefixed counterparts. Preline's JavaScript behaviors (accordions, modals, dropdowns, tabs, carousels, stepper) ARE available via CDN and should be used freely.
+The critical constraint is CDN compatibility. Preline's `bg-primary`, `text-foreground`, `bg-card`, `border-layer-line`, etc. semantic tokens require `variants.css` from npm — they do NOT work with Tailwind CDN. Snippets must use raw Tailwind palette classes (`bg-white`, `bg-gray-900`, `text-gray-700`, etc.) for all color decisions, while Preline's `data-hs-*` attributes work fine via the CDN preline.js script. Similarly, `hs-*` state variant classes (`hs-accordion-active:`, `hs-collapse-open:`) require `variants.css` and must NOT be used in snippets.
 
-The `selectComponents()` function and test suite are not structurally changed. Snippets must continue conforming to the `ComponentSnippet` type (id, name, description, category, tags, priority, domain_hints, min_score, fallback, fallback_for, html). Tag vocabulary must stay within the existing `sections`/`features` vocabulary from `analyzer.ts` — no new tag words without updating the analyzer.
+The `buildSystemPrompt()` rewrite is substantial — the entire DaisyUI guidance section (component class list, Alpine.js rules, anti-patterns) must be replaced with Preline guidance, dark mode toggle pattern, and updated CDN setup.
 
-**Primary recommendation:** Rewrite snippets as pure Tailwind-utility HTML with Preline `data-hs-*` for interactive components. Do NOT use Preline semantic tokens in any snippet HTML. Use placeholder color pattern: blue-600 for primary, gray-900 for dark text, white for backgrounds.
-
----
-
-## Current Snippet Inventory (41 snippets to rewrite)
-
-| File | Count | Snippets |
-|------|-------|---------|
-| hero.ts | 4 | hero-centered, hero-split, hero-minimal, hero-dashboard |
-| navbar.ts | 3 | navbar-simple, navbar-dropdown, navbar-mobile |
-| features.ts | 4 | features-3col, features-icon-list, features-alternating, features-comparison |
-| cards.ts | 4 | card-basic, card-stat, card-profile, card-pricing |
-| footer.ts | 3 | footer-simple, footer-multicolumn, footer-minimal |
-| stats.ts | 3 | stats-bar, stats-counter, stats-progress |
-| testimonials.ts | 3 | testimonial-quotes, testimonial-avatar-grid, testimonial-featured |
-| interactive.ts | 5 | quiz-multiple-choice, flashcard-flip, step-timer, calculator-basic, progress-tracker |
-| blog.ts | 4 | article-grid, timeline, table-of-contents, reading-progress |
-| portfolio.ts | 4 | skills-grid, projects-showcase, career-timeline, contact-form |
-| ecommerce.ts | 4 | pricing-table, feature-comparison, product-showcase, cta-banner |
-| **Total** | **41** | |
-
-Note: CONTEXT.md says 47 but actual count is 41. The 47 target in the decision text appears to be an estimate. Planner should plan for 41 rewrites.
+**Primary recommendation:** Author snippets in two passes: (1) rewrite 11 existing categories using CDN-safe Tailwind + Preline data-hs-* patterns, (2) write 6 new categories from scratch. Keep all snippets free of semantic Preline tokens and `hs-*` variant classes. Dark mode via `dark:` prefix only. Interactive snippets preserve vanilla JS, replacing only class names.
 
 ---
 
-## DaisyUI → Tailwind/Preline Class Mapping
+## Standard Stack
 
-This is the core lookup table for the rewrite. Every DaisyUI class that appears in snippets maps to a Tailwind equivalent.
+### Core (for generated website output — CDN delivery)
 
-### Layout / Container
+| Library | Version | Purpose | CDN URL |
+|---------|---------|---------|---------|
+| Tailwind CSS | Latest CDN | Utility-first CSS for all layout and style | `https://cdn.tailwindcss.com` |
+| Preline JS | Latest via jsdelivr | `data-hs-*` interactive behaviors (accordion, modal, dropdown, tabs, stepper, collapse) | `https://cdn.jsdelivr.net/npm/preline/dist/preline.js` |
 
-| DaisyUI | Preline/Tailwind Equivalent |
-|---------|----------------------------|
-| `hero`, `hero-content` | `min-h-screen flex items-center justify-center` |
-| `navbar bg-base-100` | `flex items-center justify-between py-3 px-6 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700` |
-| `navbar-start`, `navbar-center`, `navbar-end` | `flex items-center` / `flex items-center justify-center` / `flex items-center justify-end` |
-| `footer footer-center` | `py-10 px-6 bg-gray-900 text-white text-center` |
-| `footer` | `py-10 px-6 bg-gray-900 text-white` |
-| `footer-title` | `text-sm font-semibold text-gray-400 uppercase tracking-widest mb-3` |
-| `card bg-base-100` | `bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700` |
-| `card bg-base-200` | `bg-gray-50 border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700` |
-| `card-body` | `p-4 md:p-5` |
-| `card-title` | `text-lg font-semibold text-gray-900 dark:text-white` |
-| `card-actions` | `flex items-center gap-x-2 mt-4` |
-| `card-side` (lg) | `sm:flex` |
+### Optional (for specific interactive snippets)
 
-### Colors / Background
+| Library | Version | Purpose | CDN URL |
+|---------|---------|---------|---------|
+| Chart.js | 4.x | Charts in hero-dashboard snippet | `https://cdn.jsdelivr.net/npm/chart.js` |
+| GSAP | 3.x | Count-up animation on scroll | `https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js` |
+| GSAP ScrollTrigger | 3.x | Scroll-triggered count-up | `https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js` |
 
-| DaisyUI | Tailwind CDN equivalent |
-|---------|------------------------|
-| `bg-base-100` | `bg-white dark:bg-gray-900` |
-| `bg-base-200` | `bg-gray-50 dark:bg-gray-800` |
-| `bg-base-300` | `bg-gray-100 dark:bg-gray-700` |
-| `bg-neutral` | `bg-gray-900` |
-| `bg-primary` | `bg-blue-600` |
-| `bg-secondary` | `bg-indigo-500` |
-| `bg-accent` | `bg-teal-500` |
-| `text-base-content` | `text-gray-900 dark:text-white` |
-| `text-base-content/60` | `text-gray-500 dark:text-gray-400` |
-| `text-base-content/70` | `text-gray-600 dark:text-gray-300` |
-| `text-neutral-content` | `text-gray-100` |
-| `text-primary` | `text-blue-600 dark:text-blue-400` |
-| `text-secondary` | `text-indigo-500 dark:text-indigo-400` |
-| `text-accent` | `text-teal-500 dark:text-teal-400` |
-| `text-success` | `text-teal-600 dark:text-teal-400` |
-| `text-error` | `text-red-600 dark:text-red-400` |
-| `text-warning` | `text-yellow-500 dark:text-yellow-400` |
-| `text-primary-content` | `text-white` |
-| `border-base-200` | `border-gray-200 dark:border-gray-700` |
+### NOT available via CDN (do not use in snippets)
 
-### Buttons
+| Token Group | Examples | Reason |
+|-------------|----------|--------|
+| Preline semantic tokens | `bg-primary`, `text-foreground`, `bg-card`, `border-layer-line`, `bg-layer`, `text-muted-foreground-1` | Require `variants.css` + npm build step |
+| Preline `hs-*` state variant classes | `hs-accordion-active:text-blue-600`, `hs-collapse-open:rotate-180` | Require `variants.css` from npm |
 
-| DaisyUI | Tailwind CDN equivalent |
-|---------|------------------------|
-| `btn btn-primary` | `py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50` |
-| `btn btn-secondary` | `py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-indigo-500 text-white hover:bg-indigo-600` |
-| `btn btn-outline` | `py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600 dark:border-gray-600 dark:text-gray-300` |
-| `btn btn-ghost` | `py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/20` |
-| `btn btn-sm` | add `text-xs py-1.5 px-3` |
-| `btn btn-lg` | add `text-base py-3 px-6` |
-| `btn btn-xs` | add `text-xs py-1 px-2` |
-| `btn btn-block` | add `w-full justify-center` |
-| `btn btn-circle` | add `size-9 rounded-full p-0 justify-center` |
-
-### Badges
-
-| DaisyUI | Tailwind CDN equivalent |
-|---------|------------------------|
-| `badge badge-primary` | `inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400` |
-| `badge badge-secondary` | `inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400` |
-| `badge badge-outline` | `inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium border border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400` |
-| `badge badge-success` | `inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-500/20 dark:text-teal-400` |
-| `badge badge-ghost` | `inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300` |
-| `badge badge-sm` | keep `text-xs` size |
-| `badge badge-lg` | use `text-sm py-1.5 px-3` |
-
-### Form Elements
-
-| DaisyUI | Tailwind CDN equivalent |
-|---------|------------------------|
-| `input input-bordered` | `py-2.5 px-4 rounded-lg block w-full border border-gray-300 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 dark:bg-gray-800 dark:border-gray-600 dark:text-white` |
-| `textarea textarea-bordered` | same pattern as input, `rows="3"` |
-| `form-control` | `space-y-1.5` |
-| `label` | `block` |
-| `label-text` | `text-sm font-medium text-gray-700 dark:text-gray-300` |
-| `checkbox checkbox-primary` | `shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600` |
-| `progress progress-primary` | replace with div-based: `<div class="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700"><div class="h-2 bg-blue-600 rounded-full" style="width: X%"></div></div>` |
-| `toggle toggle-primary` | replace with Preline Switch pattern |
-| `select` (DaisyUI) | `py-2.5 px-4 pe-9 block w-full border border-gray-300 rounded-lg text-sm text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:bg-gray-800 dark:border-gray-600 dark:text-white` |
-
-### Stats / Specific Patterns
-
-| DaisyUI | Tailwind CDN equivalent |
-|---------|------------------------|
-| `stats shadow` | `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:divide-gray-700 dark:border-gray-700` |
-| `stat` | `p-5` |
-| `stat-title` | `text-sm text-gray-500 dark:text-gray-400` |
-| `stat-value` | `text-3xl font-bold text-gray-900 dark:text-white mt-1` |
-| `stat-desc` | `text-xs text-gray-500 dark:text-gray-400 mt-1` |
-| `stat-figure` | `text-2xl` (keep emoji/icon) |
-| `avatar placeholder` | `inline-flex items-center justify-center size-10 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 text-sm font-semibold` |
-| `timeline timeline-vertical` | replace with vertical flex/line pattern (DaisyUI timeline not available in CDN Tailwind) |
-| `mockup-code` | `bg-gray-900 text-gray-100 rounded-lg p-4 font-mono text-sm` |
-
-### Colors Used in Snippet HTML at Semantic Level
-DaisyUI uses CSS variables (`hsl(var(--p))`, `hsl(var(--b1))`) in inline styles in some interactive snippets. These must be changed to hard Tailwind utility classes. For example the flashcard snippet uses `.fc-front { background-color: hsl(var(--b1)) }` — this must become `bg-white dark:bg-gray-800` applied as a class.
-
----
-
-## Preline Interactive Components Available via CDN
-
-These Preline behaviors work with the CDN script and should be used in snippets:
-
-| Component | `data-hs-*` Pattern | Use In |
-|-----------|-------------------|--------|
-| Accordion | `data-hs-accordion-group`, `.hs-accordion`, `.hs-accordion-toggle`, `.hs-accordion-content` | features (FAQ), blog (TOC), ui-elements |
-| Collapse | `data-hs-collapse="#id"` on trigger, `.hs-collapse` on target | navbar mobile menu (replaces vanilla JS), ui-elements |
-| Dropdown | `.hs-dropdown`, `.hs-dropdown-toggle`, `.hs-dropdown-menu` | navbar dropdown, ui-elements |
-| Modal | `data-hs-overlay="#id"`, `.hs-overlay` | contact form confirmation, ui-elements |
-| Tabs | `data-hs-tab="#panel-id"`, `.hs-tab-active:*` state classes | features, portfolio, ui-elements |
-| Carousel | `data-hs-carousel`, `.hs-carousel-body`, `.hs-carousel-slide` | media, testimonials |
-| Stepper | `data-hs-stepper`, `data-hs-stepper-nav-item`, `data-hs-stepper-next-btn` | interactive (multi-step wizard) |
-| Tooltip | `.hs-tooltip`, `.hs-tooltip-toggle`, `.hs-tooltip-content` | ui-elements, features |
-| Remove Element | `data-hs-remove-element="#id"` | alerts (ui-elements), dismissible badges |
-| Theme Switch | `data-hs-theme-click-value="dark"` / `"light"` | navbar dark mode toggle |
-
-**NOT available via CDN (require npm build with variants.css):**
-- All Preline semantic tokens: `bg-primary`, `bg-layer`, `text-foreground`, `border-layer-line`, etc.
-- These appear extensively in PRELINE-UI.md code examples but CANNOT be used in snippets
+**Installation note:** No npm install required for generated websites — snippets are pure HTML delivered via CDN links injected by `buildSystemPrompt()`.
 
 ---
 
 ## Architecture Patterns
 
-### Recommended Snippet File Structure
+### Existing File Structure (unchanged except snippets/ additions)
 
 ```
-src/lib/component-library/snippets/
-├── hero.ts          # existing — rewrite + expand
-├── navbar.ts        # existing — rewrite + expand (add dark mode toggle)
-├── features.ts      # existing — rewrite + expand (add accordion, tabs)
-├── cards.ts         # existing — rewrite + expand (add Preline card patterns)
-├── footer.ts        # existing — rewrite + expand
-├── stats.ts         # existing — rewrite + expand
-├── testimonials.ts  # existing — rewrite + expand (add carousel)
-├── interactive.ts   # existing — rewrite + expand (add stepper, before/after)
-├── blog.ts          # existing — rewrite + expand (remove DaisyUI timeline/mockup-code)
-├── portfolio.ts     # existing — rewrite + expand
-├── ecommerce.ts     # existing — rewrite + expand
-├── forms.ts         # NEW — 8-10 snippets
-├── ui-elements.ts   # NEW — 8-10 snippets
-├── cta.ts           # NEW — 8-10 snippets
-├── media.ts         # NEW — 8-10 snippets
-├── pricing.ts       # NEW (recommended additional) — 6-8 snippets
-├── notifications.ts # NEW (recommended additional) — 6-8 snippets
-└── index.ts         # ADD new file imports to ALL_SNIPPETS
+src/lib/component-library/
+├── types.ts                    # ComponentSnippet interface — NO CHANGES
+├── index.ts                    # selectComponents() — NO CHANGES
+├── component-library.test.ts   # 57 tests — MINIMAL CHANGES (threshold + new DaisyUI detector)
+└── snippets/
+    ├── index.ts                # ALL_SNIPPETS array — add 6 new imports
+    ├── hero.ts                 # 4 snippets → rewrite + expand to 6-7
+    ├── navbar.ts               # 3 snippets → rewrite + expand to 5-6
+    ├── features.ts             # 4 snippets → rewrite + expand to 6-7
+    ├── cards.ts                # 4 snippets → rewrite + expand to 6-7
+    ├── footer.ts               # 3 snippets → rewrite + expand to 5-6
+    ├── stats.ts                # 3 snippets → rewrite + expand to 5-6
+    ├── testimonials.ts         # 3 snippets → rewrite + expand to 5-6
+    ├── interactive.ts          # 5 snippets → rewrite + expand to 8-9
+    ├── blog.ts                 # 4 snippets → rewrite + expand to 6-7
+    ├── portfolio.ts            # 4 snippets → rewrite + expand to 6-7
+    ├── ecommerce.ts            # 4 snippets → rewrite + expand to 6-7
+    ├── forms.ts                # NEW — 8-10 snippets
+    ├── ui-elements.ts          # NEW — 8-10 snippets
+    ├── cta.ts                  # NEW — 8-10 snippets
+    ├── media.ts                # NEW — 8-10 snippets
+    ├── pricing.ts              # NEW — 6-9 snippets
+    └── notifications.ts        # NEW — 6-9 snippets
 ```
 
-### Pattern 1: Standard Section Snippet (No Preline JS)
+### Snippet Count Math
+
+| Group | Current | After Rewrite + Expand |
+|-------|---------|------------------------|
+| 11 existing categories (2-3 new each) | 47 | ~69-80 |
+| forms (new) | 0 | 8-10 |
+| ui-elements (new) | 0 | 8-10 |
+| cta (new) | 0 | 8-10 |
+| media (new) | 0 | 8-10 |
+| pricing (new) | 0 | 6-9 |
+| notifications (new) | 0 | 6-9 |
+| **Total** | **47** | **~113-138** |
+
+Target of 100+ is achieved with minimal per-category expansion (2 new per existing, 7 per new category).
+
+### Pattern 1: CDN-Compatible Tailwind Snippet (base pattern for all snippets)
+
+**What:** Pure Tailwind utility classes for all styling — raw palette colors, layout, typography. No DaisyUI, no Preline semantic tokens.
+**When to use:** Universal — every snippet follows this base pattern.
+
 ```html
-<!-- Pure Tailwind — no data-hs-* needed -->
 <section class="py-20 px-6 bg-white dark:bg-gray-900">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl font-bold text-gray-900 dark:text-white">Title</h2>
-    <p class="mt-4 text-gray-500 dark:text-gray-400">Description</p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-      <!-- cards here -->
+  <div class="max-w-6xl mx-auto text-center">
+    <span class="inline-flex items-center py-1 px-3 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 mb-4">
+      New Feature
+    </span>
+    <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+      Welcome to Your Site
+    </h1>
+    <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+      Build something amazing.
+    </p>
+    <div class="flex gap-4 justify-center flex-wrap">
+      <a href="#" class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition-colors">
+        Get Started
+      </a>
+      <a href="#" class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+        Learn More
+      </a>
     </div>
   </div>
 </section>
 ```
 
-### Pattern 2: Preline Navbar with Collapse + Dark Mode Toggle
+### Pattern 2: Preline data-hs-* Interactive Behaviors (CDN-safe)
+
+**What:** Preline JS behaviors via `data-hs-*` attributes. The CDN preline.js handles all state — adds/removes `hidden` class, manages `transition-[height]` for accordions. CSS states use JavaScript-driven class changes; `hs-*` variant classes are NOT used.
+**When to use:** Accordion, dropdown, modal, tabs, stepper, collapse, dismiss.
+
+**Collapse (mobile nav, FAQ):**
 ```html
-<header class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full py-3 px-6
-               bg-white border-b border-gray-200
-               dark:bg-gray-900 dark:border-gray-700">
-  <nav class="max-w-7xl w-full mx-auto flex items-center justify-between">
-    <a class="flex-none text-xl font-bold text-blue-600" href="#">Brand</a>
-    <!-- Desktop links -->
-    <div class="hidden sm:flex items-center gap-6">
-      <a class="text-sm text-gray-600 hover:text-blue-600 dark:text-gray-300" href="#">Home</a>
-    </div>
-    <!-- Dark mode toggle -->
-    <button data-hs-theme-click-value="dark" class="...">Toggle Dark</button>
-    <!-- Mobile hamburger -->
-    <button class="hs-collapse-toggle sm:hidden ..."
-      aria-expanded="false" aria-controls="hs-navbar-collapse"
-      data-hs-collapse="#hs-navbar-collapse">
-      <svg class="hs-collapse-open:hidden size-4"><!-- hamburger --></svg>
-      <svg class="hs-collapse-open:block hidden size-4"><!-- X --></svg>
-    </button>
-  </nav>
-  <!-- Mobile menu -->
-  <div id="hs-navbar-collapse"
-       class="hs-collapse hidden overflow-hidden transition-all duration-300 w-full">
-    <!-- mobile links -->
+<button type="button"
+  class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+  aria-expanded="false" aria-controls="hs-collapse-content"
+  data-hs-collapse="#hs-collapse-content">
+  Toggle
+</button>
+<div id="hs-collapse-content" class="hs-collapse hidden w-full overflow-hidden transition-[height] duration-300">
+  <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+    <p class="text-gray-700 dark:text-gray-300">Expandable content.</p>
   </div>
-</header>
+</div>
 ```
 
-### Pattern 3: Preline Accordion (FAQ / Features)
+**Dropdown:**
 ```html
-<div class="hs-accordion-group space-y-2">
-  <div class="hs-accordion bg-white border border-gray-200 rounded-xl
-              dark:bg-gray-800 dark:border-gray-700" id="faq-1">
-    <button class="hs-accordion-toggle hs-accordion-active:text-blue-600
-                   flex items-center justify-between w-full py-4 px-5
-                   text-sm font-semibold text-gray-900 dark:text-white"
-      aria-expanded="false" aria-controls="faq-1-body">
-      Question text
-      <svg class="hs-accordion-active:rotate-180 size-4 flex-shrink-0 transition-transform">
-        <!-- chevron down -->
-      </svg>
-    </button>
-    <div id="faq-1-body" class="hs-accordion-content hidden w-full overflow-hidden
-                                transition-[height] duration-300">
-      <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Answer text</p>
+<div class="hs-dropdown relative inline-flex">
+  <button type="button"
+    class="hs-dropdown-toggle py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white border border-gray-200 text-gray-700 shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+    aria-haspopup="menu" aria-expanded="false">
+    Actions
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <div class="hs-dropdown-menu transition-[opacity,margin] duration-200 opacity-0 hidden min-w-48 bg-white border border-gray-200 shadow-lg rounded-lg mt-2 p-1 dark:bg-gray-800 dark:border-gray-700"
+    role="menu" aria-orientation="vertical">
+    <a class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="#">Item 1</a>
+    <a class="flex items-center gap-x-3 py-2 px-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="#">Item 2</a>
+  </div>
+</div>
+```
+
+**Modal:**
+```html
+<button type="button" data-hs-overlay="#hs-modal"
+  class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+  Open Modal
+</button>
+<div id="hs-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-x-hidden overflow-y-auto pointer-events-none"
+  role="dialog" tabindex="-1">
+  <div class="hs-overlay-animation-target scale-95 opacity-0 ease-in-out transition-all duration-200 sm:max-w-lg sm:w-full m-3 sm:mx-auto pointer-events-auto">
+    <div class="flex flex-col bg-white border border-gray-200 shadow-xl rounded-xl dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex justify-between items-center py-3 px-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="font-bold text-gray-900 dark:text-white">Modal title</h3>
+        <button type="button" class="size-8 inline-flex justify-center items-center rounded-full text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-hs-overlay="#hs-modal" aria-label="Close">
+          <svg class="shrink-0 size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-4"><p class="text-gray-600 dark:text-gray-400">Modal body content.</p></div>
+      <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button" class="py-2 px-3 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300" data-hs-overlay="#hs-modal">Close</button>
+        <button type="button" class="py-2 px-3 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700">Save</button>
+      </div>
     </div>
   </div>
 </div>
 ```
 
-### Pattern 4: Preline Tabs
+**Accordion:**
+```html
+<div class="hs-accordion-group space-y-2">
+  <div class="hs-accordion active bg-white border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700" id="hs-acc-1">
+    <button class="hs-accordion-toggle py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-900 hover:text-gray-600 dark:text-white dark:hover:text-gray-300 focus:outline-none"
+      aria-expanded="true" aria-controls="hs-acc-collapse-1">
+      Accordion Item 1
+      <svg class="shrink-0 size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div id="hs-acc-collapse-1" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300" role="region">
+      <div class="pb-4 px-5"><p class="text-gray-600 dark:text-gray-400">Content for item 1.</p></div>
+    </div>
+  </div>
+</div>
+```
+
+**Tabs:**
 ```html
 <div class="border-b border-gray-200 dark:border-gray-700">
-  <nav class="-mb-px flex gap-x-1" role="tablist">
-    <button class="hs-tab-active:border-blue-600 hs-tab-active:text-blue-600
-                   py-3 px-4 text-sm font-medium border-b-2 border-transparent
-                   text-gray-500 hover:text-blue-600 dark:text-gray-400"
-      id="tab-1" data-hs-tab="#panel-1" role="tab" aria-selected="true">Tab 1</button>
-    <button class="hs-tab-active:border-blue-600 hs-tab-active:text-blue-600
-                   py-3 px-4 text-sm font-medium border-b-2 border-transparent
-                   text-gray-500 hover:text-blue-600 dark:text-gray-400"
-      id="tab-2" data-hs-tab="#panel-2" role="tab" aria-selected="false">Tab 2</button>
+  <nav class="-mb-px flex gap-x-6" role="tablist">
+    <button type="button"
+      class="py-4 px-1 inline-flex items-center gap-x-2 border-b-2 border-blue-600 text-sm font-medium text-blue-600 dark:border-blue-500 dark:text-blue-400"
+      id="tab-item-1" aria-selected="true" data-hs-tab="#tab-panel-1" role="tab">Tab 1</button>
+    <button type="button"
+      class="py-4 px-1 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+      id="tab-item-2" aria-selected="false" data-hs-tab="#tab-panel-2" role="tab">Tab 2</button>
   </nav>
 </div>
 <div class="mt-4">
-  <div id="panel-1" role="tabpanel">Panel 1 content</div>
-  <div id="panel-2" class="hidden" role="tabpanel">Panel 2 content</div>
+  <div id="tab-panel-1" role="tabpanel"><p class="text-gray-600 dark:text-gray-400">Content 1.</p></div>
+  <div id="tab-panel-2" class="hidden" role="tabpanel"><p class="text-gray-600 dark:text-gray-400">Content 2.</p></div>
 </div>
 ```
 
-### Pattern 5: Interactive Snippet with Preserved Vanilla JS
-```html
-<section class="py-10 px-6 bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-xl mx-auto">
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm
-                dark:bg-gray-800 dark:border-gray-700 p-6" id="quiz-app">
-      <!-- structure using pure Tailwind -->
-      <!-- progress bar: div-based, not DaisyUI <progress> -->
-      <div class="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-4">
-        <div id="quiz-progress-fill" class="h-2 bg-blue-600 rounded-full transition-all duration-300" style="width: 0%"></div>
-      </div>
-      <div id="quiz-container"></div>
-    </div>
-  </div>
-  <script>
-    (function() {
-      /* ALL EXISTING JS LOGIC PRESERVED UNCHANGED */
-      /* Only class name strings in DOM manipulation updated */
-      /* e.g., btn btn-outline → border border-gray-300 rounded-lg px-4 py-2 */
-    })();
-  </script>
-</section>
-```
+### Pattern 3: Dark Mode Toggle with localStorage
 
-### Pattern 6: Dark Mode Anti-Flash Script (for navbar snippets)
+**What:** Anti-flash script in `<head>` + toggle button in navbar. Uses `hs_theme` localStorage key (Preline standard, avoids conflict with app `appgen-` prefix).
+**When to use:** All navbar snippets that include a dark mode toggle.
+
 ```html
-<!-- In navbar snippet, add this as the first element of the HTML output -->
+<!-- Anti-flash script — goes in <head>, included in buildSystemPrompt() instructions -->
 <script>
-  if (localStorage.getItem('hs_theme') === 'dark' ||
-      (localStorage.getItem('hs_theme') === 'auto' &&
-       window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-  }
+  (function() {
+    var t = localStorage.getItem('hs_theme');
+    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
+
+<!-- Toggle button in navbar -->
+<button id="theme-toggle" type="button"
+  class="size-9 flex justify-center items-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
+  aria-label="Toggle dark mode">
+  <svg class="hidden dark:block shrink-0 size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+  </svg>
+  <svg class="block dark:hidden shrink-0 size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+</button>
+<script>
+  (function() {
+    var btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        var isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('hs_theme', isDark ? 'dark' : 'light');
+      });
+    }
+  })();
 </script>
 ```
 
-Note: This belongs in the system prompt instruction to GPT-4o, not in snippet HTML itself. Snippets are partial sections, not full HTML documents.
+### Pattern 4: DaisyUI Class Replacement Table
 
----
+For the rewrite of existing snippets, replace DaisyUI classes with these Tailwind equivalents:
 
-## New Category Design (4 mandatory + 2 recommended)
+| DaisyUI | Tailwind CDN equivalent |
+|---------|------------------------|
+| `card bg-base-100 shadow-lg` | `bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700` |
+| `card-body` | `p-6` |
+| `card-title` | `text-xl font-bold text-gray-900 dark:text-white` |
+| `card-actions justify-end` | `flex justify-end mt-4` |
+| `btn btn-primary` | `py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors` |
+| `btn btn-secondary` | `py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors` |
+| `btn btn-outline` | `py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700` |
+| `btn btn-ghost` | `py-2.5 px-5 inline-flex items-center text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700` |
+| `btn btn-ghost btn-sm` | `py-1.5 px-3 inline-flex items-center text-xs font-medium rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700` |
+| `btn btn-primary btn-sm` | `py-1.5 px-3 inline-flex items-center text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700` |
+| `btn btn-circle btn-outline btn-sm` | `size-8 inline-flex justify-center items-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700` |
+| `badge badge-primary` | `inline-flex items-center py-1 px-2.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400` |
+| `badge badge-outline` | `inline-flex items-center py-1 px-2.5 rounded-full text-xs font-medium border border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400` |
+| `badge badge-secondary` | `inline-flex items-center py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400` |
+| `badge badge-accent` | `inline-flex items-center py-1 px-2.5 rounded-full text-xs font-medium bg-violet-100 text-violet-800 dark:bg-violet-500/20 dark:text-violet-400` |
+| `bg-base-100` | `bg-white dark:bg-gray-800` |
+| `bg-base-200` | `bg-gray-100 dark:bg-gray-900` |
+| `bg-base-300` | `bg-gray-200 dark:bg-gray-700` |
+| `text-base-content` | `text-gray-900 dark:text-white` |
+| `text-base-content/60` | `text-gray-500 dark:text-gray-400` |
+| `text-base-content/40` | `text-gray-400 dark:text-gray-500` |
+| `text-primary` | `text-blue-600 dark:text-blue-400` |
+| `text-secondary` | `text-indigo-600 dark:text-indigo-400` |
+| `text-accent` | `text-violet-600 dark:text-violet-400` |
+| `text-success` | `text-teal-600 dark:text-teal-400` |
+| `text-error` | `text-red-600 dark:text-red-400` |
+| `progress progress-primary w-full` | `<div class="flex w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700"><div class="h-full bg-blue-600 rounded-full transition-all duration-300"></div></div>` |
+| `checkbox checkbox-primary` | `size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700` |
+| `stat bg-base-100 rounded-box p-4` | `bg-white border border-gray-200 rounded-xl p-4 dark:bg-gray-800 dark:border-gray-700` |
+| `stat-title` | `text-sm text-gray-500 dark:text-gray-400` |
+| `stat-value` | `text-2xl font-bold text-gray-900 dark:text-white mt-1` |
+| `stat-desc` | `text-xs text-gray-400 dark:text-gray-500 mt-1` |
+| `footer footer-center p-10 bg-base-200` | `bg-gray-100 dark:bg-gray-900 py-10 px-6` |
+| `link link-hover` | `text-gray-600 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-gray-200` |
 
-### `forms` — 8-10 snippets
-Forms with Preline styling. No `@tailwindcss/forms` plugin available via CDN, so use Tailwind utility classes directly.
+**JS class names inside `<script>` tags** (quiz feedback, timer states):
 
-| Snippet ID | Description | Preline Pattern |
-|-----------|-------------|----------------|
-| form-contact | Contact form with name/email/message | Tailwind inputs, button |
-| form-newsletter | Email subscription with inline CTA | Tailwind input + button |
-| form-login | Login form with email/password | Tailwind inputs, floating labels style |
-| form-register | Registration with confirm password | Tailwind inputs, validation states |
-| form-search | Search bar with icon + suggestions | Tailwind input + icon |
-| form-filter | Filter/search with checkboxes and dropdowns | Preline HSDropdown for filter panel |
-| form-feedback | Star rating + textarea | Vanilla JS star rating |
-| form-subscribe | Newsletter with social proof | Tailwind + badge |
-| form-wizard | Multi-step form with Preline Stepper | `data-hs-stepper` |
+| DaisyUI JS class | Tailwind JS class replacement |
+|-----------------|-------------------------------|
+| `btn-success` | `bg-teal-100 border-teal-300 text-teal-800 dark:bg-teal-500/20 dark:border-teal-900 dark:text-teal-300` |
+| `btn-error` | `bg-red-100 border-red-300 text-red-800 dark:bg-red-500/20 dark:border-red-900 dark:text-red-300` |
 
-### `ui-elements` — 8-10 snippets
-Reusable UI building blocks using Preline components.
+### Pattern 5: Chart.js in hero-dashboard
 
-| Snippet ID | Description | Preline Pattern |
-|-----------|-------------|----------------|
-| ui-accordion-faq | FAQ accordion | `data-hs-accordion-group` |
-| ui-tabs | Content tabs with panels | `data-hs-tab` |
-| ui-modal-confirm | Confirmation modal | `data-hs-overlay` |
-| ui-dropdown-menu | Action dropdown menu | `hs-dropdown` |
-| ui-alerts | Alert variants (success/error/warning/info) | `data-hs-remove-element` |
-| ui-badge-collection | Badge showcase with all variants | Tailwind utility badges |
-| ui-tooltip-demo | Tooltip usage examples | `hs-tooltip` |
-| ui-skeleton-loader | Loading skeleton placeholders | Tailwind `animate-pulse` |
-| ui-pagination | Page navigation | Tailwind utility pagination |
-
-### `cta` — 8-10 snippets
-Call-to-action sections in various layouts.
-
-| Snippet ID | Description | Preline Pattern |
-|-----------|-------------|----------------|
-| cta-banner-gradient | Full-width gradient CTA | Pure Tailwind |
-| cta-split | Two-column text + form CTA | Tailwind + Preline input |
-| cta-minimal | Centered minimal text + buttons | Pure Tailwind |
-| cta-dark | Dark background CTA section | `dark:` prefix pattern |
-| cta-social-proof | CTA with avatars + count | Avatar group pattern |
-| cta-app-download | App store download buttons | Pure Tailwind |
-| cta-newsletter | Inline newsletter CTA | Preline input pattern |
-| cta-countdown | CTA with countdown timer | Vanilla JS countdown |
-
-### `media` — 8-10 snippets
-Image, video, and media display patterns.
-
-| Snippet ID | Description | Preline Pattern |
-|-----------|-------------|----------------|
-| media-gallery-grid | Masonry-style image grid | CSS grid + hover overlay |
-| media-carousel | Image carousel | `data-hs-carousel` |
-| media-video-embed | Responsive video embed | aspect-ratio pure CSS |
-| media-lightbox | Click to enlarge image | Modal + `data-hs-overlay` |
-| media-before-after | Before/After image slider | Vanilla JS slider |
-| media-feature-image | Large feature image with caption | Pure Tailwind |
-| media-logo-cloud | Partner/client logo grid | Flex wrap grid |
-| media-image-text | Image + text side-by-side block | Responsive flex |
-
-### `pricing` (additional — recommended) — 6-8 snippets
-
-| Snippet ID | Description |
-|-----------|-------------|
-| pricing-simple | 3-tier cards monthly/annual toggle |
-| pricing-comparison | Feature comparison table |
-| pricing-saas | SaaS pricing with highlighted tier |
-| pricing-usage | Usage-based pricing display |
-| pricing-enterprise | Enterprise contact us pattern |
-| pricing-one-time | One-time purchase pricing |
-
-### `notifications` (additional — recommended) — 6-8 snippets
-
-| Snippet ID | Description | Preline Pattern |
-|-----------|-------------|----------------|
-| notification-toast-stack | Stack of dismissible toasts | `data-hs-remove-element` |
-| notification-banner | Top-of-page announcement banner | `data-hs-remove-element` |
-| notification-alert-variants | Alert component variants | Tailwind utilities |
-| notification-badge-counter | Icon with notification count badge | Animated ping badge |
-| notification-inline | Inline success/error messages | Tailwind |
-| notification-cookie | GDPR cookie consent bar | Vanilla JS + localStorage |
-
----
-
-## Expansion Plan for Existing Categories
-
-### hero (4 → 6-7 snippets, +2-3)
-- **hero-video-bg**: Dark overlay hero with video background placeholder, headline + CTA
-- **hero-gradient**: Animated gradient background, large headline, typing animation (uses GSAP or vanilla JS)
-- **hero-saas**: Typical SaaS hero with product screenshot mockup and social proof row
-
-### navbar (3 → 5-6 snippets, +2-3)
-- **navbar-mega-menu**: Desktop navbar with Preline Dropdown containing mega menu grid
-- **navbar-with-search**: Navbar + search input (Preline input pattern)
-- **navbar-sticky-dark**: Fixed sticky navbar with dark mode toggle using `data-hs-theme-click-value`
-
-### features (4 → 6-7 snippets, +2-3)
-- **features-tabs**: Features section with Preline Tabs switching between feature details
-- **features-accordion**: Collapsible features using `data-hs-accordion-group`
-- **features-numbered**: Numbered feature steps in a grid
-
-### cards (4 → 6-7 snippets, +2-3)
-- **card-horizontal**: Horizontal image + text card (Preline horizontal card pattern)
-- **card-hover-lift**: Cards with hover scale and shadow transition
-- **card-top-accent**: Cards with colored top border (Preline top-accent pattern)
-
-### footer (3 → 5-6 snippets, +2-3)
-- **footer-newsletter**: Footer with newsletter subscription form
-- **footer-dark-expanded**: Dark footer with logo, tagline, social links, legal
-
-### stats (3 → 5-6 snippets, +2-3)
-- **stats-icon-cards**: Stats with icon badges and trend indicators
-- **stats-horizontal-progress**: Stat metric rows with inline progress bars
-
-### testimonials (3 → 5-6 snippets, +2-3)
-- **testimonial-carousel**: Testimonials in Preline Carousel
-- **testimonial-single-large**: Single large quote with company logo
-
-### interactive (5 → 8-9 snippets, +3-4)
-- **before-after-slider**: Before/After image comparison slider (vanilla JS)
-- **multi-step-wizard**: Multi-step form/wizard using Preline Stepper (`data-hs-stepper`)
-- **count-up-scroll**: Count-up animation on scroll (IntersectionObserver — similar to existing stats-counter but as interactive category)
-
-### blog (4 → 6-7 snippets, +2-3)
-- **blog-featured**: Featured article hero with large image
-- **blog-sidebar**: Article layout with sidebar TOC (refinement of table-of-contents)
-
-Note: The existing `timeline` snippet uses `timeline timeline-vertical` DaisyUI classes — must be rewritten as a vertical flex/line pattern since DaisyUI timeline is not in CDN Tailwind. The `mockup-code` class in `table-of-contents` must be replaced with `bg-gray-900 text-gray-100 rounded-lg p-4 font-mono text-sm`.
-
-### portfolio (4 → 6-7 snippets, +2-3)
-- **portfolio-filter**: Portfolio with filter tabs by category (Preline Tabs)
-- **portfolio-masonry**: Masonry CSS grid for project images
-
-### ecommerce (4 → 6-7 snippets, +2-3)
-- **product-card-grid**: Product cards with image, price, add-to-cart
-- **cart-summary**: Order summary sidebar card
-- **checkout-steps**: Checkout progress using Preline Stepper
-
----
-
-## html-prompts.ts Rewrite Plan
-
-The `buildSystemPrompt()` function needs complete replacement. Key structural changes:
-
-### CDN Block (replaces DaisyUI CDNs)
 ```html
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>
+<!-- Chart.js CDN — only included in the hero-dashboard snippet -->
+<!-- Note: CDN link goes in the snippet HTML since it's a specific component need -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 ```
 
-### Dark Mode Section (new — DaisyUI had no equivalent)
+The test `"no snippet html contains CDN links"` checks for `cdn.jsdelivr.net` and `cdn.tailwindcss.com`. The Tailwind and Preline CDN links must NOT appear in snippet HTML. However, Chart.js CDN is a specific dependency for the chart snippet — the test currently only blocks `cdn.jsdelivr.net`. This means Chart.js CDN in snippets will fail the existing CDN test.
+
+**Resolution options:**
+1. Move Chart.js CDN to `buildSystemPrompt()` as an always-included CDN (simplest)
+2. Update the test to allow `chart.js` specifically
+3. Use inline Chart.js equivalent with SVG (avoids CDN dependency)
+
+**Recommendation:** Option 1 — add Chart.js CDN to `buildSystemPrompt()` alongside Tailwind and Preline. This way the snippet HTML only has `<canvas id="...">` and the init script, no CDN link. The test stays unmodified.
+
+### Pattern 6: Stepper (data-hs-stepper)
+
+```html
+<!-- Source: PRELINE-UI.md section 5.20 -->
+<div data-hs-stepper>
+  <ul class="relative flex flex-row gap-x-2 mb-8">
+    <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 1}'>
+      <div class="min-w-7 min-h-7 inline-flex justify-center items-center text-xs">
+        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 text-gray-700 font-medium rounded-full dark:bg-gray-700 dark:text-gray-300">1</span>
+        <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">Details</span>
+      </div>
+      <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden dark:bg-gray-700"></div>
+    </li>
+    <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 2}'>
+      <div class="min-w-7 min-h-7 inline-flex justify-center items-center text-xs">
+        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 text-gray-700 font-medium rounded-full dark:bg-gray-700 dark:text-gray-300">2</span>
+        <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">Review</span>
+      </div>
+      <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden dark:bg-gray-700"></div>
+    </li>
+    <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{"index": 3}'>
+      <div class="min-w-7 min-h-7 inline-flex justify-center items-center text-xs">
+        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 text-gray-700 font-medium rounded-full dark:bg-gray-700 dark:text-gray-300">3</span>
+        <span class="ms-2 text-sm font-medium text-gray-700 dark:text-gray-300">Confirm</span>
+      </div>
+    </li>
+  </ul>
+  <div class="mt-5">
+    <div data-hs-stepper-content-item='{"index": 1}'>
+      <div class="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-700">
+        <p class="text-gray-700 dark:text-gray-300">Step 1 content.</p>
+      </div>
+    </div>
+    <div class="hidden" data-hs-stepper-content-item='{"index": 2}'>
+      <div class="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-700">
+        <p class="text-gray-700 dark:text-gray-300">Step 2 content.</p>
+      </div>
+    </div>
+    <div class="hidden" data-hs-stepper-content-item='{"isFinal": true}'>
+      <div class="p-6 text-center">
+        <p class="text-lg font-semibold text-gray-900 dark:text-white">All done!</p>
+      </div>
+    </div>
+  </div>
+  <div class="mt-5 flex justify-between items-center gap-x-2">
+    <button type="button"
+      class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+      data-hs-stepper-back-btn>Back</button>
+    <button type="button"
+      class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+      data-hs-stepper-next-btn>Next</button>
+    <button type="button"
+      class="hidden py-2 px-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg bg-teal-600 text-white hover:bg-teal-700"
+      data-hs-stepper-finish-btn>Finish</button>
+  </div>
+</div>
 ```
-DARK MODE:
-- Add class="dark" to <html> to activate dark mode
-- Anti-flash script (put in <head>, before <body>): if (localStorage.getItem('hs_theme') === 'dark' || ...) { document.documentElement.classList.add('dark'); }
-- localStorage key: hs_theme — values: "light" | "dark" | "auto"
-- Toggle button: <button data-hs-theme-click-value="dark"> for dark, <button data-hs-theme-click-value="light"> for light
-- Dark backgrounds: dark:bg-gray-900 (page), dark:bg-gray-800 (cards), dark:bg-gray-700 (hover)
-- Dark text: dark:text-white (headings), dark:text-gray-300 (body), dark:text-gray-400 (muted)
-```
 
-### Preline Interactive Components Section (replaces DaisyUI component list)
-```
-PRELINE INTERACTIVE COMPONENTS (use data-hs-* attributes):
-- Accordion/FAQ: .hs-accordion-group > .hs-accordion > .hs-accordion-toggle + .hs-accordion-content
-- Mobile nav collapse: button[data-hs-collapse="#menu-id"] + div.hs-collapse
-- Dropdown menu: .hs-dropdown > .hs-dropdown-toggle + .hs-dropdown-menu
-- Modal: button[data-hs-overlay="#modal-id"] + div.hs-overlay
-- Tabs: buttons[data-hs-tab="#panel-id"] + panel divs
-- Carousel: [data-hs-carousel] wrapper
-- Stepper wizard: [data-hs-stepper] with data-hs-stepper-nav-item/content-item
-- Dismiss: button[data-hs-remove-element="#el-id"]
-- State classes: hs-accordion-active:* | hs-collapse-open:* | hs-dropdown-open:* | hs-tab-active:*
-```
+### Anti-Patterns to Avoid
 
-### Color/Token Clarification (CRITICAL)
-```
-IMPORTANT: Do NOT use Preline semantic tokens (bg-primary, bg-layer, text-foreground, etc.)
-These require npm build pipeline and will not render via CDN.
-Use raw Tailwind palette classes: bg-blue-600, bg-gray-900, text-white, etc.
-Replace Design Brief colors by overriding bg-blue-600 → your primary hex color.
-```
-
-### Anti-Patterns Section (replaces DaisyUI anti-patterns)
-Keep existing CSS mistakes section (flip card, aspect-ratio), update button/component examples from DaisyUI to Preline patterns, remove Alpine.js references (not needed with Preline).
-
----
-
-## ComponentSnippet Compliance
-
-### Tag Vocabulary Constraint
-`selectComponents()` matches snippet `tags[]` against `analysis.sections` and `analysis.features` from `analyzer.ts`. New snippets must use only existing tag vocabulary. Do not invent new tag words.
-
-Existing tag vocabulary found in snippets:
-```
-sections: hero, cta, navbar, features, cards, footer, stats, testimonials,
-          article-grid, timeline, table-of-contents, reading-progress, skills,
-          projects, contact, pricing
-
-features: flip-cards, flip-animation, localStorage, drag, prev-next-nav,
-          steps, timer, countdown, recipe, calculator, progress, checklist,
-          quiz
-```
-
-For new category snippets, assign tags from existing vocabulary that are semantically appropriate. If a new snippet has no vocabulary match, use the closest existing tag or mark it with `fallback: false` and `min_score: 1` so it only appears when explicitly matched.
-
-### Fallback Coverage
-Must maintain fallback snippets for all domain types. Current fallback coverage:
-- `landing` fallback: hero-centered, navbar-simple, features-3col, footer-simple
-- `portfolio` fallback: hero-split, card-basic, navbar-simple
-- `blog` fallback: article-grid, step-timer, footer-simple
-- `dashboard` fallback: hero-dashboard, stats-bar, card-stat
-- `generic` fallback: hero-centered, navbar-simple, features-3col, footer-simple
-
-New snippets added to these categories should preserve or extend fallback coverage.
+- **Preline semantic tokens in snippets:** `bg-primary`, `text-foreground`, `bg-card`, `border-layer-line`, `bg-layer` — npm-only, no effect via CDN
+- **`hs-*` state variant classes:** `hs-accordion-active:text-blue-600`, `hs-collapse-open:rotate-180` — require `variants.css`, not CDN-compatible
+- **DaisyUI classes remaining:** `btn`, `card`, `navbar`, `hero`, `badge`, `modal`, `stats`, `footer`, `menu`, `badge-primary`, `bg-base-100` — must all be eliminated
+- **Hardcoding Google Fonts CDN links in snippets** — `buildGoogleFontsImport()` already injects the font
+- **CDN links in snippet HTML** — tests check for `cdn.jsdelivr.net` and `cdn.tailwindcss.com`; CDN links belong in `buildSystemPrompt()` only (exception: if Chart.js CDN is moved to system prompt, no CDN links in any snippet)
+- **DOCTYPE in snippet HTML** — tests explicitly check
+- **DaisyUI `<dialog class="modal">` + `dialog.showModal()` pattern** — replace with Preline `data-hs-overlay`
+- **Alpine.js** — system prompt should not reference it; Preline handles all show/hide needs
 
 ---
 
@@ -586,126 +470,327 @@ New snippets added to these categories should preserve or extend fallback covera
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| Mobile nav toggle | Vanilla JS show/hide | Preline `data-hs-collapse` | Handles accessibility, ARIA, keyboard |
-| Dropdown positioning | Manual absolute CSS | Preline `hs-dropdown` | Floating UI handles viewport edge detection |
-| Modal focus trap | Custom JS focus management | Preline `data-hs-overlay` | Built-in accessibility, backdrop, escape key |
-| Tab state | Manual `active` class toggle | Preline `data-hs-tab` | Handles aria-selected, panel show/hide |
-| Accordion expand/collapse | Manual JS height animation | Preline `hs-accordion` | CSS height transition, ARIA |
-| Dark mode persistence | Custom localStorage logic | `hs_theme` key + `data-hs-theme-click-value` | Standard key name used by system prompt |
-| Progress bars | `<progress>` element | `div`-based with style width | `<progress>` is DaisyUI-specific, div pattern is universal |
+| Mobile nav toggle | Custom hamburger JS | Preline `data-hs-collapse` | Handles aria-expanded automatically |
+| Dropdown menus | Custom positioning JS | Preline `hs-dropdown` | Handles viewport overflow, keyboard navigation |
+| Modal/dialog | Custom backdrop and focus trap | Preline `data-hs-overlay` | Focus trap, scroll lock, keyboard dismiss built in |
+| Accordion expand/collapse | Custom height animation | Preline `hs-accordion-group` | `transition-[height]` pattern handles unknown content heights |
+| Tab panel switching | Custom active-class JS | Preline `data-hs-tab` | Handles ARIA tabpanel pattern and keyboard arrows |
+| Multi-step wizard | Custom stepper state machine | Preline `data-hs-stepper` | Back/Next/Finish state + aria fully managed |
+| Dismiss alerts/toasts | Custom removeEventListener | Preline `data-hs-remove-element` | One attribute, handles element removal |
+| Dark mode toggle | Custom CSS variable swap | Tailwind `dark:` + `class="dark"` on html | Standard pattern, `hs_theme` localStorage key |
+| Charts | Custom SVG charts | Chart.js CDN | Canvas rendering, responsive, tooltips built in |
+| Count-up on scroll | Custom IntersectionObserver + RAF | GSAP + ScrollTrigger | Easing, replay, and cross-browser handling |
+
+**Key insight:** Preline JS (CDN) handles all interactive state management declaratively via `data-hs-*`. Vanilla JS in snippets should be limited to: dark mode toggle, custom application logic in quiz/flashcard/timer/calculator/progress-tracker, and Chart.js canvas initialization.
+
+---
+
+## Category Expansion Plan
+
+### Existing 11 Categories — Rewrite + Expand
+
+| Category | Current | Target | Preline-specific additions |
+|----------|---------|--------|---------------------------|
+| hero | 4 | 6-7 | Hero with Preline carousel slideshow, hero with animated badge |
+| navbar | 3 | 5-6 | Navbar with Preline dropdown menus, navbar with dark mode toggle |
+| features | 4 | 6-7 | Features with Preline tabs (category filter), features accordion FAQ |
+| cards | 4 | 6-7 | Card with Preline collapse (expandable), horizontal card with badge dismiss |
+| footer | 3 | 5-6 | Footer with newsletter form, mega footer with columns |
+| stats | 3 | 5-6 | Stats with progress bars, stats with Chart.js sparklines |
+| testimonials | 3 | 5-6 | Testimonials with Preline carousel, testimonials with avatar group |
+| interactive | 5 | 8-9 | Multi-step stepper wizard, count-up on scroll, typing animation hero |
+| blog | 4 | 6-7 | Blog with Preline tabs (category filter), blog with accordion TOC |
+| portfolio | 4 | 6-7 | Portfolio with Preline tabs (filter by type), portfolio modal lightbox |
+| ecommerce | 4 | 6-7 | Product card with badge + dismiss, cart summary with quantity stepper |
+
+### 6 New Categories
+
+**forms (8-10 snippets)**
+- Contact form (basic fields)
+- Newsletter signup form
+- Multi-step registration form (Preline stepper)
+- Login/auth form
+- Feedback/rating form with star input
+- Subscribe with inline email validation hint
+- File upload zone (drag-and-drop styled)
+- Search form with icon and filter dropdown
+
+**ui-elements (8-10 snippets)**
+- Alert banners (success/warning/error/info) with Preline dismiss
+- Badge collection showcase
+- Breadcrumb navigation
+- Pagination bar
+- Progress indicators (linear + step variants)
+- Spinner and loading states
+- Switch/toggle collection
+- Tooltip examples (Preline data-hs-tooltip)
+
+**cta (8-10 snippets)**
+- CTA banner centered (gradient background)
+- CTA with email input inline
+- CTA with app store badges
+- CTA with social proof numbers
+- CTA with countdown timer
+- Sticky CTA bar (fixed bottom)
+- CTA with background image overlay
+- CTA split (text left, form right)
+
+**media (8-10 snippets)**
+- Image grid (responsive masonry-like)
+- Image with caption card
+- Before/After image slider (vanilla JS range input)
+- Video embed placeholder
+- Gallery lightbox (Preline modal)
+- Image carousel (Preline data-hs-carousel)
+- Audio player (styled HTML5 audio element)
+- Map placeholder with overlay CTA
+
+**pricing (6-9 snippets)**
+- Three-tier pricing table
+- Pricing with monthly/annual toggle (vanilla JS)
+- Single highlighted plan card
+- Pricing comparison table (features matrix)
+- Pricing with FAQ accordion (Preline)
+- Enterprise contact CTA pricing
+- Freemium vs Pro two-column
+
+**notifications (6-9 snippets)**
+- Toast notification (top-right corner, Preline dismiss)
+- Alert strip (dismissible, color variants)
+- Notification dropdown (Preline dropdown)
+- Cookie consent banner
+- Announcement bar (top of page)
+- In-app notification feed list
+- Empty state placeholder
+
+---
+
+## buildSystemPrompt() Rewrite Specification
+
+### Current state (DELETE entirely)
+
+The current function in `src/lib/html-prompts.ts` references:
+- DaisyUI CDN: `cdn.jsdelivr.net/npm/daisyui@4`
+- DaisyUI component classes: `navbar bg-base-100`, `hero min-h-[60vh]`, `card bg-base-100`, `btn btn-primary`, etc.
+- Alpine.js CDN and x-for prohibition
+- DaisyUI modal: `<dialog class="modal">` + `dialog.showModal()`
+- DaisyUI anti-patterns
+
+### New function contract
+
+- Zero parameters (invariant preserved for OpenAI prompt caching)
+- Language: English
+- CDN block: Tailwind CDN + Preline CDN (+ Chart.js CDN added here to avoid snippet CDN test failure)
+- Dark mode: anti-flash script, `hs_theme` localStorage key, `class="dark"` on html
+- Preline patterns: collapse, dropdown, modal, accordion, tabs — brief code examples
+- Accessibility: semantic HTML5, aria attributes, keyboard navigation
+- localStorage: `appgen-` prefix for all app keys, `hs_theme` exception
+- Color system: placeholder blue-600 replaced with DesignResult palette
+- Anti-patterns: explicit DaisyUI prohibition, Preline semantic token prohibition, `hs-*` variant class prohibition
 
 ---
 
 ## Common Pitfalls
 
-### Pitfall 1: Using Preline Semantic Tokens in Snippets
-**What goes wrong:** Snippet uses `bg-primary`, `text-foreground`, `bg-layer`, `border-layer-line` — renders as unstyled since these CSS variables are not defined by CDN Tailwind.
-**Why it happens:** PRELINE-UI.md examples use semantic tokens extensively (they assume npm build). CDN Tailwind has no access to Preline's theme variables.
-**How to avoid:** Only use raw Tailwind palette classes in snippets. Blue-600 family for primary, gray-X for neutrals.
-**Warning signs:** Any class from Section 2 of PRELINE-UI.md (Theming System) used in snippet HTML.
+### Pitfall 1: Using Preline semantic color tokens in CDN snippets
 
-### Pitfall 2: DaisyUI Semantic Remnants
-**What goes wrong:** `bg-base-100`, `text-base-content`, `btn btn-primary`, `card`, `badge` classes remain — render as unknown/no-op with just Tailwind CDN.
-**How to avoid:** Use the class mapping table above for every conversion. Grep for `btn `, `card`, `badge`, `navbar-`, `hero-`, `footer-`, `stat-`, `alert-`, `progress progress-`, `mockup-`, `timeline-` patterns after writing each snippet.
-**Warning signs:** Any hyphenated class starting with these DaisyUI prefixes.
+**What goes wrong:** Writing `class="bg-primary text-foreground"` — renders with no visual effect because Preline's CSS custom property definitions are in `variants.css` (npm package only).
+**Why it happens:** PRELINE-UI.md documents semantic tokens as the standard npm experience. CDN delivery is a subset.
+**How to avoid:** Use only raw Tailwind palette classes: `bg-blue-600`, `text-gray-900`, `bg-white`. No `bg-primary`, `text-foreground`, `bg-card`, `bg-layer`, `border-layer-line`.
+**Warning signs:** Class names containing `bg-primary`, `text-muted-foreground`, `bg-surface`, `bg-card`, `border-layer-line`, `bg-navbar`.
 
-### Pitfall 3: `hs-*` State Classes Without Preline JS
-**What goes wrong:** Classes like `hs-accordion-active:text-blue-600` are added but Preline JS not included in snippet HTML (correct — CDN is in buildSystemPrompt), however if snippets are tested in isolation they appear broken.
-**Why it happens:** Preline state classes require `preline.js` to be loaded. Snippets are HTML fragments, not full pages.
-**How to avoid:** This is expected — snippets are injected into GPT-4o context which generates full pages with CDN. Don't add CDN links to snippet HTML (test `no snippet html contains CDN links` will fail).
+### Pitfall 2: Using hs-* variant state classes
 
-### Pitfall 4: JavaScript DOM Class References
-**What goes wrong:** Existing interactive snippet JS uses strings like `'btn-success'`, `'btn-error'`, `'btn-outline'` in `classList.add()` calls — these become no-ops after migration.
-**How to avoid:** Audit every `classList.add/remove/toggle` call in interactive snippets and update the string values to Tailwind equivalents. For example `classList.add('btn-success')` → `classList.add('bg-teal-600', 'text-white', 'border-transparent')`.
+**What goes wrong:** Writing `hs-accordion-active:text-blue-600` or `hs-collapse-open:rotate-180` — Tailwind CDN does not generate CSS for these variants.
+**Why it happens:** PRELINE-UI.md examples assume `variants.css` is loaded from npm.
+**How to avoid:** Do not use any `hs-*:` variant prefix in class strings. Preline's core show/hide behaviors (accordion height, dropdown visibility, modal overlay) work via built-in class toggling in preline.js, no variant CSS needed.
+**Warning signs:** Class strings containing `hs-accordion-active:`, `hs-collapse-open:`, `hs-dropdown-open:`, `hs-tab-active:`, `hs-overlay-open:`, `hs-stepper-active:`, `hs-stepper-completed:`.
 
-### Pitfall 5: DaisyUI Timeline / Mockup-Code Components
-**What goes wrong:** `timeline timeline-vertical`, `timeline-start`, `timeline-middle`, `timeline-end`, `timeline-box`, `mockup-code` — none exist in CDN Tailwind. They render as unstyled `div`/`ul`.
-**How to avoid:** Blog `timeline` snippet must be rewritten as a vertical flex pattern with manual `border-l` connector line. `mockup-code` must become `bg-gray-900 rounded-lg p-4 font-mono text-sm`.
+### Pitfall 3: DaisyUI class names surviving in JS strings inside interactive snippets
 
-### Pitfall 6: Test Assertion Breakage
-**What goes wrong:** `component-library.test.ts` has behavior tests that check specific DaisyUI class strings. These must be removed.
-**How to avoid:** The test file does NOT have DaisyUI class assertions per the CONTEXT.md — confirmed by reading the test file. The 57 tests cover: field validation, CDN link absence, unique IDs, selectComponents behavior, fallback logic. No hardcoded class name tests visible in the first 160 lines. The CDN link test (`not.toContain("cdn.jsdelivr.net")`) will pass because snippets must not include CDN links. Planner should verify no DaisyUI class assertions exist in the remainder of the test file.
+**What goes wrong:** The JS in quiz/flashcard/timer snippets has DaisyUI class names baked in — e.g., feedback buttons set class `btn-success` or `btn-error`.
+**Why it happens:** Interactive snippet JS logic manipulates class strings directly.
+**How to avoid:** Audit all `<script>` blocks in interactive snippets for DaisyUI class references. Replace: `btn-success` → `bg-teal-100 border-teal-300 text-teal-800`, `btn-error` → `bg-red-100 border-red-300 text-red-800`.
+**Warning signs:** Strings in `<script>` blocks containing `btn-`, `badge-`, `text-success`, `text-error`, `bg-base-`, `card-`, `progress-`.
 
-### Pitfall 7: Flashcard CSS Variables
-**What goes wrong:** The flashcard snippet uses `hsl(var(--b1))` and `hsl(var(--p))` in an inline `<style>` block — these are DaisyUI CSS variables that won't resolve.
-**How to avoid:** Replace the `<style>` block with inline Tailwind classes directly on the elements. Remove `.fc-front` and `.fc-back` CSS rule block.
+### Pitfall 4: CDN links appearing in snippet HTML
+
+**What goes wrong:** Adding `<script src="https://cdn.jsdelivr.net/npm/chart.js">` directly inside a snippet's HTML — the test `"no snippet html contains CDN links"` will fail because it checks for `cdn.jsdelivr.net`.
+**Why it happens:** Chart.js is needed per-snippet but the CDN belongs in the system prompt.
+**How to avoid:** Move Chart.js CDN to `buildSystemPrompt()` as a universally included CDN. Snippets only contain `<canvas id="...">` and Chart.js initialization script.
+**Warning signs:** Test failure `"html must not contain cdn.jsdelivr.net"` for any snippet.
+
+### Pitfall 5: Test regression — count threshold not updated
+
+**What goes wrong:** Test `"library has at least 40 snippets"` passes but `"library has at least 100 snippets"` doesn't exist yet — SNIP-07 requirement is silently unverified.
+**Why it happens:** The threshold was written for the original 47-snippet library.
+**How to avoid:** Change `toBeGreaterThanOrEqual(40)` to `toBeGreaterThanOrEqual(100)` in the test file in Wave 0, before any snippet work.
+**Warning signs:** Forgetting this step means no automated check that the 100-snippet goal was reached.
+
+### Pitfall 6: Fallback coverage gaps during rewrite
+
+**What goes wrong:** Rewriting existing snippets accidentally changes `fallback: true` → `false` or clears `fallback_for` values, causing test `"each fallback type has at least 4 snippets"` to fail.
+**Why it happens:** Copy-paste errors during class replacement work.
+**How to avoid:** Preserve all `fallback`, `fallback_for`, `id`, `name`, `description`, `category`, `tags`, `priority`, `domain_hints`, `min_score` fields verbatim during class rewrites. Only modify the `html` field.
+**Warning signs:** Test `"returns type-specific fallbacks for landing"` or similar failing.
+
+### Pitfall 7: Duplicate snippet IDs across 17 files
+
+**What goes wrong:** Two snippets share an ID — test `"all snippet ids are unique"` fails.
+**Why it happens:** Large volume of new snippets written across 6 new files.
+**How to avoid:** Use strict category-prefixed naming: `forms-contact`, `forms-newsletter`, `ui-elements-alerts`, `cta-banner-centered`, `media-image-grid`, `pricing-three-tier`, `notifications-toast`.
+**Warning signs:** Test `"all snippet ids are unique"` failing.
+
+---
+
+## State of the Art
+
+| Old Approach | Current Approach | Impact |
+|--------------|------------------|--------|
+| DaisyUI component classes (`btn`, `card`, `navbar`) | Raw Tailwind utilities + Preline `data-hs-*` | No semantic class magic; all styling explicit and predictable |
+| DaisyUI `<dialog class="modal">` + JS `showModal()` | Preline `data-hs-overlay` + declarative trigger | More accessible, no JS required for open/close |
+| Alpine.js for show/hide | Preline `data-hs-collapse` | One less CDN dependency; better ARIA handling |
+| DaisyUI `stats` component | Manual Tailwind stat cards | More layout flexibility, easier dark mode |
+| DaisyUI auto-theme colors (`badge-primary`) | Explicit palette (`bg-blue-100 text-blue-800 dark:bg-blue-500/20`) | Verbose but predictable, CDN-compatible |
+
+**Deprecated/outdated in new system:**
+- `btn`, `card-body`, `navbar-start`, `hero-content`, `badge-primary`: DaisyUI components — not available outside DaisyUI
+- `bg-base-100`, `bg-base-200`, `text-base-content`: DaisyUI CSS variables — undefined without DaisyUI
+- Alpine.js `x-data`, `x-show`, `x-on:click`: replaced by Preline `data-hs-*` for UI behaviors, vanilla JS for application logic
+
+---
+
+## Open Questions
+
+1. **Preline CDN version pinning**
+   - What we know: `https://cdn.jsdelivr.net/npm/preline/dist/preline.js` resolves to latest
+   - What's unclear: Whether to pin to a specific version for stability in generated sites
+   - Recommendation: Use unpinned during development; consider pinning after confirming behaviors work. If a specific version is needed, use e.g. `preline@2.7.0/dist/preline.js`.
+
+2. **hs-* state variant classes on Tailwind CDN — actual behavior**
+   - What we know: PRELINE-UI.md section 8 explicitly states `variants.css` from npm is required for `hs-*` variants
+   - What's unclear: Whether Tailwind CDN's JIT can process these if no `variants.css` is loaded
+   - Recommendation: Treat `hs-*` variant classes as npm-only. Do not use them in snippets. This is the confirmed safe approach from PRELINE-UI.md conventions.
+
+3. **Chart.js CDN placement — snippet vs system prompt**
+   - What we know: Existing test blocks `cdn.jsdelivr.net` in snippet HTML
+   - Recommendation: Move Chart.js CDN to `buildSystemPrompt()` as an always-included script tag. No test changes needed.
 
 ---
 
 ## Validation Architecture
 
 ### Test Framework
+
 | Property | Value |
 |----------|-------|
-| Framework | Vitest (via `npm run test`) |
-| Config file | Detected from package.json scripts |
+| Framework | Vitest |
+| Config file | `package.json` (scripts.test) |
 | Quick run command | `npm run test -- component-library` |
-| Full suite command | `npm run test` |
+| Full suite command | `npm run test && npm run typecheck` |
 
 ### Phase Requirements → Test Map
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|-------------|
-| SNIP-01 | All snippets have required fields | unit | `npm run test -- component-library` | Yes |
-| SNIP-02 | No snippet HTML contains DOCTYPE | unit | `npm run test -- component-library` | Yes |
-| SNIP-03 | No snippet HTML contains CDN links | unit | `npm run test -- component-library` | Yes |
-| SNIP-04 | All snippet IDs are unique | unit | `npm run test -- component-library` | Yes |
-| SNIP-05 | Library has >= 100 snippets after migration | unit | Update threshold in test file | Needs update |
-| SNIP-06 | No DaisyUI class remnants in snippet HTML | unit | New grep-style test or manual audit | Wave 0 gap |
-| SNIP-07 | selectComponents returns 4 for landing | unit | `npm run test -- component-library` | Yes |
-| SNIP-08 | Fallback paths still work | unit | `npm run test -- component-library` | Yes |
-| SNIP-09 | TypeScript build passes | type check | `npm run typecheck` | N/A (build) |
-| SNIP-10 | html-prompts.ts no DaisyUI CDN | manual/grep | `grep "daisyui" src/lib/html-prompts.ts` | N/A |
+| SNIP-01 | All snippets use Tailwind/Preline, no DaisyUI classes | unit (new DaisyUI detector) | `npm run test -- component-library` | ❌ Wave 0 |
+| SNIP-02 | 11 existing categories each expanded | unit (implicit in SNIP-07 count) | `npm run test -- component-library` | ✅ |
+| SNIP-03 | 6 new category files export and are imported | unit (implicit in SNIP-07 count) | `npm run test -- component-library` | ✅ |
+| SNIP-04 | buildSystemPrompt() contains no DaisyUI references | unit (new assertion) | `npm run test -- html-prompts` | ❌ Wave 0 |
+| SNIP-05 | Majority of snippets include dark: prefix | unit (new assertion) | `npm run test -- component-library` | ❌ Wave 0 |
+| SNIP-06 | Zero DaisyUI class names in snippet library | unit (new DaisyUI detector) | `npm run test -- component-library` | ❌ Wave 0 |
+| SNIP-07 | ALL_SNIPPETS.length >= 100 | unit | `npm run test -- component-library` | ✅ exists (threshold=40, update to 100) |
+| SNIP-08 | All tests pass clean after migration | all | `npm run test && npm run typecheck` | ✅ |
+
+### Required Test Changes (Wave 0 — before snippet rewrite work begins)
+
+Changes to `src/lib/component-library/component-library.test.ts`:
+
+```typescript
+// CHANGE: update count threshold
+it("library has at least 100 snippets", () => {
+  expect(ALL_SNIPPETS.length).toBeGreaterThanOrEqual(100);
+});
+
+// NEW: DaisyUI remnant detector (SNIP-01, SNIP-06)
+it("no snippet html contains DaisyUI class names", () => {
+  const daisyUIPatterns = [
+    'btn-primary', 'btn-secondary', 'btn-outline', 'btn-ghost', 'btn-accent',
+    'card-body', 'card-title', 'card-actions',
+    'navbar-start', 'navbar-center', 'navbar-end',
+    'hero-content', 'hero min-h',
+    'badge-primary', 'badge-outline', 'badge-secondary', 'badge-accent',
+    'bg-base-100', 'bg-base-200', 'bg-base-300',
+    'text-base-content',
+    'stat-value', 'stat-title', 'stat-desc',
+    'footer-center', 'footer footer',
+    'menu menu-horizontal', 'dropdown-content',
+    'progress progress-primary',
+    'checkbox checkbox-primary',
+  ];
+  ALL_SNIPPETS.forEach((s) => {
+    daisyUIPatterns.forEach((pattern) => {
+      expect(s.html, `${s.id}: contains DaisyUI pattern "${pattern}"`).not.toContain(pattern);
+    });
+  });
+});
+
+// NEW: dark mode coverage (SNIP-05)
+it("at least 80% of snippets include dark mode classes", () => {
+  const withDark = ALL_SNIPPETS.filter((s) => s.html.includes('dark:'));
+  expect(withDark.length).toBeGreaterThanOrEqual(Math.floor(ALL_SNIPPETS.length * 0.8));
+});
+```
 
 ### Sampling Rate
+
 - **Per task commit:** `npm run test -- component-library`
-- **Per wave merge:** `npm run test`
-- **Phase gate:** Full suite green + typecheck pass before verify-work
+- **Per wave merge:** `npm run test && npm run typecheck`
+- **Phase gate:** Full suite green + typecheck clean before `/gsd:verify-work`
 
 ### Wave 0 Gaps
-- [ ] Update `component-library.test.ts` line 27: change `toBeGreaterThanOrEqual(40)` to `toBeGreaterThanOrEqual(100)` for new target
-- [ ] Optional: Add DaisyUI class remnant detector test that greps snippet HTML for known DaisyUI class prefixes (`btn `, `badge `, `card `, `navbar-`, `hero `, `footer `, `stat-`, etc.)
 
----
-
-## Recommended Additional Categories
-
-Beyond the 4 mandatory new categories, these 2 additional categories from Preline's component inventory are well-suited for generated websites:
-
-**`pricing`** — Dedicated pricing section category (currently mixed into `cards` and `ecommerce`). Separating it gives `selectComponents()` a precise tag match for pricing-heavy websites. 6-8 snippets covering tiers, comparison, toggle, enterprise.
-
-**`notifications`** — Alerts, banners, toast patterns. These appear in nearly every application and business website. Preline has first-class support via `data-hs-remove-element`. 6-8 snippets covering info/success/error alerts, dismissible banners, notification badges.
-
-**Not recommended adding:**
-- `sidebar` — Only relevant for app-style sites, not typical generated landing pages/portfolios
-- `datepicker` — Requires Floating UI CDN as extra dependency; too specialized
-- `datatables` — Third-party dependency, excessive for generated sites
+- [ ] Update: `"library has at least 40 snippets"` → `toBeGreaterThanOrEqual(100)` in `component-library.test.ts`
+- [ ] New test: DaisyUI remnant detector in `component-library.test.ts`
+- [ ] New test: dark mode coverage assertion in `component-library.test.ts`
+- [ ] Create: `src/lib/component-library/snippets/forms.ts`
+- [ ] Create: `src/lib/component-library/snippets/ui-elements.ts`
+- [ ] Create: `src/lib/component-library/snippets/cta.ts`
+- [ ] Create: `src/lib/component-library/snippets/media.ts`
+- [ ] Create: `src/lib/component-library/snippets/pricing.ts`
+- [ ] Create: `src/lib/component-library/snippets/notifications.ts`
+- [ ] Update: `src/lib/component-library/snippets/index.ts` — add 6 new imports + spread into ALL_SNIPPETS
 
 ---
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- `.planning/research/PRELINE-UI.md` — Full Preline component inventory, CDN setup, `data-hs-*` patterns, semantic tokens, dark mode, all 26+ components with code examples
-- `src/lib/component-library/snippets/*.ts` — Actual DaisyUI class inventory across all 41 snippets
-- `src/lib/html-prompts.ts` — Current DaisyUI system prompt requiring full rewrite
-- `src/lib/component-library/types.ts` — ComponentSnippet type contract
-- `src/lib/component-library/index.ts` — selectComponents() tag-matching algorithm
-- `src/lib/component-library/component-library.test.ts` — 57 existing tests that must continue passing
+
+- `D:/STEVE/steve/.planning/research/PRELINE-UI.md` — Full Preline reference: 26 components, CDN setup, data-hs-* patterns, dark mode, key conventions. Section 8 explicitly documents CDN vs npm incompatibilities.
+- `src/lib/component-library/snippets/*.ts` — All 11 existing files audited (4+3+4+4+3+3+3+5+4+4+4 = 41 snippets counted by grep)
+- `src/lib/component-library/component-library.test.ts` — All 57 tests reviewed; exact change surface identified
+- `src/lib/html-prompts.ts` — Current buildSystemPrompt() fully audited; all DaisyUI references documented
+- `src/lib/ai-pipeline/analyzer.ts` — Tag vocabulary confirmed; sections and features are free-form strings, no strict enum
 
 ### Secondary (MEDIUM confidence)
-- `.planning/phases/12-migrate-snippet-library-from-daisyui-to-preline-ui/12-CONTEXT.md` — User decisions, locked and discretion areas
+
+- CDN compatibility analysis derived from PRELINE-UI.md section 8: "variants.css from npm provides the hs-* variant definitions Tailwind must resolve" — confirms hs-* variants are npm-only
+
+### Tertiary (LOW confidence)
+
+- Assumption that all Preline data-hs-* attribute behaviors (collapse, dropdown, modal, accordion, tabs, stepper) work correctly via CDN preline.js without any additional CSS. Recommend verifying accordion height animation and dropdown open/close with CDN-only setup before writing all accordion/dropdown snippets.
 
 ---
 
 ## Metadata
 
 **Confidence breakdown:**
-- DaisyUI → Tailwind mapping: HIGH — derived directly from reading actual snippet HTML
-- Preline CDN-compatible patterns: HIGH — verified against PRELINE-UI.md section 1 (CDN setup confirms JS behavior available, semantic tokens require npm)
-- New category design: MEDIUM — based on Preline component inventory and common web patterns; exact snippets are Claude's discretion
-- Tag vocabulary constraint: HIGH — verified by reading analyzer.ts and selectComponents() directly
-- Test impact: HIGH — verified by reading full test file
+- Standard stack: HIGH — Preline CDN URL verified in PRELINE-UI.md; Tailwind CDN confirmed in current codebase
+- Architecture: HIGH — all existing files fully read; types, index, test interface completely understood
+- DaisyUI replacement table: HIGH — derived from direct code audit of all 11 snippet files
+- Pitfalls: HIGH — CDN vs npm incompatibility explicitly stated in PRELINE-UI.md section 8; other pitfalls from direct test file audit
+- Category expansion content: MEDIUM — content choices are Claude's discretion; exact snippet HTML is implementation work
 
 **Research date:** 2026-03-21
-**Valid until:** 2026-04-21 (Preline stable; snippets are static HTML)
+**Valid until:** 2026-04-21 (Preline CDN URL stable; snippet content choices are stable)
