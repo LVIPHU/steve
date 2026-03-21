@@ -24,8 +24,36 @@ function makeAnalysis(
 // ---------------------------------------------------------------------------
 
 describe("snippet data validation", () => {
-  it("library has at least 40 snippets", () => {
-    expect(ALL_SNIPPETS.length).toBeGreaterThanOrEqual(40);
+  it("library has at least 100 snippets", () => {
+    expect(ALL_SNIPPETS.length).toBeGreaterThanOrEqual(100);
+  });
+
+  it("no snippet contains DaisyUI class patterns", () => {
+    const daisyUIPatterns = [
+      'btn-primary', 'btn-secondary', 'btn-outline', 'btn-ghost', 'btn-accent',
+      'card-body', 'card-title', 'card-actions',
+      'navbar-start', 'navbar-center', 'navbar-end',
+      'hero-content', 'hero min-h',
+      'badge-primary', 'badge-outline', 'badge-secondary', 'badge-accent',
+      'bg-base-100', 'bg-base-200', 'bg-base-300',
+      'text-base-content',
+      'stat-value', 'stat-title', 'stat-desc',
+      'footer-center', 'footer footer',
+      'menu menu-horizontal', 'dropdown-content',
+      'progress progress-primary',
+      'checkbox checkbox-primary',
+    ];
+    ALL_SNIPPETS.forEach((s: ComponentSnippet) => {
+      daisyUIPatterns.forEach((pattern) => {
+        expect(s.html, `${s.id}: contains DaisyUI pattern "${pattern}"`).not.toContain(pattern);
+      });
+    });
+  });
+
+  it("at least 80% of snippets include dark: prefix", () => {
+    const withDark = ALL_SNIPPETS.filter((s) => s.html.includes("dark:"));
+    const ratio = withDark.length / ALL_SNIPPETS.length;
+    expect(ratio, `only ${withDark.length}/${ALL_SNIPPETS.length} snippets have dark: prefix`).toBeGreaterThanOrEqual(0.8);
   });
 
   it("every snippet has required fields", () => {
