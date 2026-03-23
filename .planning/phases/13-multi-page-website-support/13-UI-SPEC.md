@@ -69,13 +69,12 @@ All values reference existing CSS custom properties from `globals.css` (oklch to
 |------|-------|-------|
 | Dominant (60%) | `--background` (oklch 1 0 0 light / oklch 0.145 0 0 dark) | Editor background, iframe surround, topbar bg |
 | Secondary (30%) | `--muted` / `--secondary` (oklch 0.97 0 0 light) | Inactive page tabs, panel background, iframe border area |
-| Accent (10%) | `--primary` (oklch 0.205 0 0 light / oklch 0.922 0 0 dark) | Active page tab indicator, active tab text, Export ZIP button (primary variant) |
+| Accent (10%) | `--primary` (oklch 0.205 0 0 light / oklch 0.922 0 0 dark) | Active page tab indicator, active tab text |
 | Destructive | `--destructive` (oklch 0.577 0.245 27.325) | Delete page confirmation only |
 
 Accent reserved for:
 1. Active Page Manager tab — 2px bottom border + text color shift to `--primary`
-2. Export ZIP button — `variant="default"` (primary fill) in editor toolbar
-3. Add page `[+]` button hover state
+2. Add page `[+]` button hover state
 
 Do NOT use accent on: inactive tabs, toolbar "Save" button (use `variant="outline"`), iframe border.
 
@@ -157,12 +156,11 @@ Dialog:
 Location: Editor topbar, between "Lưu thay đổi" and "Xuất bản" buttons.
 
 ```
-[ Lưu thay đổi ]  [ Xuất bản ZIP ]  [ Xuất bản ]
+[ Lưu thay đổi ]  [ Tải ZIP ]  [ Xuất bản ]
 ```
 
 Button specs:
-- Label: "Xuất bản ZIP" — NO, correct label per CONTEXT.md D-15: "Export ZIP" button
-- Correct label: "Tải ZIP"
+- Label: "Tải ZIP"
 - Variant: `variant="outline" size="sm"`
 - Icon: `Download` from lucide, placed left of text
 - Disabled state: disabled when website has no pages content yet
