@@ -74,6 +74,8 @@ Plan: 3 of 3 (ALL COMPLETE, including gap-closure plan 03)
 ### Roadmap Evolution
 
 - Phase 12 added: Migrate snippet library from DaisyUI to Preline UI
+- Phase 13 added: Multi-page Website Support
+- Phase 14 added: Onboarding Chat Free-form Prompt (Lovable-style single text input)
 
 ## What's Built (v1.0 — all complete)
 

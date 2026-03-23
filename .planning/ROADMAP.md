@@ -267,10 +267,24 @@ Plans:
 - [x] 12-02-PLAN.md — Rewrite 6 remaining snippet files + create 6 new categories (forms, ui-elements, cta, media, pricing, notifications) + register in index.ts
 - [x] 12-03-PLAN.md (gap closure) — Replace hs-accordion-active: and hs-stepper-active:/hs-stepper-completed: variants with vanilla JS, add bannedHsVariants detector test
 
+### Phase 13: Multi-page Website Support
+
+**Goal:** User có thể tạo website nhiều trang — mỗi trang là HTML riêng lưu trong `pages` JSONB, có URL thật `/{username}/{slug}/{page}`, quản lý pages trong editor, và export ZIP offline.
+**Requirements**: MP-01, MP-02, MP-03, MP-04, MP-05, MP-06, MP-07, MP-08
+**Depends on:** Phase 12
+**Success Criteria** (what must be TRUE):
+  1. `websites.pages` JSONB column tồn tại; existing `htmlContent` migrated sang `pages.index`
+  2. `/{username}/{slug}/about` serve đúng `pages.about` HTML cho published website
+  3. `/{username}/{slug}` (no page) vẫn serve `pages.index` — backward compatible
+  4. Editor hiển thị Page Manager với list pages, add/switch/delete
+  5. Generating trang mới sinh HTML có relative links (e.g. `href="about.html"`)
+  6. `GET /api/websites/[id]/export` trả về ZIP với `index.html`, `about.html`, v.v.
+  7. `npm run typecheck` passes clean sau migration
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 → 10 → 11 → 12
+Phases execute in numeric order: 9 → 10 → 11 → 12 → 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -286,3 +300,15 @@ Phases execute in numeric order: 9 → 10 → 11 → 12
 | 10. Design Agent + Context Builder + Prompt Rewrite | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 12. Migrate snippet library from DaisyUI to Preline UI | 3/3 | Complete    | 2026-03-21 | - |
+| 13. Multi-page Website Support | v1.2 | 0/0 | Planned | - |
+| 14. Onboarding Chat Free-form Prompt | v1.2 | 0/0 | Planned | - |
+
+### Phase 14: Onboarding Chat Free-form Prompt
+
+**Goal:** Đổi onboarding chat từ 2 câu hỏi cố định sang 1 text input tự do — user gõ prompt thoải mái như Lovable, AI tạo website ngay từ đó.
+**Requirements**: TBD
+**Depends on:** Phase 13
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 14 to break down)
