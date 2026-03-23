@@ -43,7 +43,10 @@ ${snippetBlock}
 ${sections}
 
 ## User Request
-${prompt}`;
+${prompt}
+
+## Link Convention
+When referencing other pages, use relative HTML links: about.html, contact.html, index.html — NOT absolute URLs.`;
 }
 
 export function buildEditUserMessage(prompt: string): string {

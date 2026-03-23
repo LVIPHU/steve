@@ -89,6 +89,14 @@ describe("buildUserMessage", () => {
     const msg = buildUserMessage("Test", emptyAnalysis, mockDesign, []);
     expect(msg).toContain("auto");
   });
+
+  it("contains Link Convention section with relative link instruction", () => {
+    const msg = buildUserMessage("Create a fitness website", mockAnalysis, mockDesign, mockSnippets);
+    expect(msg).toContain("## Link Convention");
+    expect(msg).toContain("about.html");
+    expect(msg).toContain("index.html");
+    expect(msg).not.toContain("/{username}");
+  });
 });
 
 describe("buildEditUserMessage", () => {
@@ -111,6 +119,11 @@ describe("buildEditUserMessage", () => {
   it("does NOT contain Component References", () => {
     const msg = buildEditUserMessage("Change the title");
     expect(msg).not.toContain("## Component References");
+  });
+
+  it("does NOT contain Link Convention", () => {
+    const msg = buildEditUserMessage("Change the title");
+    expect(msg).not.toContain("## Link Convention");
   });
 });
 

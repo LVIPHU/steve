@@ -73,10 +73,18 @@ export async function PATCH(
 
   if ("chat_history" in body) {
     const chatHistory = body.chat_history;
-    if (chatHistory !== null && !Array.isArray(chatHistory)) {
-      return Response.json({ error: "chat_history must be an array or null" }, { status: 400 });
+    if (chatHistory !== null && typeof chatHistory !== "object") {
+      return Response.json({ error: "chat_history must be an array, object, or null" }, { status: 400 });
     }
     updateSet.chatHistory = chatHistory;
+  }
+
+  if ("pages" in body) {
+    const pages = body.pages;
+    if (pages !== null && (typeof pages !== "object" || Array.isArray(pages))) {
+      return Response.json({ error: "pages must be an object or null" }, { status: 400 });
+    }
+    updateSet.pages = pages;
   }
 
   if (Object.keys(updateSet).length === 0) {
