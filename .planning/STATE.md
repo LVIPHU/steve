@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: completed
-stopped_at: Phase 13 plans ready (2 plans, verified)
-last_updated: "2026-03-23T09:42:05.087Z"
+status: executing
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-23T09:55:05.171Z"
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # STATE.md — Project Memory
@@ -18,12 +18,12 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Milestone complete
+**Status:** Ready to execute
 
 ## Current Position
 
-Phase: 12 (migrate-snippet-library-from-daisyui-to-preline-ui) — COMPLETE
-Plan: 3 of 3 (ALL COMPLETE, including gap-closure plan 03)
+Phase: 13 (multi-page-website-support) — EXECUTING
+Plan: 2 of 2
 
 ## What's Left (v1.1)
 
@@ -68,6 +68,10 @@ Plan: 3 of 3 (ALL COMPLETE, including gap-closure plan 03)
 - [12-03] hs-accordion-active: variant replaced with vanilla JS classList.toggle('rotate-180') on click — CDN-incompatible variant silently broken chevron rotation
 - [12-03] Stepper snippets replaced with full vanilla JS implementation (data-step/data-panel selectors) — data-hs-stepper requires Preline JS build step, entirely non-functional via CDN
 - [12-03] bannedHsVariants detector test added covering 7 CDN-incompatible hs-* variant prefixes — prevents future regressions
+- [13-01] drizzle-kit generate non-functional due to schema drift — used tsx migration script directly via postgres.js for ADD COLUMN + data migration
+- [13-01] jsonb_set with ARRAY[pageName] + to_jsonb(html::text) for atomic HTML page write — prevents race conditions and SQL injection (Pitfall 1)
+- [13-01] pages.index fallback to htmlContent in public slug route for zero-downtime backward compat during multi-page transition
+- [13-01] chat_history validation changed from !Array.isArray to typeof !== 'object' to accept per-page { [pageName]: ChatMessage[] } format
 
 ## Accumulated Context
 
@@ -97,9 +101,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 12 P01 | 9 | 3 tasks | 13 files |
 | Phase 12 P02 | 10 | 2 tasks | 12 files |
 | Phase 12 P03 (gap) | 15 | 2 tasks | 5 files |
+| Phase 13 P01 | 310 | 3 tasks | 9 files |
 
 ## Session Continuity
 
-Last session: 2026-03-23T09:42:05.083Z
-Stopped at: Phase 13 plans ready (2 plans, verified)
-Resume file: .planning/phases/13-multi-page-website-support/13-01-PLAN.md
+Last session: 2026-03-23T09:55:05.166Z
+Stopped at: Completed 13-01-PLAN.md
+Resume file: None
