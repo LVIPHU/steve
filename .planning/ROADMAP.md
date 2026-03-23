@@ -280,11 +280,11 @@ Plans:
   5. Generating trang mới sinh HTML có relative links (e.g. `href="about.html"`)
   6. `GET /api/websites/[id]/export` trả về ZIP với `index.html`, `about.html`, v.v.
   7. `npm run typecheck` passes clean sau migration
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 13-01-PLAN.md — DB schema (pages JSONB), migration, PATCH API + generate API update, public routing, relative link instruction
-- [ ] 13-02-PLAN.md — Export ZIP endpoint (fflate), editor Page Manager UI, per-page state, export button + human verify
+- [x] 13-02-PLAN.md — Export ZIP endpoint (fflate), editor Page Manager UI, per-page state, export button + human verify
 
 ## Progress
 
@@ -305,7 +305,7 @@ Phases execute in numeric order: 9 → 10 → 11 → 12 → 13
 | 10. Design Agent + Context Builder + Prompt Rewrite | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 12. Migrate snippet library from DaisyUI to Preline UI | v1.1 | 3/3 | Complete | 2026-03-21 |
-| 13. Multi-page Website Support | v1.2 | 1/2 | In Progress|  |
+| 13. Multi-page Website Support | v1.2 | 2/2 | Complete   | 2026-03-23 |
 | 14. Onboarding Chat Free-form Prompt | v1.2 | 0/0 | Planned | - |
 
 ### Phase 14: Onboarding Chat Free-form Prompt
