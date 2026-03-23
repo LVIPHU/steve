@@ -32,16 +32,28 @@ export default async function EditPage({
 
   const website = result[0];
 
+  // Build initialPages: use pages column if available, fallback to htmlContent for legacy websites
+  const initialPages = (website.pages as Record<string, string> | null) ??
+    (website.htmlContent ? { index: website.htmlContent as string } : {});
+
+  // Normalize chat history: if array (old format), wrap as { index: [...] }
+  const rawChatHistory = website.chatHistory;
+  type ChatMsg = { role: "user" | "assistant" | "error"; content: string; timestamp: string };
+  const initialChatHistory = !rawChatHistory
+    ? {}
+    : Array.isArray(rawChatHistory)
+    ? { index: rawChatHistory as ChatMsg[] }
+    : (rawChatHistory as Record<string, ChatMsg[]>);
+
   return (
     <HtmlEditorClient
       websiteId={website.id}
       websiteName={website.name}
-      initialHtml={(website.htmlContent as string | null) ?? null}
+      websiteSlug={website.slug}
+      initialPages={initialPages}
       initialPrompt={prompt ?? ""}
       websiteStatus={website.status}
-      initialChatHistory={
-        (website.chatHistory as Array<{ role: "user" | "assistant" | "error"; content: string; timestamp: string }>) ?? null
-      }
+      initialChatHistory={initialChatHistory}
     />
   );
 }

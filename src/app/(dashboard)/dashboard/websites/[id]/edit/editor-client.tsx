@@ -4,10 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, Loader2, Send } from "lucide-react";
+import { ArrowLeft, Loader2, Send, Plus, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,10 +25,11 @@ type ChatMessage = {
 interface HtmlEditorClientProps {
   websiteId: string;
   websiteName: string;
-  initialHtml: string | null;
+  websiteSlug: string;
+  initialPages: Record<string, string>;
   initialPrompt: string;
   websiteStatus: string;
-  initialChatHistory: Array<{ role: "user" | "assistant" | "error"; content: string; timestamp: string }> | null;
+  initialChatHistory: Record<string, Array<{ role: "user" | "assistant" | "error"; content: string; timestamp: string }>>;
 }
 
 // ─── Sub-components (module-scope to avoid re-render issues) ──────────────────
@@ -67,16 +71,35 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function HtmlEditorClient(props: HtmlEditorClientProps) {
-  const [htmlContent, setHtmlContent] = useState<string>(props.initialHtml ?? "");
-  const [codeValue, setCodeValue] = useState<string>(props.initialHtml ?? "");
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    if (!props.initialChatHistory || props.initialChatHistory.length === 0) return [];
-    return props.initialChatHistory.map((item) => ({
-      role: item.role,
-      content: item.content,
-      timestamp: new Date(item.timestamp),
-    }));
+  // Multi-page state
+  const [pages, setPages] = useState<Record<string, string>>(props.initialPages);
+  const [currentPage, setCurrentPage] = useState<string>("index");
+  const currentPageHtml = pages[currentPage] ?? "";
+
+  // Per-page chat history
+  const [allChatHistory, setAllChatHistory] = useState<Record<string, ChatMessage[]>>(() => {
+    const result: Record<string, ChatMessage[]> = {};
+    for (const [page, msgs] of Object.entries(props.initialChatHistory)) {
+      result[page] = (msgs || []).map((item) => ({
+        role: item.role,
+        content: item.content,
+        timestamp: new Date(item.timestamp),
+      }));
+    }
+    return result;
   });
+  const messages = allChatHistory[currentPage] ?? [];
+
+  // Code tab state
+  const [codeValue, setCodeValue] = useState<string>(currentPageHtml);
+
+  // Page Manager dialog state
+  const [showAddPageDialog, setShowAddPageDialog] = useState(false);
+  const [newPageName, setNewPageName] = useState("");
+  const [newPageError, setNewPageError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -89,10 +112,24 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   const chatSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // setMessages wrapper — since messages is derived from allChatHistory[currentPage]
+  function setMessages(updater: ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[])) {
+    setAllChatHistory((prev) => {
+      const currentMsgs = prev[currentPage] ?? [];
+      const newMsgs = typeof updater === "function" ? updater(currentMsgs) : updater;
+      return { ...prev, [currentPage]: newMsgs };
+    });
+  }
+
   // Auto-scroll to newest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Sync codeValue on page switch (Pitfall 5)
+  useEffect(() => {
+    setCodeValue(pages[currentPage] ?? "");
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-save chat history on message changes (skip initial render from DB load)
   useEffect(() => {
@@ -100,10 +137,11 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
       isFirstRender.current = false;
       return;
     }
-    if (messages.length > 0) {
-      scheduleChatHistorySave(messages);
+    const totalMsgs = Object.values(allChatHistory).reduce((sum, msgs) => sum + msgs.length, 0);
+    if (totalMsgs > 0) {
+      scheduleChatHistorySave(allChatHistory);
     }
-  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [allChatHistory]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cleanup chat save timeout on unmount
   useEffect(() => {
@@ -114,6 +152,8 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
 
   // Auto-save helper (500ms debounce after generation)
   function scheduleAutoSave(html: string) {
+    // Update pages state with new HTML for current page
+    setPages((prev) => ({ ...prev, [currentPage]: html }));
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
       void handleSave(html);
@@ -121,20 +161,23 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   }
 
   // Chat history auto-save (500ms debounce after message changes)
-  function scheduleChatHistorySave(msgs: ChatMessage[]) {
+  function scheduleChatHistorySave(allHistory: Record<string, ChatMessage[]>) {
     if (chatSaveTimeoutRef.current) clearTimeout(chatSaveTimeoutRef.current);
     chatSaveTimeoutRef.current = setTimeout(() => {
-      void saveChatHistory(msgs);
+      void saveChatHistory(allHistory);
     }, 500);
   }
 
-  async function saveChatHistory(msgs: ChatMessage[]) {
+  async function saveChatHistory(allHistory: Record<string, ChatMessage[]>) {
     try {
-      const serialized = msgs.map((m) => ({
-        role: m.role,
-        content: m.content,
-        timestamp: m.timestamp.toISOString(),
-      }));
+      const serialized: Record<string, Array<{ role: string; content: string; timestamp: string }>> = {};
+      for (const [page, msgs] of Object.entries(allHistory)) {
+        serialized[page] = msgs.map((m) => ({
+          role: m.role,
+          content: m.content,
+          timestamp: m.timestamp.toISOString(),
+        }));
+      }
       await fetch(`/api/websites/${props.websiteId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -142,6 +185,19 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
       });
     } catch {
       // Silent fail for chat history save — not critical
+    }
+  }
+
+  // Save pages to DB (immediate, for add/delete page)
+  async function savePagesToDb(pagesObj: Record<string, string>) {
+    try {
+      await fetch(`/api/websites/${props.websiteId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pages: pagesObj }),
+      });
+    } catch {
+      // silent fail
     }
   }
 
@@ -189,7 +245,8 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
         body: JSON.stringify({
           websiteId: props.websiteId,
           prompt,
-          currentHtml: htmlContent || undefined,
+          currentHtml: currentPageHtml || undefined,
+          pageName: currentPage,
         }),
       });
 
@@ -221,7 +278,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
           };
 
           if (event.step === "complete" && event.html) {
-            setHtmlContent(event.html);
+            setPages((prev) => ({ ...prev, [currentPage]: event.html! }));
             setCodeValue(event.html);
             setHasUnsaved(false);
             scheduleAutoSave(event.html);
@@ -261,14 +318,17 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     }
   }
 
-  // Save HTML to DB
+  // Save full pages object to DB
   async function handleSave(html?: string) {
     setIsSaving(true);
     try {
+      const updatedPages = html !== undefined
+        ? { ...pages, [currentPage]: html }
+        : pages;
       const res = await fetch(`/api/websites/${props.websiteId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html_content: html ?? htmlContent }),
+        body: JSON.stringify({ pages: updatedPages }),
       });
       if (!res.ok) throw new Error();
       setHasUnsaved(false);
@@ -280,18 +340,82 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     }
   }
 
-  // Publish website (also clears chat history in DB and UI)
+  // Publish website (also clears all chat history in DB and UI)
   async function handlePublish() {
     const res = await fetch(`/api/websites/${props.websiteId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "published", chat_history: [] }),
+      body: JSON.stringify({ status: "published", chat_history: {} }),
     });
     if (res.ok) {
       setStatus("published");
-      setMessages([]);
+      setAllChatHistory({});
       toast("Đã xuất bản!");
     }
+  }
+
+  // Export ZIP download
+  async function handleExport() {
+    setIsExporting(true);
+    try {
+      const res = await fetch(`/api/websites/${props.websiteId}/export`);
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `website-${props.websiteSlug}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Không thể tải ZIP. Vui lòng thử lại.");
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
+  // Switch page
+  function switchPage(pageName: string) {
+    setCurrentPage(pageName);
+  }
+
+  // Add page
+  function handleAddPage() {
+    const name = newPageName.trim().toLowerCase();
+    if (!name) return;
+    if (!/^[a-z0-9-]+$/.test(name)) {
+      setNewPageError("Chỉ dùng chữ thường, số, dấu gạch ngang");
+      return;
+    }
+    if (name in pages) {
+      setNewPageError("Tên trang đã tồn tại");
+      return;
+    }
+    const updatedPages = { ...pages, [name]: "" };
+    setPages(updatedPages);
+    setCurrentPage(name);
+    setShowAddPageDialog(false);
+    setNewPageName("");
+    setNewPageError("");
+    // Save to DB immediately
+    void savePagesToDb(updatedPages);
+  }
+
+  // Delete page
+  function handleDeletePage(pageName: string) {
+    if (pageName === "index") return;
+    const { [pageName]: _removed, ...rest } = pages;
+    setPages(rest);
+    // Also remove chat history for that page
+    setAllChatHistory((prev) => {
+      const { [pageName]: _removedChat, ...restChat } = prev;
+      return restChat;
+    });
+    if (currentPage === pageName) {
+      setCurrentPage("index");
+    }
+    setDeleteTarget(null);
+    void savePagesToDb(rest);
   }
 
   // Send chat message
@@ -312,7 +436,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
 
   // Apply code tab HTML
   function handleApplyCode() {
-    setHtmlContent(codeValue);
+    setPages((prev) => ({ ...prev, [currentPage]: codeValue }));
     void handleSave(codeValue);
     toast("Đã lưu!");
   }
@@ -320,13 +444,14 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   // Sync codeValue when switching to Code tab
   function handleTabChange(value: string) {
     if (value === "code") {
-      setCodeValue(htmlContent);
+      setCodeValue(pages[currentPage] ?? "");
     }
   }
 
   // Auto-generate on mount when no html exists and prompt was provided
   useEffect(() => {
-    if (!props.initialHtml && props.initialPrompt && !autoGenTriggered.current) {
+    const hasAnyHtml = Object.values(props.initialPages).some((h) => h && h.trim());
+    if (!hasAnyHtml && props.initialPrompt && !autoGenTriggered.current) {
       autoGenTriggered.current = true;
       void handleGenerate(props.initialPrompt);
     }
@@ -354,7 +479,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
           {props.websiteName}
         </div>
 
-        {/* Right: Save + Publish buttons */}
+        {/* Right: Save + Export ZIP + Publish buttons */}
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -366,10 +491,19 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
             Lưu thay đổi
           </Button>
           <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleExport()}
+            disabled={isExporting || !Object.values(pages).some((h) => h && h.trim())}
+          >
+            {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
+            {isExporting ? "Đang tải..." : "Tải ZIP"}
+          </Button>
+          <Button
             size="sm"
             onClick={() => void handlePublish()}
-            disabled={!htmlContent}
-            title={!htmlContent ? "Tạo nội dung trước khi xuất bản" : undefined}
+            disabled={!Object.values(pages).some((h) => h && h.trim())}
+            title={!Object.values(pages).some((h) => h && h.trim()) ? "Tạo nội dung trước khi xuất bản" : undefined}
           >
             {status === "published" ? "Đã xuất bản" : "Xuất bản"}
           </Button>
@@ -380,11 +514,50 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
       <div className="flex flex-1 pt-12 overflow-hidden">
         {/* Left panel: iframe preview (60%) */}
         <div className="w-[60%] h-full bg-muted relative p-4">
+          {/* Page Manager Tab Strip */}
+          <div className="flex items-center h-9 border-b border-border bg-background rounded-t overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mb-2">
+            {Object.keys(pages).map((pageName) => (
+              <div key={pageName} className="relative flex items-center group">
+                <button
+                  className={cn(
+                    "px-3 py-2 text-sm whitespace-nowrap transition-colors",
+                    currentPage === pageName
+                      ? "text-foreground font-semibold border-b-2 border-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                  onClick={() => switchPage(pageName)}
+                  aria-selected={currentPage === pageName}
+                  role="tab"
+                >
+                  {pageName === "index" ? "Index" : pageName}
+                </button>
+                {pageName !== "index" && (
+                  <button
+                    className="absolute -right-1 top-1 opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-destructive/10 transition-opacity"
+                    aria-label={`Xóa trang ${pageName}`}
+                    onClick={(e) => { e.stopPropagation(); setDeleteTarget(pageName); }}
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              className="px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              aria-label="Thêm trang mới"
+              onClick={() => setShowAddPageDialog(true)}
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+
           {/* Empty state */}
-          {!htmlContent && !isGenerating && (
+          {!currentPageHtml && !isGenerating && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
               <p className="text-muted-foreground text-sm text-center px-8">
-                Mô tả website của bạn để bắt đầu
+                {currentPage === "index"
+                  ? "Mô tả website của bạn để bắt đầu"
+                  : "Trang trống. Dùng Chat để tạo nội dung."}
               </p>
             </div>
           )}
@@ -392,7 +565,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
           {/* iframe without restrictions — generated apps need localStorage access */}
           <iframe
             className="w-full h-full border border-border rounded bg-white"
-            srcDoc={htmlContent || undefined}
+            srcDoc={currentPageHtml || undefined}
             title="Website preview"
           />
 
@@ -502,6 +675,48 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
           </Tabs>
         </div>
       </div>
+
+      {/* Add Page Dialog */}
+      <Dialog open={showAddPageDialog} onOpenChange={setShowAddPageDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Thêm trang mới</DialogTitle>
+            <DialogDescription>Nhập tên cho trang mới của bạn.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="page-name" className="text-sm font-medium">Tên trang</label>
+            <Input
+              id="page-name"
+              placeholder="vd: about, contact, pricing"
+              value={newPageName}
+              onChange={(e) => { setNewPageName(e.target.value); setNewPageError(""); }}
+              onKeyDown={(e) => { if (e.key === "Enter") handleAddPage(); }}
+            />
+            <p className="text-xs text-muted-foreground">Chỉ dùng chữ thường, số, dấu gạch ngang</p>
+            {newPageError && <p className="text-xs text-destructive">{newPageError}</p>}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setShowAddPageDialog(false); setNewPageName(""); setNewPageError(""); }}>Hủy</Button>
+            <Button onClick={handleAddPage} disabled={!newPageName.trim()}>Tạo trang</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Page Confirmation Dialog */}
+      <Dialog open={deleteTarget !== null} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Xóa trang?</DialogTitle>
+            <DialogDescription>
+              Trang &apos;{deleteTarget}&apos; và toàn bộ nội dung sẽ bị xóa vĩnh viễn.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Hủy</Button>
+            <Button variant="destructive" onClick={() => deleteTarget && handleDeletePage(deleteTarget)}>Xóa trang</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
