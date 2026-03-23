@@ -75,6 +75,7 @@ export const websites = pgTable("websites", (t) => ({
   sourceNoteId: t.text("source_note_id"),
   htmlContent: t.text("html_content"),
   chatHistory: t.jsonb("chat_history"),
+  pages: t.jsonb("pages"),
   ...timestamps(t),
 }));
 
