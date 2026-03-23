@@ -14,6 +14,7 @@
       "Bash(node -e \"require\\(''./.claude/hooks/gsd-context-monitor.js''\\)\")",
       "Bash(echo \"node exit: $?\")",
       "WebFetch(domain:ui.shadcn.com)",
+      "WebFetch(domain:preline.co)",
       "Bash(npm run:*)",
       "Bash(cat D:/STEVE/steve/.planning/phases/04-editor/*-VERIFICATION.md)",
       "Bash(grep -n 'SectionEditForm\\\\|resolveField\\\\|onUpdateField\\\\|headline\\\\|subtext\\\\|buttonText' D:/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/components/section-edit-form.tsx)",
@@ -30,7 +31,14 @@
       "Bash(npx vitest:*)",
       "Bash(find \"D:/STEVE/steve/src/app/\\(dashboard\\)/dashboard/websites\" -type f)",
       "Bash(find \"D:/STEVE/steve/src/app/\\(public\\)\" -type f)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(find /d/STEVE/steve/src -name *prompt* -o -name *ast*)",
+      "Bash(find D:STEVEsteve -type f -name *.skill)",
+      "Bash(find D:STEVEsteve -type f -name *.sh)",
+      "Bash(find D:STEVEsteve -type f -name package.json -path *skills* -o -name *.json -path *skills*)",
+      "Bash(grep -n \"overflow\\\\|scroll\\\\|chat\\\\|Chat\\\\|message\\\\|Message\" src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx)",
+      "Bash(grep -n \"ScrollArea\\\\|overflow\\\\|h-full\\\\|flex-1\\\\|panel\\\\|sidebar\" src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
