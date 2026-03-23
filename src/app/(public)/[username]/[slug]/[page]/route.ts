@@ -4,9 +4,9 @@ import { and, eq } from "drizzle-orm";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ username: string; slug: string }> }
+  { params }: { params: Promise<{ username: string; slug: string; page: string }> }
 ) {
-  const { username, slug } = await params;
+  const { username, slug, page } = await params;
 
   // Look up profile by username
   const profileResults = await db.select().from(profiles)
@@ -33,14 +33,14 @@ export async function GET(
   // Archived → plain HTML message
   if (website.status === "archived") {
     return new Response(
-      `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Trang đã bị lưu trữ</title></head><body style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>Trang đã bị lưu trữ</p></body></html>`,
+      `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>Trang da bi luu tru</title></head><body style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;"><p>Trang da bi luu tru</p></body></html>`,
       { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
   }
 
-  // Published — serve pages.index (backward compat: fall back to htmlContent for transition)
+  // Published — serve pages[page]
   const pages = (website.pages as Record<string, string> | null) ?? {};
-  const html = pages["index"] ?? (website.htmlContent as string | null);
+  const html = pages[page] ?? null;
   if (!html) {
     return new Response(null, { status: 404 });
   }
