@@ -4,7 +4,7 @@ import { generateHtml } from "./generator";
 import { validateAndFix } from "./validator";
 import { reviewHtml } from "./reviewer";
 import { buildUserMessage, buildEditUserMessage, refineHtml } from "./context-builder";
-import { selectComponents } from "@/lib/component-library";
+import { selectComponents, selectExamples } from "@/lib/component-library";
 import type { PipelineEvent } from "./types";
 
 export type { PipelineEvent } from "./types";
@@ -58,10 +58,12 @@ export async function runGenerationPipeline({
 
     onEvent({ step: "components", status: "start" });
     const snippets = selectComponents(analysis);
+    const examples = selectExamples(analysis);
+    const allSnippets = [...snippets, ...examples];
     onEvent({
       step: "components",
       status: "done",
-      detail: `${snippets.length} component(s) selected`,
+      detail: `${snippets.length} component(s) selected${examples.length > 0 ? " + 1 reference example" : ""}`,
     });
 
     // Design already resolved alongside analyze — emit done event only
@@ -71,7 +73,7 @@ export async function runGenerationPipeline({
       detail: `Preset: ${design.preset} · Primary: ${design.palette.primary}`,
     });
 
-    userMessage = buildUserMessage(prompt, analysis, design, snippets, otherPagesContext);
+    userMessage = buildUserMessage(prompt, analysis, design, allSnippets, otherPagesContext);
   }
 
   // Step: Generate

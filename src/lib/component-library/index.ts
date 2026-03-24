@@ -3,6 +3,12 @@ import { ALL_SNIPPETS } from "./snippets";
 export type { ComponentSnippet } from "./types";
 import type { ComponentSnippet } from "./types";
 
+/** Regular component snippets (non-example) — used for tag-based scoring */
+const REGULAR_SNIPPETS = ALL_SNIPPETS.filter((s) => s.category !== "example");
+
+/** Golden example snippets — injected as reference separately from scoring */
+const EXAMPLE_SNIPPETS = ALL_SNIPPETS.filter((s) => s.category === "example");
+
 /**
  * Select up to 4 component snippets best matching the given analysis result.
  *
@@ -13,6 +19,8 @@ import type { ComponentSnippet } from "./types";
  * 4. Otherwise: filter by min_score, lower threshold to 0 if fewer than 4 eligible
  * 5. Sort by: score DESC, domainBoost DESC, priority ASC
  * 6. Return top 4
+ *
+ * Note: example snippets are excluded from scoring — use selectExamples() for those.
  */
 export function selectComponents(analysis: AnalysisResult): ComponentSnippet[] {
   // Build candidate set from type, sections, and features
@@ -22,8 +30,8 @@ export function selectComponents(analysis: AnalysisResult): ComponentSnippet[] {
     ...analysis.features,
   ]);
 
-  // Score every snippet
-  const scored = ALL_SNIPPETS.map((snippet) => {
+  // Score every regular snippet (examples excluded from tag scoring)
+  const scored = REGULAR_SNIPPETS.map((snippet) => {
     const score = snippet.tags.filter((tag) => candidateSet.has(tag)).length;
     const domainBoost = snippet.domain_hints.includes(analysis.type) ? 1 : 0;
     return { snippet, score, domainBoost };
@@ -54,11 +62,33 @@ export function selectComponents(analysis: AnalysisResult): ComponentSnippet[] {
 }
 
 /**
- * Collect fallback snippets for a given type from ALL_SNIPPETS data.
+ * Select the best matching golden example snippet for the given analysis type.
+ * Returns at most 1 example (the best match for the site type).
+ */
+export function selectExamples(analysis: AnalysisResult): ComponentSnippet[] {
+  // Try to find a type-specific example first
+  const typeMatch = EXAMPLE_SNIPPETS.filter((s) =>
+    s.domain_hints.includes(analysis.type)
+  );
+  if (typeMatch.length > 0) {
+    return [typeMatch[0]];
+  }
+  // Fall back to any example tagged with the type
+  const tagMatch = EXAMPLE_SNIPPETS.filter((s) =>
+    s.tags.includes(analysis.type)
+  );
+  if (tagMatch.length > 0) {
+    return [tagMatch[0]];
+  }
+  return [];
+}
+
+/**
+ * Collect fallback snippets for a given type from REGULAR_SNIPPETS data.
  * Falls back to "generic" if no type-specific fallbacks found.
  */
 function getFallbacks(type: string): ComponentSnippet[] {
-  const typeSpecific = ALL_SNIPPETS.filter(
+  const typeSpecific = REGULAR_SNIPPETS.filter(
     (s) => s.fallback === true && s.fallback_for.includes(type)
   );
 
@@ -67,7 +97,7 @@ function getFallbacks(type: string): ComponentSnippet[] {
   }
 
   // Supplement with generic fallbacks if not enough type-specific ones
-  const generic = ALL_SNIPPETS.filter(
+  const generic = REGULAR_SNIPPETS.filter(
     (s) => s.fallback === true && s.fallback_for.includes("generic")
   );
 

@@ -27,6 +27,21 @@ export function buildUserMessage(
   const googleFontsImport = buildGoogleFontsImport(design.fonts);
   const sections = analysis.sections.join(" \u2192 ") || "auto";
 
+  const radiusMap: Record<string, string> = { sharp: "rounded-md", rounded: "rounded-xl", pill: "rounded-full" };
+  const densityMap: Record<string, string> = { compact: "py-12", comfortable: "py-20", spacious: "py-28" };
+  const cardStyleMap: Record<string, string> = {
+    shadow: "shadow-sm hover:shadow-md",
+    bordered: "border border-gray-200 dark:border-gray-700",
+    glass: "backdrop-blur-sm bg-white/80",
+    flat: "no border/shadow",
+  };
+
+  const layoutGuide = `## Layout Guide (from Design System)
+- Border radius: ${radiusMap[design.borderRadius] ?? "rounded-xl"}
+- Card style: ${cardStyleMap[design.cardStyle] ?? "border border-gray-200 dark:border-gray-700"}
+- Section padding: ${densityMap[design.density] ?? "py-20"}
+- Hero layout: ${design.heroStyle} (${design.heroStyle === "centered" ? "text-center, content centered" : "split layout with image on one side"})`;
+
   const snippetBlock = snippets
     .map((s) => {
       const prefix = s.category === "example"
@@ -41,6 +56,8 @@ Preset: ${design.preset}
 Primary: ${design.palette.primary} | Secondary: ${design.palette.secondary} | Accent: ${design.palette.accent} | BG: ${design.palette.bg}
 Heading: ${design.fonts.heading} | Body: ${design.fonts.body}
 Google Fonts: ${googleFontsImport}
+
+${layoutGuide}
 
 ## Component References
 ${snippetBlock}

@@ -86,13 +86,15 @@ describe("snippet data validation", () => {
   });
 
   it("no snippet html contains DOCTYPE", () => {
-    ALL_SNIPPETS.forEach((s: ComponentSnippet) => {
+    // Example snippets are complete HTML documents by design — exempt them
+    ALL_SNIPPETS.filter((s) => s.category !== "example").forEach((s: ComponentSnippet) => {
       expect(s.html, `${s.id}: html must not contain <!DOCTYPE`).not.toContain("<!DOCTYPE");
     });
   });
 
   it("no snippet html contains CDN links", () => {
-    ALL_SNIPPETS.forEach((s: ComponentSnippet) => {
+    // Example snippets are complete HTML documents with CDN links by design — exempt them
+    ALL_SNIPPETS.filter((s) => s.category !== "example").forEach((s: ComponentSnippet) => {
       expect(s.html, `${s.id}: html must not contain cdn.jsdelivr.net`).not.toContain("cdn.jsdelivr.net");
       expect(s.html, `${s.id}: html must not contain cdn.tailwindcss.com`).not.toContain("cdn.tailwindcss.com");
     });
