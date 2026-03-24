@@ -7,18 +7,30 @@ function getOpenAI(): OpenAI {
   return _openai;
 }
 
-export async function generateHtml(userMessage: string): Promise<string> {
-  const completion = await getOpenAI().chat.completions.create(
+export async function generateHtml(
+  userMessage: string,
+  mode: "fresh" | "edit" = "fresh",
+  onChunk?: (chunk: string) => void
+): Promise<string> {
+  const stream = await getOpenAI().chat.completions.create(
     {
       model: "gpt-4o",
       messages: [
         { role: "system", content: buildSystemPrompt() },
         { role: "user", content: userMessage },
       ],
+      stream: true,
     },
     { signal: AbortSignal.timeout(60000) }
   );
 
-  const raw = completion.choices[0].message.content ?? "";
-  return stripMarkdownFences(raw);
+  let full = "";
+  for await (const chunk of stream) {
+    const content = chunk.choices[0]?.delta?.content ?? "";
+    if (content) {
+      full += content;
+      onChunk?.(content);
+    }
+  }
+  return stripMarkdownFences(full);
 }
