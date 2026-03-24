@@ -23,6 +23,10 @@ export interface DesignResult {
     heading: string;
     body: string;
   };
+  borderRadius: "sharp" | "rounded" | "pill";
+  cardStyle: "flat" | "bordered" | "shadow" | "glass";
+  heroStyle: "centered" | "split-left" | "split-right" | "bg-image";
+  density: "compact" | "comfortable" | "spacious";
 }
 
 export interface ReviewResult {
