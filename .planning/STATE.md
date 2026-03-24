@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: verifying
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-24T16:24:14.270Z"
+status: completed
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-24T16:17:00.000Z"
 progress:
   total_phases: 6
   completed_phases: 5
@@ -18,12 +18,12 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Phase complete — ready for verification
+**Status:** Milestone complete
 
 ## Current Position
 
-Phase: 17 (ui-quality-upgrade) — EXECUTING
-Plan: 2 of 2
+Phase: 17
+Plan: 02 (next)
 
 ## What's Left (v1.1)
 
@@ -81,6 +81,7 @@ Plan: 2 of 2
 - [16-02] runGenerationPipeline refactored from positional to object params — supports otherPagesContext without breaking callers
 - [16-02] Cross-page context extraction capped at 3 pages to keep context token count manageable
 - [16-02] otherPagesContext appended to both buildUserMessage and buildEditUserMessage — edit mode also benefits from design consistency
+- [17-01] Design Principles and Modern UI Patterns injected into fresh mode system prompt only — edit mode compact prompt unchanged; zero-parameter invariant preserved for OpenAI prompt caching
 
 ## Accumulated Context
 
@@ -126,11 +127,10 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 15-critical-bug-fixes P02 | 8 | 5 tasks | 4 files |
 | Phase 16 P02 | 3 | 4 tasks | 4 files |
 | Phase 16 P01 | 12 | 3 tasks | 2 files |
-| Phase 17 P01 | 134 | 3 tasks | 1 files |
-| Phase 17 P02 | 1010 | 4 tasks | 10 files |
+| Phase 17 P01 | 134 | 3 tasks | 1 file |
 
 ## Session Continuity
 
-Last session: 2026-03-24T16:24:14.265Z
-Stopped at: Completed 17-02-PLAN.md
+Last session: 2026-03-24T16:17:00.000Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None
