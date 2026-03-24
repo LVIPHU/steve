@@ -57,7 +57,11 @@ export async function runGenerationPipeline(
 
   // Step: Generate
   onEvent({ step: "generate", status: "start" });
-  let html = await generateHtml(userMessage);
+  let html = await generateHtml(
+    userMessage,
+    isEditMode ? "edit" : "fresh",
+    (chunk) => onEvent({ step: "generate", status: "streaming", chunk })
+  );
   onEvent({ step: "generate", status: "done" });
 
   // Fresh mode + refine enabled: review + conditional refine
