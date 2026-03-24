@@ -7,6 +7,10 @@ describe("DesignResultSchema", () => {
       preset: "bold-dark",
       palette: { primary: "#E63946", secondary: "#1D3557", accent: "#457B9D", bg: "#F1FAEE" },
       fonts: { heading: "Montserrat", body: "Inter" },
+      borderRadius: "rounded",
+      cardStyle: "shadow",
+      heroStyle: "centered",
+      density: "comfortable",
     };
     expect(DesignResultSchema.parse(valid)).toEqual(valid);
   });
@@ -18,6 +22,10 @@ describe("DesignResultSchema", () => {
         preset,
         palette: { primary: "#000", secondary: "#111", accent: "#222", bg: "#FFF" },
         fonts: { heading: "Roboto", body: "Open Sans" },
+        borderRadius: "rounded",
+        cardStyle: "bordered",
+        heroStyle: "centered",
+        density: "comfortable",
       };
       expect(() => DesignResultSchema.parse(obj)).not.toThrow();
     }

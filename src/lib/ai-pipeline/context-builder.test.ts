@@ -7,6 +7,10 @@ const mockDesign: DesignResult = {
   preset: "bold-dark",
   palette: { primary: "#E63946", secondary: "#1D3557", accent: "#457B9D", bg: "#F1FAEE" },
   fonts: { heading: "Montserrat", body: "Inter" },
+  borderRadius: "rounded",
+  cardStyle: "bordered",
+  heroStyle: "centered",
+  density: "comfortable",
 };
 
 const mockAnalysis: AnalysisResult = {
