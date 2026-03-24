@@ -51,7 +51,7 @@ export async function analyzeAndDesign(prompt: string): Promise<{
   analysis: AnalysisResult;
   design: DesignResult;
 }> {
-  const completion = await getOpenAI().beta.chat.completions.parse(
+  const completion = await getOpenAI().chat.completions.parse(
     {
       model: "gpt-4o-mini",
       messages: [
