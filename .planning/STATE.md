@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
-status: executing
-stopped_at: Phase 14 UI-SPEC approved
-last_updated: "2026-03-24T07:55:17.940Z"
+status: verifying
+stopped_at: Completed 15-02-PLAN.md
+last_updated: "2026-03-24T15:15:09.468Z"
 progress:
   total_phases: 6
   completed_phases: 5
@@ -18,11 +18,11 @@ progress:
 
 **Name:** Website Generator
 **Initialized:** 2026-03-16
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 
 ## Current Position
 
-Phase: 13 (multi-page-website-support) — EXECUTING
+Phase: 15 (critical-bug-fixes) — EXECUTING
 Plan: 2 of 2
 
 ## What's Left (v1.1)
@@ -80,6 +80,17 @@ Plan: 2 of 2
 - Phase 12 added: Migrate snippet library from DaisyUI to Preline UI
 - Phase 13 added: Multi-page Website Support
 - Phase 14 added: Onboarding Chat Free-form Prompt (Lovable-style single text input)
+- Phases 15-18 added (2026-03-24): v1.2 Pipeline Quality & Observability — derived from docs/steve-complete-analysis-and-roadmap.md
+
+### v1.2 Key Decisions
+
+- Phase 15 first: Bug fixes unblock all downstream quality improvements
+- Phase 16: Optimization only after bugs fixed (don't optimize broken code)
+- Phase 17: UI quality upgrade after pipeline is stable and optimized
+- Phase 18 last: Observability layered on top of complete system for accurate measurements
+- Langfuse chosen for observability: 50K free tier, self-hosted option, LLM-native
+- Eval suite is opt-in (npm run eval), not part of normal test run — costs OpenAI tokens
+- analyzeAndDesign() merged step preserves backward compat by emitting same events as separate steps
 
 ## What's Built (v1.0 — all complete)
 
@@ -102,9 +113,11 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 12 P02 | 10 | 2 tasks | 12 files |
 | Phase 12 P03 (gap) | 15 | 2 tasks | 5 files |
 | Phase 13 P01 | 310 | 3 tasks | 9 files |
+| Phase 15-critical-bug-fixes P01 | 15 | 5 tasks | 6 files |
+| Phase 15-critical-bug-fixes P02 | 8 | 5 tasks | 4 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T07:55:17.934Z
-Stopped at: Phase 14 UI-SPEC approved
-Resume file: .planning/phases/14-onboarding-chat-freeform-prompt/14-UI-SPEC.md
+Last session: 2026-03-24T15:15:09.463Z
+Stopped at: Completed 15-02-PLAN.md
+Resume file: None

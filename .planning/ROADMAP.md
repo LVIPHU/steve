@@ -305,15 +305,86 @@ Phases execute in numeric order: 9 → 10 → 11 → 12 → 13
 | 10. Design Agent + Context Builder + Prompt Rewrite | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 11. Reviewer + Pipeline Rewire + UI Update | v1.1 | 2/2 | Complete | 2026-03-20 |
 | 12. Migrate snippet library from DaisyUI to Preline UI | v1.1 | 3/3 | Complete | 2026-03-21 |
-| 13. Multi-page Website Support | v1.2 | 2/2 | Complete   | 2026-03-23 |
-| 14. Onboarding Chat Free-form Prompt | v1.2 | 0/0 | Planned | - |
+| 13. Multi-page Website Support | v1.1 | 2/2 | Complete   | 2026-03-23 |
+| 14. Onboarding Chat Free-form Prompt | v1.1 | 1/1 | Complete | 2026-03-24 |
+| 15. Critical Bug Fixes | v1.2 | 1/2 | In Progress|  |
+| 16. Pipeline Optimization | v1.2 | 2/2 | Planned | - |
+| 17. UI Quality Upgrade | v1.2 | 2/2 | Planned | - |
+| 18. Observability & Testing | v1.2 | 2/2 | Planned | - |
 
 ### Phase 14: Onboarding Chat Free-form Prompt
 
 **Goal:** Đổi onboarding chat từ 2 câu hỏi cố định sang 1 text input tự do — user gõ prompt thoải mái như Lovable, AI tạo website ngay từ đó.
 **Requirements**: TBD
 **Depends on:** Phase 13
-**Plans:** 0 plans
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 14 to break down)
+- [x] 14-01-PLAN.md — Freeform textarea input, AI name extraction (gpt-4o-mini), redirect to editor with prompt param
+
+---
+
+## Milestone v1.2 — Pipeline Quality & Observability
+
+### Phase 15: Critical Bug Fixes
+
+**Goal:** Sửa 3 bug nghiêm trọng ảnh hưởng trực tiếp đến chất lượng output: edit mode không gửi HTML hiện tại cho LLM, generation không streaming (user chờ 10-30s trống), system prompt quá nặng cho edit mode.
+**Depends on:** Phase 14
+**Success Criteria** (what must be TRUE):
+  1. Edit mode: LLM nhận `currentHtml` đầy đủ trong user message — content cũ được preserve khi edit
+  2. Streaming: user thấy HTML xuất hiện từng chữ trong preview ngay khi generate bắt đầu (time-to-first-content < 5s)
+  3. Edit mode dùng system prompt riêng ngắn hơn (~50 dòng) — không bị confused bởi CDN/component patterns của fresh mode
+  4. `npm run typecheck` và `npm run test` pass clean sau thay đổi
+**Plans:** 1/2 plans executed
+
+Plans:
+- [ ] 15-01-PLAN.md — Fix edit mode (truyền currentHtml vào context-builder) + tách system prompt fresh/edit
+- [x] 15-02-PLAN.md — Streaming generation (generator.ts + types.ts + index.ts + editor-client.tsx + route.ts)
+
+### Phase 16: Pipeline Optimization
+
+**Goal:** Giảm latency và cost bằng tối ưu cấu trúc pipeline: gộp 2 LLM calls analyze+design thành 1, skip review/refine khi không cần thiết, tăng cường validator, thêm cross-page design context.
+**Depends on:** Phase 15
+**Success Criteria** (what must be TRUE):
+  1. Fresh mode giảm từ 3 LLM calls → 2 LLM calls (analyze+design merged)
+  2. Review/refine chỉ chạy khi: validator phát hiện warnings > 0, hoặc fixes > 2, hoặc HTML < 2000 chars (~30% cases)
+  3. Validator có thêm 8 checks: DOCTYPE, html/head/body tags, viewport meta, Tailwind CDN, empty body, HTML length, mismatched script tags, CSS var consistency
+  4. Pages mới (about, contact...) nhận design summary từ index page (màu, fonts, nav links) → visual consistency
+  5. `npm run test` pass clean
+**Plans:** 2/2 plans
+
+Plans:
+- [ ] 16-01-PLAN.md — Tạo analyze-and-design.ts (merged step) + update index.ts + conditional review logic
+- [ ] 16-02-PLAN.md — Strengthen validator (+8 checks) + cross-page context (route.ts + context-builder.ts)
+
+### Phase 17: UI Quality Upgrade
+
+**Goal:** Nâng chất lượng HTML output lên gần production-ready: viết lại system prompt với design principles rõ ràng, thêm golden example pages làm reference, mở rộng design tokens với layout controls.
+**Depends on:** Phase 16
+**Success Criteria** (what must be TRUE):
+  1. System prompt fresh mode có section Design Principles (whitespace, hierarchy, spacing, cards, buttons) và Modern UI Patterns (hero, navbar, CTA, footer patterns)
+  2. 3-4 golden example pages tồn tại trong component library, được inject vào context khi type match
+  3. Design tokens có thêm 4 fields: borderRadius, cardStyle, heroStyle, density — được inject vào context-builder
+  4. buildSystemPrompt(mode) vẫn zero-parameter-compatible cho caching (fresh mode)
+  5. `npm run test` pass clean
+**Plans:** 2/2 plans
+
+Plans:
+- [ ] 17-01-PLAN.md — Rewrite system prompt fresh mode với Design Principles + Modern UI Patterns sections
+- [ ] 17-02-PLAN.md — Golden examples (snippets/examples.ts) + expand design tokens schema (design-agent.ts + context-builder.ts)
+
+### Phase 18: Observability & Testing
+
+**Goal:** Có visibility đầy đủ vào cost, latency, và output quality để data-driven optimize: Langfuse tracing cho mỗi pipeline step, eval test suite với 20+ prompts.
+**Depends on:** Phase 17
+**Success Criteria** (what must be TRUE):
+  1. Mỗi pipeline step được trace trong Langfuse với: model, input length, output length, latency ms
+  2. Langfuse integration không crash nếu keys không set (graceful no-op)
+  3. `npm run eval` chạy được 20+ prompts qua pipeline, output pass/fail + score
+  4. `.env.example` có LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY entries
+  5. Unit tests và typecheck pass clean
+**Plans:** 2/2 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — Langfuse client (lib/langfuse.ts) + pipeline instrumentation (index.ts) + .env.example update
+- [ ] 18-02-PLAN.md — Eval test suite (tests/eval/prompts.ts + runner.ts) + npm run eval script
