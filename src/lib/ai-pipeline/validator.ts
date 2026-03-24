@@ -51,5 +51,48 @@ export function validateAndFix(html: string): ValidationResult {
     warnings.push("aspect-w/h Tailwind classes require plugin not available in CDN");
   }
 
+  // Check 1: DOCTYPE present
+  if (!result.match(/^<!DOCTYPE html>/i)) {
+    result = "<!DOCTYPE html>\n" + result;
+    fixes.push("Added missing DOCTYPE");
+  }
+
+  // Check 2: Essential tags
+  if (!/<html[\s>]/i.test(result)) warnings.push("Missing <html> tag");
+  if (!/<head[\s>]/i.test(result)) warnings.push("Missing <head> tag");
+  if (!/<body[\s>]/i.test(result)) warnings.push("Missing <body> tag");
+
+  // Check 3: Viewport meta
+  if (!/<meta[^>]*viewport/i.test(result)) {
+    warnings.push("Missing viewport meta — mobile rendering will break");
+  }
+
+  // Check 4: Tailwind CDN present
+  if (!/cdn\.tailwindcss\.com/i.test(result)) {
+    warnings.push("Missing Tailwind CDN — styles may not render");
+  }
+
+  // Check 5: Empty body
+  if (/<body[^>]*>\s*<\/body>/i.test(result)) {
+    warnings.push("Empty <body> — generation likely failed or incomplete");
+  }
+
+  // Check 6: Suspiciously short HTML
+  if (result.length < 500) {
+    warnings.push(`HTML very short (${result.length} chars) — likely incomplete generation`);
+  }
+
+  // Check 7: Mismatched script tags
+  const scriptOpens = (result.match(/<script[\s>]/g) || []).length;
+  const scriptCloses = (result.match(/<\/script>/g) || []).length;
+  if (scriptOpens !== scriptCloses) {
+    warnings.push(`Mismatched <script> tags: ${scriptOpens} opens vs ${scriptCloses} closes`);
+  }
+
+  // Check 8: CSS custom property referenced but not defined
+  if (/var\(--color-primary\)/i.test(result) && !/--color-primary\s*:/.test(result)) {
+    warnings.push("CSS variable --color-primary referenced but never defined");
+  }
+
   return { html: result, fixes, warnings };
 }
