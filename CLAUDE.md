@@ -59,8 +59,15 @@ Copy `.env.example` to `.env` and fill in:
 
 - Schema defined in `src/db/schema.ts` — single source of truth for all tables and relations.
 - **better-auth tables:** `user`, `session`, `account`, `verification` — match better-auth's expected shape, passed via `drizzleAdapter`.
-- **App tables:** `profiles` (1:1 with `user`, has `username` and `plan`), `websites` (many per user, has `slug`, `status`, `htmlContent` as TEXT, `chatHistory` as JSONB).
+- **App tables:** `profiles` (1:1 with `user`, has `username` and `plan`), `websites` (many per user).
 - DB client exported from `src/db/index.ts` as `db`.
+
+**`websites` table key columns:**
+- `pages` (JSONB) — primary HTML store: `{ "index": "<html>...", "about": "<html>..." }`. Updated atomically via `jsonb_set`.
+- `chatHistory` (JSONB) — per-page message log: `{ "index": [...messages], "about": [...] }`.
+- `htmlContent` (TEXT) — legacy fallback only; new code reads `pages` first.
+- `sourceNoteId` (TEXT) — optional link to a source note that generated this website.
+- `status` — `draft | published | archived`.
 
 ### AI Generation Pipeline
 
@@ -78,7 +85,7 @@ Pipeline modules in `src/lib/ai-pipeline/`:
 - `context-builder.ts` — assembles the user message / edit message / refine prompt
 - `validator.ts` — post-processes HTML, applies fixes, returns warnings
 
-After successful generation the API auto-saves `htmlContent` to DB before sending the `complete` event.
+After successful generation the API auto-saves `pages[pageName]` to DB via atomic `jsonb_set` before sending the `complete` event.
 
 ### Component Library
 
@@ -91,10 +98,21 @@ After successful generation the API auto-saves `htmlContent` to DB before sendin
 ### Editor UI
 
 `(dashboard)/dashboard/websites/[id]/edit/` — split-pane layout:
-- **Left 60%:** live `<iframe srcDoc>` preview of the generated HTML
+- **Left 60%:** live `<iframe srcDoc>` preview with page tabs across the top
 - **Right 40%:** tabbed panel — "Chat" (SSE-driven pipeline progress + user messages) and "Code" (raw HTML textarea for manual edits)
 
-The editor auto-generates on mount when `initialHtml` is null and `initialPrompt` is set. Chat history is auto-saved to `websites.chatHistory` (500ms debounce). HTML is auto-saved after generation (500ms debounce). Publishing clears chat history.
+**Multi-page support:** websites can have multiple named pages (`index`, `about`, `contact`, etc.). Each page has its own HTML in `pages` JSONB and its own chat history in `chatHistory` JSONB. The "index" page cannot be deleted.
+
+**Link interception:** the editor injects a script into the iframe that intercepts `<a>` clicks and posts `{ type: "gsd-page-nav", page: "..." }` to the parent window, switching the active page without a real navigation.
+
+The editor auto-generates on mount when the page has no HTML and `initialPrompt` is set. Chat history is auto-saved (500ms debounce). HTML is auto-saved after generation (500ms debounce). Publishing clears chat history.
+
+### API Routes
+
+Beyond the routes already documented:
+- `GET /api/websites/[id]` — fetch a single website (auth + ownership check)
+- `PATCH /api/websites/[id]` — update website fields (name, status, pages, chatHistory)
+- `GET /api/websites/[id]/export` — download all pages as a ZIP archive of `.html` files
 
 ### Image Upload
 
