@@ -308,7 +308,7 @@ Phases execute in numeric order: 9 → 10 → 11 → 12 → 13
 | 13. Multi-page Website Support | v1.1 | 2/2 | Complete   | 2026-03-23 |
 | 14. Onboarding Chat Free-form Prompt | v1.1 | 1/1 | Complete | 2026-03-24 |
 | 15. Critical Bug Fixes | v1.2 | 1/2 | In Progress|  |
-| 16. Pipeline Optimization | v1.2 | 2/2 | Complete   | 2026-03-24 |
+| 16. Pipeline Optimization | v1.2 | 2/2 | Complete    | 2026-03-24 |
 | 17. UI Quality Upgrade | v1.2 | 2/2 | Planned | - |
 | 18. Observability & Testing | v1.2 | 2/2 | Planned | - |
 
