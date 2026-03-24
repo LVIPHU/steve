@@ -72,6 +72,9 @@ Plan: 2 of 2
 - [13-01] jsonb_set with ARRAY[pageName] + to_jsonb(html::text) for atomic HTML page write — prevents race conditions and SQL injection (Pitfall 1)
 - [13-01] pages.index fallback to htmlContent in public slug route for zero-downtime backward compat during multi-page transition
 - [13-01] chat_history validation changed from !Array.isArray to typeof !== 'object' to accept per-page { [pageName]: ChatMessage[] } format
+- [16-02] runGenerationPipeline refactored from positional to object params — supports otherPagesContext without breaking callers
+- [16-02] Cross-page context extraction capped at 3 pages to keep context token count manageable
+- [16-02] otherPagesContext appended to both buildUserMessage and buildEditUserMessage — edit mode also benefits from design consistency
 
 ## Accumulated Context
 
