@@ -28,7 +28,12 @@ export function buildUserMessage(
   const sections = analysis.sections.join(" \u2192 ") || "auto";
 
   const snippetBlock = snippets
-    .map((s) => `<!-- ${s.id}: ${s.description} -->\n${s.html}\n<!-- end ${s.id} -->`)
+    .map((s) => {
+      const prefix = s.category === "example"
+        ? `<!-- REFERENCE EXAMPLE: ${s.id}: ${s.description} — adapt this structure and quality level -->`
+        : `<!-- ${s.id}: ${s.description} -->`;
+      return `${prefix}\n${s.html}\n<!-- end ${s.id} -->`;
+    })
     .join("\n\n");
 
   const parts = [`## Design Brief
