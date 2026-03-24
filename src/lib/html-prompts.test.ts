@@ -29,8 +29,8 @@ describe("buildSystemPrompt", () => {
     expect(buildSystemPrompt()).toContain("alert()");
   });
 
-  it("includes DaisyUI CDN", () => {
-    expect(buildSystemPrompt()).toContain("daisyui");
+  it("bans DaisyUI classes", () => {
+    expect(buildSystemPrompt()).toContain("DaisyUI");
   });
 
   it("does NOT contain template structure hints", () => {
@@ -50,7 +50,7 @@ describe("buildSystemPrompt", () => {
   });
 
   it("contains flip card CSS rules", () => {
-    expect(buildSystemPrompt()).toContain("perspective: 1000px");
+    expect(buildSystemPrompt()).toContain("transform-style: preserve-3d");
   });
 
   it("does NOT contain backward-compat alias references in source", () => {
@@ -59,6 +59,31 @@ describe("buildSystemPrompt", () => {
     const result = buildSystemPrompt();
     expect(typeof result).toBe("string");
     expect(result.length).toBeGreaterThan(100);
+  });
+});
+
+describe("buildSystemPrompt edit mode", () => {
+  it("returns short edit prompt when mode is 'edit'", () => {
+    const prompt = buildSystemPrompt("edit");
+    expect(prompt).toContain("editing an existing HTML file");
+    expect(prompt).toContain("ONLY modify what the user specifically requests");
+    expect(prompt).toContain("<!DOCTYPE html>");
+  });
+
+  it("edit prompt does NOT contain CDN setup section", () => {
+    const prompt = buildSystemPrompt("edit");
+    expect(prompt).not.toContain("cdn.tailwindcss.com");
+    expect(prompt).not.toContain("preline.js");
+  });
+
+  it("edit prompt does NOT contain Component References instruction", () => {
+    const prompt = buildSystemPrompt("edit");
+    expect(prompt).not.toContain("Component References");
+  });
+
+  it("default mode is fresh (zero-param call still works)", () => {
+    const fresh = buildSystemPrompt();
+    expect(fresh).toContain("cdn.tailwindcss.com");
   });
 });
 
