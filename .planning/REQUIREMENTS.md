@@ -81,10 +81,22 @@ Tất cả đã ship và verified.
 
 ---
 
+## v1.2 Requirements (Phase 13)
+
+### Multi-page Website Support
+- **MP-01**: DB schema — `websites.pages` JSONB column thay thế `htmlContent` TEXT, schema: `{ [pageName: string]: string }` (pageName → HTML string). Existing rows migrated: `{ index: htmlContent }`.
+- **MP-02**: `PATCH /api/websites/[id]` accept `pages` field (JSONB object) thay vì `html_content`; backward compat với `html_content` để không break existing code trong transition.
+- **MP-03**: Public route `/{username}/{slug}` và `/{username}/{slug}/{page}` — route dynamic, default page là `"index"`. Draft → 404. Archived → archived message. Published → serve `pages[page]`.
+- **MP-04**: `POST /api/ai/generate-html` accept optional `pageName` param (default `"index"`), write generated HTML vào `pages[pageName]` thay vì `htmlContent`.
+- **MP-05**: Editor UI có Page Manager — list pages, add page (với tên tùy chỉnh), switch page (load HTML của page đó vào preview/chat), delete page (không xóa page cuối).
+- **MP-06**: Khi generate page mới, AI nhận instruction dùng relative links (`about.html`, `index.html`) thay vì absolute URL — đảm bảo hoạt động cả online lẫn offline export.
+- **MP-07**: `GET /api/websites/[id]/export` trả về ZIP file chứa tất cả pages dưới dạng `{pageName}.html` files.
+- **MP-08**: Backward compatibility — existing published websites vẫn accessible tại `/{username}/{slug}` (load `pages.index`).
+
 ## v2 Requirements (Deferred)
 
-### Multi-page Generation
-- **MULTI-01**: Progressive generation cho website nhiều trang — scaffold + per-page + JS hash router
+### Multi-page Generation (old approach — replaced by MP-01..08)
+- **MULTI-01**: ~~Progressive generation cho website nhiều trang — scaffold + per-page + JS hash router~~ (replaced by MP-06 relative-link approach)
 - **MULTI-02**: SSE events riêng cho từng trang (page_index, page_total)
 - **MULTI-03**: maxDuration 180s cho multi-page mode
 
