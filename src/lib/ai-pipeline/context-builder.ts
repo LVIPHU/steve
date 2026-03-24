@@ -46,7 +46,7 @@ ${sections}
 ${prompt}
 
 ## Link Convention
-When referencing other pages, use relative HTML links: about.html, contact.html, index.html — NOT absolute URLs.`;
+When referencing other pages, use relative links WITHOUT .html extension: <a href="about">, <a href="contact">, <a href="index"> — NOT absolute URLs, NOT .html extensions.`;
 }
 
 export function buildEditUserMessage(prompt: string): string {

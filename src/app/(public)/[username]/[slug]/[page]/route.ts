@@ -38,9 +38,10 @@ export async function GET(
     );
   }
 
-  // Published — serve pages[page]
+  // Published — serve pages[page] (strip .html extension for compatibility)
   const pages = (website.pages as Record<string, string> | null) ?? {};
-  const html = pages[page] ?? null;
+  const normalizedPage = page.replace(/\.html$/, "");
+  const html = pages[normalizedPage] ?? null;
   if (!html) {
     return new Response(null, { status: 404 });
   }

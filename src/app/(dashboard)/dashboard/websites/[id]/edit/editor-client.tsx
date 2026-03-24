@@ -111,6 +111,43 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const chatSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const pagesRef = useRef(pages);
+
+  // Keep pagesRef in sync for postMessage handler
+  useEffect(() => { pagesRef.current = pages; }, [pages]);
+
+  // Intercept link clicks inside iframe → switch tab instead of navigating
+  function injectNavInterceptor() {
+    const iframe = iframeRef.current;
+    if (!iframe?.contentDocument) return;
+    iframe.contentDocument.querySelectorAll("script[data-gsd-nav]").forEach((s) => s.remove());
+    const script = iframe.contentDocument.createElement("script");
+    script.setAttribute("data-gsd-nav", "1");
+    script.textContent = `
+      document.addEventListener('click', function(e) {
+        var el = e.target && e.target.closest && e.target.closest('a');
+        if (!el) return;
+        var href = el.getAttribute('href') || '';
+        if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto')) return;
+        var page = href.replace(/\\.html$/, '').replace(/^\\.?\\//, '').replace(/^\\//, '').split('?')[0].split('#')[0];
+        if (page) { e.preventDefault(); window.parent.postMessage({ type: 'gsd-page-nav', page: page }, '*'); }
+      }, true);
+    `;
+    iframe.contentDocument.head.appendChild(script);
+  }
+
+  // Listen for page-switch messages from iframe
+  useEffect(() => {
+    function handleMessage(e: MessageEvent) {
+      if (e.data?.type === "gsd-page-nav") {
+        const page = (e.data.page as string).trim();
+        if (page && page in pagesRef.current) switchPage(page);
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // setMessages wrapper — since messages is derived from allChatHistory[currentPage]
   function setMessages(updater: ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[])) {
@@ -564,9 +601,11 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
 
           {/* iframe without restrictions — generated apps need localStorage access */}
           <iframe
+            ref={iframeRef}
             className="w-full h-full border border-border rounded bg-white"
             srcDoc={currentPageHtml || undefined}
             title="Website preview"
+            onLoad={injectNavInterceptor}
           />
 
           {/* Loading overlay during generation */}
