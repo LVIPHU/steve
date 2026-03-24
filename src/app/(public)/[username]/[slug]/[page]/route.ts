@@ -2,6 +2,12 @@ import { db } from "@/db";
 import { websites, profiles } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
+function injectBaseTag(html: string, username: string, slug: string): string {
+  const baseTag = `<base href="/${username}/${slug}/">`;
+  if (/<head[^>]*>/i.test(html)) return html.replace(/(<head[^>]*>)/i, `$1${baseTag}`);
+  return baseTag + html;
+}
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ username: string; slug: string; page: string }> }
@@ -46,7 +52,7 @@ export async function GET(
     return new Response(null, { status: 404 });
   }
 
-  return new Response(html, {
+  return new Response(injectBaseTag(html, username, slug), {
     status: 200,
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
