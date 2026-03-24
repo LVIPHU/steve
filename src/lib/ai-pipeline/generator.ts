@@ -7,12 +7,12 @@ function getOpenAI(): OpenAI {
   return _openai;
 }
 
-export async function generateHtml(userMessage: string): Promise<string> {
+export async function generateHtml(userMessage: string, mode: "fresh" | "edit" = "fresh"): Promise<string> {
   const completion = await getOpenAI().chat.completions.create(
     {
       model: "gpt-4o",
       messages: [
-        { role: "system", content: buildSystemPrompt() },
+        { role: "system", content: buildSystemPrompt(mode) },
         { role: "user", content: userMessage },
       ],
     },

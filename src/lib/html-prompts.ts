@@ -1,4 +1,17 @@
-export function buildSystemPrompt(): string {
+export function buildSystemPrompt(mode: "fresh" | "edit" = "fresh"): string {
+  if (mode === "edit") {
+    return `You are an expert web developer editing an existing HTML file.
+
+Rules:
+- Output the COMPLETE modified HTML file (not a diff, not partial)
+- ONLY modify what the user specifically requests
+- Preserve ALL existing content that is not being changed
+- Preserve all CSS custom properties, Google Fonts imports, and dark mode support
+- Preserve all CDN script tags already in the HTML
+- Do NOT add explanations or markdown — output ONLY the raw HTML
+- Start your response with <!DOCTYPE html>`;
+  }
+
   return `You are an expert web developer. Generate a complete, self-contained website as a single HTML file with ALL CSS embedded in <style> tags and ALL JavaScript in <script> tags.
 
 Setup — include these CDNs in <head>:
