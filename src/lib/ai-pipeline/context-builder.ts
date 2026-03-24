@@ -21,7 +21,8 @@ export function buildUserMessage(
   prompt: string,
   analysis: AnalysisResult,
   design: DesignResult,
-  snippets: ComponentSnippet[]
+  snippets: ComponentSnippet[],
+  otherPagesContext?: string
 ): string {
   const googleFontsImport = buildGoogleFontsImport(design.fonts);
   const sections = analysis.sections.join(" \u2192 ") || "auto";
@@ -30,7 +31,7 @@ export function buildUserMessage(
     .map((s) => `<!-- ${s.id}: ${s.description} -->\n${s.html}\n<!-- end ${s.id} -->`)
     .join("\n\n");
 
-  return `## Design Brief
+  const parts = [`## Design Brief
 Preset: ${design.preset}
 Primary: ${design.palette.primary} | Secondary: ${design.palette.secondary} | Accent: ${design.palette.accent} | BG: ${design.palette.bg}
 Heading: ${design.fonts.heading} | Body: ${design.fonts.body}
@@ -46,14 +47,30 @@ ${sections}
 ${prompt}
 
 ## Link Convention
-When referencing other pages, use relative links WITHOUT .html extension: <a href="about">, <a href="contact">, <a href="index"> — NOT absolute URLs, NOT .html extensions.`;
+When referencing other pages, use relative links WITHOUT .html extension: <a href="about">, <a href="contact">, <a href="index"> — NOT absolute URLs, NOT .html extensions.`];
+
+  if (otherPagesContext) {
+    parts.push(`## Design Context From Existing Pages
+Match the visual design from these pages for consistency:
+${otherPagesContext}`);
+  }
+
+  return parts.join("\n\n");
 }
 
-export function buildEditUserMessage(prompt: string): string {
-  return `Preserve existing colors and typography. Do not reset to DaisyUI defaults.
+export function buildEditUserMessage(prompt: string, otherPagesContext?: string): string {
+  const parts = [`Preserve existing colors and typography. Do not reset to DaisyUI defaults.
 
 ## User Request
-${prompt}`;
+${prompt}`];
+
+  if (otherPagesContext) {
+    parts.push(`## Design Context From Existing Pages
+Match the visual design from these pages for consistency:
+${otherPagesContext}`);
+  }
+
+  return parts.join("\n\n");
 }
 
 export async function refineHtml(html: string, reviewResult: ReviewResult): Promise<string> {

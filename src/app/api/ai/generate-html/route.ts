@@ -35,7 +35,28 @@ export async function POST(request: Request) {
     return Response.json({ error: "Not found" }, { status: 404 });
   }
 
-  // 4. SSE streaming response
+  // 4. Extract design context from existing pages for cross-page consistency
+  const existingPages = (existing[0].pages as Record<string, string>) ?? {};
+
+  const otherPagesContext = Object.entries(existingPages)
+    .filter(([name, html]) => name !== pageName && typeof html === "string" && html.length > 100)
+    .slice(0, 3)
+    .map(([name, html]) => {
+      const palette = (html.match(/--color-[a-z]+:\s*#[0-9a-f]{3,6}/gi) || []).join("; ");
+      const fonts = (html.match(/family=([A-Za-z+]+)/g) || [])
+        .map(f => f.replace("family=", "").replace(/\+/g, " "))
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .join(", ");
+      const navLinks = (html.match(/<a[^>]*href="([a-z][a-z0-9-]*)"[^>]*>/gi) || [])
+        .map(a => a.match(/href="([^"]+)"/)?.[1])
+        .filter(Boolean)
+        .join(", ");
+      return `Page "${name}": palette=[${palette}] fonts=[${fonts}] nav-links=[${navLinks}]`;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  // 5. SSE streaming response
   const stream = new ReadableStream({
     async start(controller) {
       const send = (event: PipelineEvent) => {
@@ -43,7 +64,12 @@ export async function POST(request: Request) {
       };
 
       try {
-        const html = await runGenerationPipeline(prompt, currentHtml || undefined, send);
+        const html = await runGenerationPipeline({
+          prompt,
+          currentHtml: currentHtml || undefined,
+          onEvent: send,
+          otherPagesContext: otherPagesContext || undefined,
+        });
 
         // Auto-save to DB — atomic jsonb_set into pages[pageName]
         await db.execute(

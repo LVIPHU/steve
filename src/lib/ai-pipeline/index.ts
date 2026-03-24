@@ -9,11 +9,17 @@ import type { PipelineEvent } from "./types";
 
 export type { PipelineEvent } from "./types";
 
-export async function runGenerationPipeline(
-  prompt: string,
-  currentHtml: string | undefined,
-  onEvent: (event: PipelineEvent) => void
-): Promise<string> {
+export async function runGenerationPipeline({
+  prompt,
+  currentHtml,
+  onEvent,
+  otherPagesContext,
+}: {
+  prompt: string;
+  currentHtml?: string;
+  onEvent: (event: PipelineEvent) => void;
+  otherPagesContext?: string;
+}): Promise<string> {
   const isEditMode = !!currentHtml;
   const enableRefine = process.env.ENABLE_REFINE === "true";
   const reviewThreshold = parseInt(process.env.REVIEW_THRESHOLD ?? "75", 10);
@@ -41,7 +47,7 @@ export async function runGenerationPipeline(
   if (isEditMode) {
     // Edit mode: 4 steps — analyze, components, generate, validate
     // Skip design, review, refine
-    userMessage = buildEditUserMessage(prompt);
+    userMessage = buildEditUserMessage(prompt, otherPagesContext);
   } else {
     // Fresh mode: design step
     onEvent({ step: "design", status: "start" });
@@ -52,7 +58,7 @@ export async function runGenerationPipeline(
       detail: `Preset: ${design.preset} · Primary: ${design.palette.primary}`,
     });
 
-    userMessage = buildUserMessage(prompt, analysis, design, snippets);
+    userMessage = buildUserMessage(prompt, analysis, design, snippets, otherPagesContext);
   }
 
   // Step: Generate
