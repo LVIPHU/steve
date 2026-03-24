@@ -308,7 +308,7 @@ Phases execute in numeric order: 9 → 10 → 11 → 12 → 13
 | 13. Multi-page Website Support | v1.1 | 2/2 | Complete   | 2026-03-23 |
 | 14. Onboarding Chat Free-form Prompt | v1.1 | 1/1 | Complete | 2026-03-24 |
 | 15. Critical Bug Fixes | v1.2 | 1/2 | In Progress|  |
-| 16. Pipeline Optimization | v1.2 | 2/2 | Planned | - |
+| 16. Pipeline Optimization | v1.2 | 2/2 | Complete   | 2026-03-24 |
 | 17. UI Quality Upgrade | v1.2 | 2/2 | Planned | - |
 | 18. Observability & Testing | v1.2 | 2/2 | Planned | - |
 
@@ -351,11 +351,11 @@ Plans:
   3. Validator có thêm 8 checks: DOCTYPE, html/head/body tags, viewport meta, Tailwind CDN, empty body, HTML length, mismatched script tags, CSS var consistency
   4. Pages mới (about, contact...) nhận design summary từ index page (màu, fonts, nav links) → visual consistency
   5. `npm run test` pass clean
-**Plans:** 2/2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 16-01-PLAN.md — Tạo analyze-and-design.ts (merged step) + update index.ts + conditional review logic
-- [ ] 16-02-PLAN.md — Strengthen validator (+8 checks) + cross-page context (route.ts + context-builder.ts)
+- [x] 16-01-PLAN.md — Tạo analyze-and-design.ts (merged step) + update index.ts + conditional review logic
+- [x] 16-02-PLAN.md — Strengthen validator (+8 checks) + cross-page context (route.ts + context-builder.ts)
 
 ### Phase 17: UI Quality Upgrade
 

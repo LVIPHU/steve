@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Enhanced AI Pipeline
 status: verifying
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-03-24T15:15:09.468Z"
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-24T16:02:34.154Z"
 progress:
   total_phases: 6
   completed_phases: 5
@@ -22,7 +22,7 @@ progress:
 
 ## Current Position
 
-Phase: 15 (critical-bug-fixes) — EXECUTING
+Phase: 16 (pipeline-optimization) — EXECUTING
 Plan: 2 of 2
 
 ## What's Left (v1.1)
@@ -75,6 +75,9 @@ Plan: 2 of 2
 - [15-01] buildEditUserMessage requires currentHtml as 2nd param — LLM must receive full HTML to edit in place (Bug #1 fix)
 - [15-01] buildSystemPrompt(mode='fresh') default preserves zero-param call for OpenAI prompt caching; edit mode returns compact 7-line prompt (Bug #3 fix)
 - [15-01] generateHtml(userMessage, mode='fresh') passes mode to buildSystemPrompt; index.ts passes isEditMode ? 'edit' : 'fresh'
+- [16-01] analyzeAndDesign() merged schema: single gpt-4o-mini call returns both AnalysisResult + DesignResult; edit mode retains separate analyzePrompt() for lean 4-step flow
+- [16-01] Conditional review gate: validate first (cheap), then shouldReview = warnings>0 || fixes>2 || html<2000 — skips ~60-70% of reviews for clean generations
+- [16-01] Plan had beta.chat API typo — corrected to chat.completions.parse() matching design-agent.ts pattern
 
 ## Accumulated Context
 
@@ -118,9 +121,11 @@ Key foundation for v1.1: `src/lib/ai-pipeline/` (Analyze → Research → Genera
 | Phase 13 P01 | 310 | 3 tasks | 9 files |
 | Phase 15-critical-bug-fixes P01 | 15 | 5 tasks | 6 files |
 | Phase 15-critical-bug-fixes P02 | 8 | 5 tasks | 4 files |
+| Phase 16 P02 | 3 | 4 tasks | 4 files |
+| Phase 16 P01 | 12 | 3 tasks | 2 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T15:15:09.463Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-03-24T16:02:34.149Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None
