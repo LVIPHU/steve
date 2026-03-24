@@ -1,7 +1,8 @@
 ---
 phase: 14
 slug: onboarding-chat-freeform-prompt
-status: draft
+status: approved
+reviewed_at: 2026-03-24
 shadcn_initialized: true
 preset: new-york / neutral / cssVariables
 created: 2026-03-24
