@@ -36,8 +36,9 @@ export interface ReviewResult {
 
 export interface PipelineEvent {
   step: "analyze" | "components" | "design" | "generate" | "review" | "refine" | "validate" | "complete" | "error";
-  status: "start" | "done";
+  status: "start" | "done" | "streaming";
   detail?: string; // shown in chat panel
+  chunk?: string;  // raw HTML chunk when streaming
   html?: string; // only on complete
   fix_count?: number; // only on validate done
   error?: string; // only on error
