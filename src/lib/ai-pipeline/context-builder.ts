@@ -56,7 +56,12 @@ export function buildEditUserMessage(
 ): string {
   const parts: string[] = [];
 
-  parts.push(`## Current HTML (DO NOT discard — modify in place)\n${currentHtml}`);
+  const MAX_HTML_CHARS = 80_000;
+  const htmlToInject = currentHtml.length > MAX_HTML_CHARS
+    ? currentHtml.slice(0, MAX_HTML_CHARS) + "\n<!-- [HTML truncated due to size] -->"
+    : currentHtml;
+
+  parts.push(`## Current HTML (DO NOT discard — modify in place)\n${htmlToInject}`);
 
   if (otherPagesContext) {
     parts.push(`## Design Context From Other Pages\n${otherPagesContext}`);
