@@ -113,6 +113,8 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const pagesRef = useRef(pages);
+  const streamBufferRef = useRef<string>("");
+  const streamThrottleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep pagesRef in sync for postMessage handler
   useEffect(() => { pagesRef.current = pages; }, [pages]);
@@ -252,6 +254,12 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   // Generate HTML via AI (SSE pipeline)
   async function handleGenerate(prompt: string) {
     setIsGenerating(true);
+    // Reset streaming buffer for new generation
+    streamBufferRef.current = "";
+    if (streamThrottleRef.current) {
+      clearTimeout(streamThrottleRef.current);
+      streamThrottleRef.current = null;
+    }
     setMessages((prev) => [
       ...prev,
       { role: "user", content: prompt, timestamp: new Date() },
@@ -309,12 +317,29 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
             step: string;
             status: string;
             detail?: string;
+            chunk?: string;
             html?: string;
             fix_count?: number;
             error?: string;
           };
 
-          if (event.step === "complete" && event.html) {
+          if (event.status === "streaming" && event.chunk) {
+            // Accumulate chunks into buffer
+            streamBufferRef.current += event.chunk;
+            // Update iframe srcDoc with partial HTML (throttled to avoid excessive rerenders)
+            if (!streamThrottleRef.current) {
+              streamThrottleRef.current = setTimeout(() => {
+                const currentBuffer = streamBufferRef.current;
+                setPages((prev) => ({ ...prev, [currentPage]: currentBuffer }));
+                streamThrottleRef.current = null;
+              }, 100); // Update every 100ms
+            }
+          } else if (event.step === "complete" && event.html) {
+            // Clear any pending throttle and use the final validated HTML
+            if (streamThrottleRef.current) {
+              clearTimeout(streamThrottleRef.current);
+              streamThrottleRef.current = null;
+            }
             setPages((prev) => ({ ...prev, [currentPage]: event.html! }));
             setCodeValue(event.html);
             setHasUnsaved(false);
