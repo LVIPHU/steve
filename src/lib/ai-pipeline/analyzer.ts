@@ -15,7 +15,6 @@ const SYSTEM_PROMPT = `You are a web app intent analyzer. Given a user's prompt,
 - features: array of JS/CSS features needed (e.g. ["flip-animation", "prev-next-nav", "localStorage", "chart"])
   Recipe/cooking content with timed steps: include "timer" and "countdown".
   Content with checklist or ingredient lists: include "progress" and "localStorage".
-- structured_data: if the prompt contains tabular data (vocabulary, prices, team members, etc.), extract and format it as a clean JSON string. Otherwise return "".
 
 Respond with ONLY valid JSON. No markdown, no explanation.`;
 
