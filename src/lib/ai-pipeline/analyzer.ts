@@ -18,19 +18,13 @@ const SYSTEM_PROMPT = `You are a web app intent analyzer. Given a user's prompt,
 
 Respond with ONLY valid JSON. No markdown, no explanation.`;
 
-const MAX_ANALYZE_CHARS = 4000;
-
 export async function analyzePrompt(prompt: string): Promise<AnalysisResult> {
-  const truncatedPrompt = prompt.length > MAX_ANALYZE_CHARS
-    ? prompt.slice(0, MAX_ANALYZE_CHARS) + "\n[... truncated for analysis]"
-    : prompt;
-
   const completion = await openai.chat.completions.create(
     {
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: truncatedPrompt },
+        { role: "user", content: prompt },
       ],
       response_format: { type: "json_object" },
     },
