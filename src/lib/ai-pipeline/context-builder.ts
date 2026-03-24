@@ -49,11 +49,34 @@ ${prompt}
 When referencing other pages, use relative links WITHOUT .html extension: <a href="about">, <a href="contact">, <a href="index"> — NOT absolute URLs, NOT .html extensions.`;
 }
 
-export function buildEditUserMessage(prompt: string): string {
-  return `Preserve existing colors and typography. Do not reset to DaisyUI defaults.
+export function buildEditUserMessage(
+  prompt: string,
+  currentHtml: string,
+  otherPagesContext?: string
+): string {
+  const parts: string[] = [];
 
-## User Request
-${prompt}`;
+  parts.push(`## Current HTML (DO NOT discard — modify in place)\n${currentHtml}`);
+
+  if (otherPagesContext) {
+    parts.push(`## Design Context From Other Pages\n${otherPagesContext}`);
+  }
+
+  parts.push(`## Edit Instructions
+Modify the HTML above according to the user's request below.
+CRITICAL RULES:
+- Keep ALL existing content, structure, and styling INTACT
+- ONLY change what the user specifically requests
+- Preserve CSS custom properties (--color-primary, --color-secondary, etc.)
+- Preserve Google Fonts @import
+- Preserve dark mode classes (dark:...)
+- Preserve all CDN script tags already in the HTML
+- Output the COMPLETE modified HTML file (not a diff, not a partial)
+- Start your response with <!DOCTYPE html>
+
+## User Request\n${prompt}`);
+
+  return parts.join('\n\n');
 }
 
 export async function refineHtml(html: string, reviewResult: ReviewResult): Promise<string> {

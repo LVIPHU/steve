@@ -41,7 +41,7 @@ export async function runGenerationPipeline(
   if (isEditMode) {
     // Edit mode: 4 steps — analyze, components, generate, validate
     // Skip design, review, refine
-    userMessage = buildEditUserMessage(prompt);
+    userMessage = buildEditUserMessage(prompt, currentHtml!);
   } else {
     // Fresh mode: design step
     onEvent({ step: "design", status: "start" });

@@ -16,7 +16,7 @@ export async function generateHtml(
     {
       model: "gpt-4o",
       messages: [
-        { role: "system", content: buildSystemPrompt() },
+        { role: "system", content: buildSystemPrompt(mode) },
         { role: "user", content: userMessage },
       ],
       stream: true,

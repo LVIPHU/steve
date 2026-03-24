@@ -93,37 +93,58 @@ describe("buildUserMessage", () => {
   it("contains Link Convention section with relative link instruction", () => {
     const msg = buildUserMessage("Create a fitness website", mockAnalysis, mockDesign, mockSnippets);
     expect(msg).toContain("## Link Convention");
-    expect(msg).toContain("about.html");
-    expect(msg).toContain("index.html");
+    expect(msg).toContain('href="about"');
+    expect(msg).toContain('href="index"');
+    expect(msg).toContain("WITHOUT .html extension");
     expect(msg).not.toContain("/{username}");
   });
 });
 
 describe("buildEditUserMessage", () => {
-  it("starts with preserve instruction", () => {
-    const msg = buildEditUserMessage("Change the title");
-    expect(msg).toMatch(/^Preserve existing colors and typography/);
+  const sampleHtml = "<!DOCTYPE html><html><body><h1>Hello</h1></body></html>";
+
+  it("includes current HTML section", () => {
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
+    expect(msg).toContain("## Current HTML (DO NOT discard — modify in place)");
+    expect(msg).toContain(sampleHtml);
+  });
+
+  it("contains Edit Instructions section", () => {
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
+    expect(msg).toContain("## Edit Instructions");
+    expect(msg).toContain("CRITICAL RULES:");
   });
 
   it("contains User Request section", () => {
-    const msg = buildEditUserMessage("Change the title");
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
     expect(msg).toContain("## User Request");
     expect(msg).toContain("Change the title");
   });
 
   it("does NOT contain Design Brief", () => {
-    const msg = buildEditUserMessage("Change the title");
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
     expect(msg).not.toContain("## Design Brief");
   });
 
   it("does NOT contain Component References", () => {
-    const msg = buildEditUserMessage("Change the title");
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
     expect(msg).not.toContain("## Component References");
   });
 
   it("does NOT contain Link Convention", () => {
-    const msg = buildEditUserMessage("Change the title");
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
     expect(msg).not.toContain("## Link Convention");
+  });
+
+  it("includes otherPagesContext when provided", () => {
+    const msg = buildEditUserMessage("Change the title", sampleHtml, "About page design context");
+    expect(msg).toContain("## Design Context From Other Pages");
+    expect(msg).toContain("About page design context");
+  });
+
+  it("does NOT include Design Context section when otherPagesContext is omitted", () => {
+    const msg = buildEditUserMessage("Change the title", sampleHtml);
+    expect(msg).not.toContain("## Design Context From Other Pages");
   });
 });
 

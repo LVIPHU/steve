@@ -72,6 +72,9 @@ Plan: 2 of 2
 - [13-01] jsonb_set with ARRAY[pageName] + to_jsonb(html::text) for atomic HTML page write — prevents race conditions and SQL injection (Pitfall 1)
 - [13-01] pages.index fallback to htmlContent in public slug route for zero-downtime backward compat during multi-page transition
 - [13-01] chat_history validation changed from !Array.isArray to typeof !== 'object' to accept per-page { [pageName]: ChatMessage[] } format
+- [15-01] buildEditUserMessage requires currentHtml as 2nd param — LLM must receive full HTML to edit in place (Bug #1 fix)
+- [15-01] buildSystemPrompt(mode='fresh') default preserves zero-param call for OpenAI prompt caching; edit mode returns compact 7-line prompt (Bug #3 fix)
+- [15-01] generateHtml(userMessage, mode='fresh') passes mode to buildSystemPrompt; index.ts passes isEditMode ? 'edit' : 'fresh'
 
 ## Accumulated Context
 
