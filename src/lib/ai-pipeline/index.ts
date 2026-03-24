@@ -9,11 +9,17 @@ import type { PipelineEvent } from "./types";
 
 export type { PipelineEvent } from "./types";
 
-export async function runGenerationPipeline(
-  prompt: string,
-  currentHtml: string | undefined,
-  onEvent: (event: PipelineEvent) => void
-): Promise<string> {
+export async function runGenerationPipeline({
+  prompt,
+  currentHtml,
+  onEvent,
+  otherPagesContext,
+}: {
+  prompt: string;
+  currentHtml?: string;
+  onEvent: (event: PipelineEvent) => void;
+  otherPagesContext?: string;
+}): Promise<string> {
   const isEditMode = !!currentHtml;
   const enableRefine = process.env.ENABLE_REFINE === "true";
   const reviewThreshold = parseInt(process.env.REVIEW_THRESHOLD ?? "75", 10);
@@ -39,7 +45,7 @@ export async function runGenerationPipeline(
       detail: `${snippets.length} component(s) selected`,
     });
 
-    userMessage = buildEditUserMessage(prompt, currentHtml!);
+    userMessage = buildEditUserMessage(prompt, currentHtml!, otherPagesContext);
   } else {
     // Fresh mode: merged analyze+design step (1 LLM call instead of 2)
     onEvent({ step: "analyze", status: "start" });
@@ -65,7 +71,7 @@ export async function runGenerationPipeline(
       detail: `Preset: ${design.preset} · Primary: ${design.palette.primary}`,
     });
 
-    userMessage = buildUserMessage(prompt, analysis, design, snippets);
+    userMessage = buildUserMessage(prompt, analysis, design, snippets, otherPagesContext);
   }
 
   // Step: Generate

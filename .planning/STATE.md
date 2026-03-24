@@ -78,6 +78,9 @@ Plan: 2 of 2
 - [16-01] analyzeAndDesign() merged schema: single gpt-4o-mini call returns both AnalysisResult + DesignResult; edit mode retains separate analyzePrompt() for lean 4-step flow
 - [16-01] Conditional review gate: validate first (cheap), then shouldReview = warnings>0 || fixes>2 || html<2000 — skips ~60-70% of reviews for clean generations
 - [16-01] Plan had beta.chat API typo — corrected to chat.completions.parse() matching design-agent.ts pattern
+- [16-02] runGenerationPipeline refactored from positional to object params — supports otherPagesContext without breaking callers
+- [16-02] Cross-page context extraction capped at 3 pages to keep context token count manageable
+- [16-02] otherPagesContext appended to both buildUserMessage and buildEditUserMessage — edit mode also benefits from design consistency
 
 ## Accumulated Context
 
