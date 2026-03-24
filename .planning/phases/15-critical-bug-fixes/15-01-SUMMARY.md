@@ -122,3 +122,15 @@ None — all changes are complete implementations.
 ---
 *Phase: 15-critical-bug-fixes*
 *Completed: 2026-03-24*
+
+## Self-Check: PASSED
+
+- FOUND: src/lib/ai-pipeline/context-builder.ts
+- FOUND: src/lib/html-prompts.ts
+- FOUND: src/lib/ai-pipeline/generator.ts
+- FOUND: src/lib/ai-pipeline/index.ts
+- FOUND: .planning/phases/15-critical-bug-fixes/15-01-SUMMARY.md
+- FOUND commit: 2b43bd9 (fix currentHtml)
+- FOUND commit: 110fedb (split system prompt)
+- FOUND commit: 7ab2ffc (tests)
+- FOUND commit: 00e0854 (docs)
