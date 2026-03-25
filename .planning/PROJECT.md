@@ -50,8 +50,10 @@ Người dùng app note mobile, muốn chia sẻ kiến thức dưới dạng we
 **Out of scope (v1.1):** Multi-page progressive generation → defer v1.2
 
 **Progress:**
-- Phase 10 complete (2026-03-20): Design Agent (`runDesignAgent`, `DesignResultSchema`, `FALLBACK_DESIGN`), Context Builder (`buildUserMessage`, `buildEditUserMessage`, `buildGoogleFontsImport`, `refineHtml` stub), lean invariant `buildSystemPrompt()` — PIPE-04 through PIPE-09 validated
-- Next: Phase 11 — Reviewer + Pipeline Rewire + UI Update
+- Phase 10 complete (2026-03-20): Design Agent, Context Builder — PIPE-04 through PIPE-09 validated
+- Phase 11–17 complete (2026-03-25): Reviewer, pipeline rewire, UI update, component library, golden examples, design tokens
+- Phase 18 complete (2026-03-25): Langfuse tracing (nullable client, graceful no-op, per-step timing + token estimates), eval suite (23 prompts, `npm run eval`, isolated from Vitest)
+- Milestone v1.1 Enhanced AI Pipeline: **COMPLETE**
 
 ## Out of Scope (v1)
 
