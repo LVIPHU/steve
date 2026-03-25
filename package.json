@@ -28,6 +28,7 @@
     "drizzle-orm": "^0.45.1",
     "embla-carousel-react": "^8.6.0",
     "fflate": "^0.8.2",
+    "langfuse": "^3.38.6",
     "lucide-react": "^0.577.0",
     "motion": "^12.36.0",
     "next": "16.1.6",
