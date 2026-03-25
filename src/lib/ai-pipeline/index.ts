@@ -5,6 +5,7 @@ import { validateAndFix } from "./validator";
 import { reviewHtml } from "./reviewer";
 import { buildUserMessage, buildEditUserMessage, refineHtml } from "./context-builder";
 import { selectComponents, selectExamples } from "@/lib/component-library";
+import { traceStep, createTraceId } from "@/lib/langfuse";
 import type { PipelineEvent } from "./types";
 
 export type { PipelineEvent } from "./types";
@@ -23,6 +24,7 @@ export async function runGenerationPipeline({
   const isEditMode = !!currentHtml;
   const enableRefine = process.env.ENABLE_REFINE === "true";
   const reviewThreshold = parseInt(process.env.REVIEW_THRESHOLD ?? "75", 10);
+  const traceId = createTraceId();
 
   let userMessage: string;
 
@@ -30,7 +32,16 @@ export async function runGenerationPipeline({
     // Edit mode: 4 steps — analyze, components, generate, validate
     // Skip design, review, refine — use analyzePrompt() only (no design needed)
     onEvent({ step: "analyze", status: "start" });
+    const t0 = Date.now();
     const analysis = await analyzePrompt(prompt);
+    traceStep({
+      traceId,
+      step: "analyze",
+      model: "gpt-4o-mini",
+      inputLength: prompt.length,
+      outputLength: JSON.stringify(analysis).length,
+      latencyMs: Date.now() - t0,
+    });
     onEvent({
       step: "analyze",
       status: "done",
@@ -49,7 +60,16 @@ export async function runGenerationPipeline({
   } else {
     // Fresh mode: merged analyze+design step (1 LLM call instead of 2)
     onEvent({ step: "analyze", status: "start" });
+    const t0 = Date.now();
     const { analysis, design } = await analyzeAndDesign(prompt);
+    traceStep({
+      traceId,
+      step: "analyze_and_design",
+      model: "gpt-4o-mini",
+      inputLength: prompt.length,
+      outputLength: JSON.stringify({ analysis, design }).length,
+      latencyMs: Date.now() - t0,
+    });
     onEvent({
       step: "analyze",
       status: "done",
@@ -78,11 +98,20 @@ export async function runGenerationPipeline({
 
   // Step: Generate
   onEvent({ step: "generate", status: "start" });
+  const tGen = Date.now();
   let html = await generateHtml(
     userMessage,
     isEditMode ? "edit" : "fresh",
     (chunk) => onEvent({ step: "generate", status: "streaming", chunk })
   );
+  traceStep({
+    traceId,
+    step: "generate",
+    model: "gpt-4o",
+    inputLength: userMessage.length,
+    outputLength: html.length,
+    latencyMs: Date.now() - tGen,
+  });
   onEvent({ step: "generate", status: "done" });
 
   // Validate first (always) — catches common structural issues cheaply
@@ -109,7 +138,16 @@ export async function runGenerationPipeline({
   if (shouldReview) {
     // Step: Review
     onEvent({ step: "review", status: "start" });
+    const tReview = Date.now();
     const review = await reviewHtml(prompt, validatedHtml);
+    traceStep({
+      traceId,
+      step: "review",
+      model: "gpt-4o-mini",
+      inputLength: validatedHtml.length,
+      outputLength: JSON.stringify(review).length,
+      latencyMs: Date.now() - tReview,
+    });
     onEvent({
       step: "review",
       status: "done",
@@ -120,8 +158,17 @@ export async function runGenerationPipeline({
     const needsRefine = review.score < reviewThreshold || review.must_fix.length > 0;
     if (needsRefine) {
       onEvent({ step: "refine", status: "start" });
+      const tRefine = Date.now();
       const refined = await refineHtml(validatedHtml, review);
       const { html: finalHtml } = validateAndFix(refined);
+      traceStep({
+        traceId,
+        step: "refine",
+        model: "gpt-4o",
+        inputLength: validatedHtml.length,
+        outputLength: finalHtml.length,
+        latencyMs: Date.now() - tRefine,
+      });
       onEvent({ step: "refine", status: "done", detail: `Fixed ${review.must_fix.length} issue(s)` });
       return finalHtml;
     }
