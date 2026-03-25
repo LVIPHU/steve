@@ -42,7 +42,11 @@
       "Bash(head:*)",
       "Bash(curl -s https://www.npmjs.com/package/openai)",
       "Bash(wc -c /d/STEVE/steve/src/lib/component-library/snippets/*.ts)",
-      "Bash(grep -n \"catch\\\\|error\\\\|throw\" /d/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx)"
+      "Bash(grep -n \"catch\\\\|error\\\\|throw\" /d/STEVE/steve/src/app/\\\\\\(dashboard\\\\\\)/dashboard/websites/[id]/edit/editor-client.tsx)",
+      "WebFetch(domain:langfuse.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm install:*)"
     ]
   }
 }
