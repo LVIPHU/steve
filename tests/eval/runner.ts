@@ -53,10 +53,11 @@ async function runEvals() {
     let html = "";
 
     try {
-      html = await runGenerationPipeline({
+      const result = await runGenerationPipeline({
         prompt: ep.prompt,
         onEvent: () => {},  // silent
       });
+      html = result.html;
     } catch (e) {
       results.push({ id: ep.id, passed: false, score: 0, failures: [`Pipeline error: ${e}`], htmlLength: 0, latencyMs: Date.now() - t0 });
       console.log(`FAIL ${ep.id} - Pipeline error: ${e}`);

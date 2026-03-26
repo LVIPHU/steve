@@ -6,9 +6,15 @@ import { reviewHtml } from "./reviewer";
 import { buildUserMessage, buildEditUserMessage, refineHtml } from "./context-builder";
 import { selectComponents, selectExamples } from "@/lib/component-library";
 import { traceStep, createTraceId } from "@/lib/langfuse";
-import type { PipelineEvent } from "./types";
+import type { PipelineEvent, AnalysisResult, DesignResult } from "./types";
 
 export type { PipelineEvent } from "./types";
+
+export interface PipelineResult {
+  html: string;
+  analysis?: AnalysisResult;
+  design?: DesignResult;
+}
 
 export async function runGenerationPipeline({
   prompt,
@@ -20,13 +26,15 @@ export async function runGenerationPipeline({
   currentHtml?: string;
   onEvent: (event: PipelineEvent) => void;
   otherPagesContext?: string;
-}): Promise<string> {
+}): Promise<PipelineResult> {
   const isEditMode = !!currentHtml;
   const enableRefine = process.env.ENABLE_REFINE === "true";
   const reviewThreshold = parseInt(process.env.REVIEW_THRESHOLD ?? "75", 10);
   const traceId = createTraceId();
 
   let userMessage: string;
+  let pipelineAnalysis: AnalysisResult | undefined;
+  let pipelineDesign: DesignResult | undefined;
 
   if (isEditMode) {
     // Edit mode: 4 steps — analyze, components, generate, validate
@@ -62,6 +70,8 @@ export async function runGenerationPipeline({
     onEvent({ step: "analyze", status: "start" });
     const t0 = Date.now();
     const { analysis, design } = await analyzeAndDesign(prompt);
+    pipelineAnalysis = analysis;
+    pipelineDesign = design;
     traceStep({
       traceId,
       step: "analyze_and_design",
@@ -170,9 +180,9 @@ export async function runGenerationPipeline({
         latencyMs: Date.now() - tRefine,
       });
       onEvent({ step: "refine", status: "done", detail: `Fixed ${review.must_fix.length} issue(s)` });
-      return finalHtml;
+      return { html: finalHtml, analysis: pipelineAnalysis, design: pipelineDesign };
     }
   }
 
-  return validatedHtml;
+  return { html: validatedHtml, analysis: pipelineAnalysis, design: pipelineDesign };
 }

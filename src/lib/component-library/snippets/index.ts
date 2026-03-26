@@ -16,6 +16,7 @@ import { ctaSnippets } from "./cta";
 import { mediaSnippets } from "./media";
 import { pricingSnippets } from "./pricing";
 import { notificationsSnippets } from "./notifications";
+import { educationSnippets } from "./education";
 import { exampleSnippets } from "./examples";
 
 export const ALL_SNIPPETS: ComponentSnippet[] = [
@@ -36,5 +37,6 @@ export const ALL_SNIPPETS: ComponentSnippet[] = [
   ...mediaSnippets,
   ...pricingSnippets,
   ...notificationsSnippets,
+  ...educationSnippets,
   ...exampleSnippets,
 ];
