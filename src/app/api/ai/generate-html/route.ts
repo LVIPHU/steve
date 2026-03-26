@@ -3,9 +3,10 @@ import { db } from "@/db";
 import { websites } from "@/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { runGenerationPipeline } from "@/lib/ai-pipeline";
+import { runMultiPageExpansion } from "@/lib/ai-pipeline/multi-page-orchestrator";
 import type { PipelineEvent } from "@/lib/ai-pipeline";
 
-export const maxDuration = 60; // Hobby plan limit; set to 120 when upgrading to Pro
+export const maxDuration = 300; // 5 min for multi-page generation with 100+ vocab
 
 function sseData(event: PipelineEvent): string {
   return `data: ${JSON.stringify(event)}\n\n`;
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
       };
 
       try {
-        const html = await runGenerationPipeline({
+        const result = await runGenerationPipeline({
           prompt,
           currentHtml: currentHtml || undefined,
           onEvent: send,
@@ -74,12 +75,31 @@ export async function POST(request: Request) {
         // Auto-save to DB — atomic jsonb_set into pages[pageName]
         await db.execute(
           sql`UPDATE websites
-              SET pages = jsonb_set(COALESCE(pages, '{}'), ARRAY[${pageName}], to_jsonb(${html}::text)),
+              SET pages = jsonb_set(COALESCE(pages, '{}'), ARRAY[${pageName}], to_jsonb(${result.html}::text)),
                   updated_at = NOW()
               WHERE id = ${websiteId}`
         );
 
-        send({ step: "complete", status: "done", html });
+        send({ step: "complete", status: "done", html: result.html });
+
+        // 6. Multi-page expansion (only for fresh index generation with ENABLE_MULTI_PAGE)
+        const enableMultiPage = process.env.ENABLE_MULTI_PAGE === "true";
+        if (
+          enableMultiPage &&
+          !currentHtml &&
+          pageName === "index" &&
+          result.analysis &&
+          result.design
+        ) {
+          await runMultiPageExpansion({
+            prompt,
+            indexHtml: result.html,
+            analysis: result.analysis,
+            design: result.design,
+            websiteId,
+            onEvent: send,
+          });
+        }
       } catch (error) {
         const message = error instanceof Error ? error.message : "Generation failed";
         send({ step: "error", status: "done", error: message });

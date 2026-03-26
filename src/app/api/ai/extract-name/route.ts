@@ -1,11 +1,10 @@
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import OpenAI from "openai";
 
 const openai = new OpenAI();
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
   let prompt = "";

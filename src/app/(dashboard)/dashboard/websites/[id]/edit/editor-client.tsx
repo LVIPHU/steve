@@ -119,11 +119,54 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
   // Keep pagesRef in sync for postMessage handler
   useEffect(() => { pagesRef.current = pages; }, [pages]);
 
-  // Intercept link clicks inside iframe → switch tab instead of navigating
+  // Nav interceptor script injected into srcDoc HTML to prevent parent redirects
+  // and convert internal links to postMessage page-switch events
+  const NAV_GUARD_SCRIPT = `<script data-gsd-nav="1">
+(function(){
+  // Save reference to real parent BEFORE any overrides
+  var realParent = window.parent;
+  // Intercept link clicks → postMessage to editor parent
+  document.addEventListener('click', function(e) {
+    var el = e.target && e.target.closest && e.target.closest('a');
+    if (!el) return;
+    var href = el.getAttribute('href') || '';
+    if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto') || href.startsWith('javascript')) return;
+    var page = href.replace(/\\.html$/, '').replace(/^\\.?\\//, '').replace(/^\\//, '').split('?')[0].split('#')[0];
+    if (page) {
+      e.preventDefault();
+      e.stopPropagation();
+      realParent.postMessage({ type: 'gsd-page-nav', page: page }, '*');
+    }
+  }, true);
+})();
+</script>`;
+
+  // Sanitize HTML before injecting into iframe srcDoc:
+  // - Remove <meta http-equiv="refresh"> tags that could redirect
+  // - Inject nav guard script before closing </head> or at start of HTML
+  function sanitizeForPreview(html: string): string {
+    if (!html) return html;
+    // Remove meta refresh tags
+    let safe = html.replace(/<meta[^>]*http-equiv\s*=\s*["']?refresh["']?[^>]*>/gi, '');
+    // Remove any window.location / top.location / parent.location redirects
+    safe = safe.replace(/(?:window\s*\.\s*)?(?:top|parent)\s*\.\s*location\s*(?:\.\s*href\s*)?=/gi, '/* blocked */void ');
+    // Inject nav guard script
+    if (safe.includes('</head>')) {
+      safe = safe.replace('</head>', NAV_GUARD_SCRIPT + '</head>');
+    } else if (safe.includes('<body')) {
+      safe = safe.replace('<body', NAV_GUARD_SCRIPT + '<body');
+    } else {
+      safe = NAV_GUARD_SCRIPT + safe;
+    }
+    return safe;
+  }
+
+  // Legacy interceptor for when srcDoc doesn't include guard (e.g. manual code edits)
   function injectNavInterceptor() {
     const iframe = iframeRef.current;
     if (!iframe?.contentDocument) return;
-    iframe.contentDocument.querySelectorAll("script[data-gsd-nav]").forEach((s) => s.remove());
+    // Only inject if not already present
+    if (iframe.contentDocument.querySelector("script[data-gsd-nav]")) return;
     const script = iframe.contentDocument.createElement("script");
     script.setAttribute("data-gsd-nav", "1");
     script.textContent = `
@@ -139,12 +182,27 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     iframe.contentDocument.head.appendChild(script);
   }
 
+  // Prevent accidental navigation away during generation
+  useEffect(() => {
+    if (!isGenerating) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isGenerating]);
+
   // Listen for page-switch messages from iframe
   useEffect(() => {
     function handleMessage(e: MessageEvent) {
       if (e.data?.type === "gsd-page-nav") {
         const page = (e.data.page as string).trim();
-        if (page && page in pagesRef.current) switchPage(page);
+        if (page && page in pagesRef.current) {
+          switchPage(page);
+        } else if (page && generatingPagesRef.current.has(page)) {
+          toast("Trang này đang được tạo, vui lòng đợi...");
+        }
       }
     }
     window.addEventListener("message", handleMessage);
@@ -249,7 +307,23 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
     review: "Kiểm tra chất lượng...",
     refine: "Tinh chỉnh kết quả...",
     validate: "Kiểm tra kết quả...",
+    // Multi-page expansion steps
+    "link-extract": "Tìm kiếm links nội bộ...",
+    "ba-analysis": "Phân tích cấu trúc website...",
+    "design-system": "Thiết kế style guide...",
+    "data-architect": "Thiết kế data flow...",
+    "pm-planning": "Lên kế hoạch các trang phụ...",
+    "consistency-check": "Kiểm tra tính nhất quán...",
   };
+
+  // Track pages currently being generated
+  const [generatingPages, setGeneratingPages] = useState<Set<string>>(new Set());
+  const generatingPagesRef = useRef<Set<string>>(new Set());
+  useEffect(() => { generatingPagesRef.current = generatingPages; }, [generatingPages]);
+
+  // Per-page streaming buffers for multi-page generation
+  const pageStreamBuffers = useRef<Record<string, string>>({});
+  const pageStreamThrottles = useRef<Record<string, ReturnType<typeof setTimeout> | null>>({});
 
   // Generate HTML via AI (SSE pipeline)
   async function handleGenerate(prompt: string) {
@@ -321,6 +395,10 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
             html?: string;
             fix_count?: number;
             error?: string;
+            // Multi-page fields
+            pageName?: string;
+            pageNames?: string[];
+            pagePlan?: { pages: Array<{ name: string; purpose: string }> };
           };
 
           if (event.status === "streaming" && event.chunk) {
@@ -357,7 +435,51 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
                 timestamp: new Date(),
               },
             ]);
-          } else if (event.status === "start" && STEP_LABELS[event.step]) {
+          }
+          // ─── Multi-page expansion events ───────────────────────
+          else if (event.step === "page-generate" && event.status === "start" && event.pageName) {
+            // Auto-create page tab
+            setPages((prev) => ({ ...prev, [event.pageName!]: "" }));
+            setGeneratingPages((prev) => new Set(prev).add(event.pageName!));
+            pageStreamBuffers.current[event.pageName!] = "";
+            addStepMessage(`◆ Đang tạo trang "${event.pageName}"...`);
+          } else if (event.step === "page-generate" && event.status === "streaming" && event.pageName && event.chunk) {
+            // Accumulate streaming chunks for the sub-page
+            pageStreamBuffers.current[event.pageName] = (pageStreamBuffers.current[event.pageName] || "") + event.chunk;
+            const pName = event.pageName;
+            if (!pageStreamThrottles.current[pName]) {
+              pageStreamThrottles.current[pName] = setTimeout(() => {
+                const buf = pageStreamBuffers.current[pName];
+                if (buf) setPages((prev) => ({ ...prev, [pName]: buf }));
+                pageStreamThrottles.current[pName] = null;
+              }, 150);
+            }
+          } else if (event.step === "page-complete" && event.pageName) {
+            // Clear throttle and set final HTML
+            if (pageStreamThrottles.current[event.pageName]) {
+              clearTimeout(pageStreamThrottles.current[event.pageName]!);
+              pageStreamThrottles.current[event.pageName] = null;
+            }
+            if (event.html) {
+              setPages((prev) => ({ ...prev, [event.pageName!]: event.html! }));
+            }
+            setGeneratingPages((prev) => {
+              const s = new Set(prev);
+              s.delete(event.pageName!);
+              return s;
+            });
+            addStepMessage(`✓ Trang "${event.pageName}" đã xong!`);
+          } else if (event.step === "all-complete") {
+            const count = event.pageNames?.length ?? 0;
+            if (count > 0) {
+              setMessages((prev) => [
+                ...prev,
+                { role: "assistant", content: `🎉 Tất cả ${count} trang đã tạo xong!`, timestamp: new Date() },
+              ]);
+            }
+          }
+          // ─── Standard step start/done events ───────────────────
+          else if (event.status === "start" && STEP_LABELS[event.step]) {
             const idx = addStepMessage(`◆ ${STEP_LABELS[event.step]}`);
             stepMessageIndices[event.step] = idx;
           } else if (event.status === "done" && stepMessageIndices[event.step] !== undefined) {
@@ -591,6 +713,9 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
                   aria-selected={currentPage === pageName}
                   role="tab"
                 >
+                  {generatingPages.has(pageName) && (
+                    <Loader2 size={12} className="animate-spin mr-1 inline" />
+                  )}
                   {pageName === "index" ? "Index" : pageName}
                 </button>
                 {pageName !== "index" && (
@@ -624,12 +749,15 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
             </div>
           )}
 
-          {/* iframe without restrictions — generated apps need localStorage access */}
+          {/* iframe sandboxed — NO allow-top-navigation so iframe cannot redirect parent.
+              allow-same-origin needed for localStorage (flashcards, quiz scores).
+              sanitizeForPreview() strips redirect code, nav guard handles link clicks. */}
           <iframe
             ref={iframeRef}
             className="w-full h-full border border-border rounded bg-white"
-            srcDoc={currentPageHtml || undefined}
+            srcDoc={currentPageHtml ? sanitizeForPreview(currentPageHtml) : undefined}
             title="Website preview"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             onLoad={injectNavInterceptor}
           />
 

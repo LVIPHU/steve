@@ -87,10 +87,10 @@ With this toggle script at the end of <body>:
     </h1>
     <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">Subheadline</p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#" class="px-8 py-4 bg-{primary} text-white rounded-lg font-semibold hover:bg-{primary-dark} transition-colors">
+      <a href="features" class="px-8 py-4 bg-{primary} text-white rounded-lg font-semibold hover:bg-{primary-dark} transition-colors">
         Primary CTA
       </a>
-      <a href="#" class="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:border-{primary} transition-colors">
+      <a href="about" class="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:border-{primary} transition-colors">
         Secondary
       </a>
     </div>
@@ -119,6 +119,11 @@ With this toggle script at the end of <body>:
     </a>
   </div>
 </section>
+
+Multi-page navigation:
+- This website will have MULTIPLE pages. Navigation links in navbar, hero, feature cards, and footer should use relative page links (e.g. href="quiz", href="vocabulary", href="scores", href="about") — NOT anchor links (#section).
+- Only use href="#section" for scrolling within the CURRENT page.
+- The navbar should include links to the main pages of the website.
 
 Rules:
 - Mobile-first responsive design

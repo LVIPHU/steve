@@ -68,8 +68,21 @@ ${sections}
 ## User Request
 ${prompt}
 
-## Link Convention
-When referencing other pages, use relative links WITHOUT .html extension: <a href="about">, <a href="contact">, <a href="index"> — NOT absolute URLs, NOT .html extensions.`];
+## Navigation Convention — CRITICAL
+This is a MULTI-PAGE website. Navigation buttons and links in the navbar, hero, feature cards, and footer MUST link to OTHER PAGES using relative hrefs WITHOUT .html extension.
+
+CORRECT examples:
+  <a href="vocabulary">Browse Vocabulary</a>
+  <a href="quiz">Take Quiz</a>
+  <a href="scores">View Scores</a>
+  <a href="about">About Us</a>
+
+WRONG — do NOT use anchor links for features that deserve their own page:
+  <a href="#vocabulary">Browse Vocabulary</a>  ← WRONG, this just scrolls
+  <a href="#quiz">Take Quiz</a>                ← WRONG, this just scrolls
+
+Only use anchor links (#section) for scrolling within the SAME page (e.g. a "scroll to features" button on the same page).
+For distinct features (flashcards, quiz, scores, vocabulary list, add content, about, contact) → ALWAYS create a separate page link.`];
 
   if (otherPagesContext) {
     parts.push(`## Design Context From Existing Pages\nMatch the visual design from these pages for consistency:\n${otherPagesContext}`);
