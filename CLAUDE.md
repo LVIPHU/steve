@@ -36,6 +36,8 @@ Copy `.env.example` to `.env` and fill in:
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (image uploads) |
 | `ENABLE_REFINE` | Set to `"true"` to enable review+refine steps in pipeline |
 | `REVIEW_THRESHOLD` | Score threshold (0–100) below which refine triggers (default: 75) |
+| `ENABLE_MULTI_PAGE` | Set to `"true"` to enable multi-page auto-expansion after index generation |
+| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` | Optional LLM observability (Langfuse); gracefully no-ops if unset |
 
 ## Architecture
 
@@ -45,7 +47,7 @@ Copy `.env.example` to `.env` and fill in:
 
 - `(auth)` — public pages: `/login`, `/register`, `/onboarding` (username setup after sign-up)
 - `(dashboard)` — protected pages behind session check in `layout.tsx`
-- `(public)` — public website viewer at `/{username}/{slug}`
+- `(public)` — public website viewer at `/{username}/{slug}` (index page) and `/{username}/{slug}/{page}` (named pages)
 - `api/auth/[...all]` — better-auth catch-all handler
 
 ### Auth Pattern
@@ -53,6 +55,7 @@ Copy `.env.example` to `.env` and fill in:
 - **Server-side:** `auth.api.getSession({ headers: await headers() })` from `@/lib/auth` — used in Server Components and layouts for redirects.
 - **Client-side:** `authClient` from `@/lib/auth-client` — used in Client Components (`"use client"`) for `signIn`, `signUp`, `signOut`, `useSession`.
 - The `(dashboard)/layout.tsx` enforces session at the layout level; individual pages may also check for finer control.
+- **Username rules:** lowercase alphanumeric + hyphens, 3–30 chars; reserved usernames blocked at registration (see `src/lib/auth.ts`).
 - **Mobile token bridge:** `POST /api/auth/mobile-token` issues a one-time token stored in the `verification` table; `GET /api/auth/token-login?token=...` exchanges it for a signed browser session cookie (single-use, 5-min TTL).
 
 ### Database
@@ -77,6 +80,8 @@ Copy `.env.example` to `.env` and fill in:
 
 **Edit mode** (when `currentHtml` is provided): skips design/review/refine — only analyze, components, generate, validate.
 
+**Multi-page expansion** (when `ENABLE_MULTI_PAGE=true`): after the index page is generated, `multi-page-orchestrator.ts` runs a 7-agent pipeline to plan and generate additional pages: BA agent → design-system agent → data-architect agent → PM agent → parallel page generation → consistency-checker. `maxDuration` for the endpoint is 300s to accommodate this.
+
 Pipeline modules in `src/lib/ai-pipeline/`:
 - `analyzer.ts` — classifies prompt into type (`landing|portfolio|dashboard|blog|generic`), extracts sections/features
 - `design-agent.ts` — picks a visual preset + color palette + fonts
@@ -84,6 +89,7 @@ Pipeline modules in `src/lib/ai-pipeline/`:
 - `reviewer.ts` — scores HTML 0–100 across visual/content/technical dimensions
 - `context-builder.ts` — assembles the user message / edit message / refine prompt
 - `validator.ts` — post-processes HTML, applies fixes, returns warnings
+- `langfuse.ts` — wraps pipeline calls with optional Langfuse traces; no-ops when keys are absent
 
 After successful generation the API auto-saves `pages[pageName]` to DB via atomic `jsonb_set` before sending the `complete` event.
 
@@ -91,8 +97,8 @@ After successful generation the API auto-saves `pages[pageName]` to DB via atomi
 
 `src/lib/component-library/` holds reusable HTML snippet templates injected into generation context.
 
-- `selectComponents(analysis)` in `index.ts` scores all snippets by tag-matching against the analyzed type/sections/features, returns top 4.
-- Snippets are organized by category under `snippets/` (hero, navbar, features, cards, pricing, blog, etc.).
+- `selectComponents(analysis)` in `index.ts` scores all snippets by tag-matching, returns top 4; `selectExamples(analysis)` returns full-page example templates for additional context.
+- Snippets are organized by category under `snippets/` (hero, navbar, features, cards, pricing, blog, portfolio, ecommerce, forms, etc.).
 - Each snippet has `tags`, `domain_hints`, `min_score`, `priority`, `fallback`, `fallback_for` fields that drive selection.
 
 ### Editor UI
@@ -118,6 +124,16 @@ Beyond the routes already documented:
 
 `POST /api/upload/image` — accepts `multipart/form-data` with a `file` field. Validates auth, image MIME type, and 5MB max size. Uploads to Supabase Storage bucket `website-images` under `{userId}/{timestamp}-{filename}`. Returns `{ url }` of the public URL.
 
+### API Routes
+
+- `POST /api/ai/extract-name` — AI-driven website name extraction from a prompt
+- `GET /api/websites` — list websites for authenticated user
+- `POST /api/websites` — create new website
+
 ### UI Components
 
 Custom shadcn-style components live in `src/components/ui/`. Use `cn()` from `@/lib/utils` (wraps `clsx` + `tailwind-merge`) for conditional classes.
+
+### Tests
+
+Tests are colocated with source files (`*.test.ts` next to `*.ts`). The `tests/` root directory holds integration-style tests (e.g., `tests/slugify.test.ts`) and an empty `tests/eval/` for future eval scripts.
