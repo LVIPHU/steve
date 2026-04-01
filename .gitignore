@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# calibration log (AI reviewer output, developer-only)
+# pipeline logs (developer-only, not for version control)
 .calibration.jsonl
+.pipeline-logs.jsonl

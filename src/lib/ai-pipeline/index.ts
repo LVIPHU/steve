@@ -126,7 +126,7 @@ export async function runGenerationPipeline({
 
   // Validate first (always) — catches common structural issues cheaply
   onEvent({ step: "validate", status: "start" });
-  const { html: validatedHtml, fixes, warnings } = validateAndFix(html);
+  const { html: validatedHtml, fixes, warnings } = validateAndFix(html, !otherPagesContext);
   const fixDetail =
     fixes.length > 0
       ? `${fixes.length} fix(es) applied`

@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { buildSystemPrompt, stripMarkdownFences } from "@/lib/html-prompts";
+import { logPipelineStep } from "@/lib/pipeline-logger";
 
 let _openai: OpenAI | null = null;
 function getOpenAI(): OpenAI {
@@ -12,11 +13,13 @@ export async function generateHtml(
   mode: "fresh" | "edit" = "fresh",
   onChunk?: (chunk: string) => void
 ): Promise<string> {
+  const systemPrompt = buildSystemPrompt(mode);
+  const t0 = Date.now();
   const stream = await getOpenAI().chat.completions.create(
     {
       model: "gpt-4o",
       messages: [
-        { role: "system", content: buildSystemPrompt(mode) },
+        { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
       stream: true,
@@ -32,5 +35,18 @@ export async function generateHtml(
       onChunk?.(content);
     }
   }
-  return stripMarkdownFences(full);
+  const result = stripMarkdownFences(full);
+
+  logPipelineStep({
+    timestamp: new Date().toISOString(),
+    step: "generate",
+    model: "gpt-4o",
+    systemPrompt,
+    userMessage,
+    response: result,
+    latencyMs: Date.now() - t0,
+    metadata: { mode },
+  });
+
+  return result;
 }

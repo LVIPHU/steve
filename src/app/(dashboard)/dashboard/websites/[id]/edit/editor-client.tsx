@@ -526,6 +526,7 @@ export default function HtmlEditorClient(props: HtmlEditorClientProps) {
 
   // Publish website (also clears all chat history in DB and UI)
   async function handlePublish() {
+    await handleSave();
     const res = await fetch(`/api/websites/${props.websiteId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

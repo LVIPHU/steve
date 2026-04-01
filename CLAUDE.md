@@ -13,6 +13,7 @@ npm run typecheck    # TypeScript type check
 npm run test         # Run tests (Vitest)
 npm run test:watch   # Run tests in watch mode
 npx vitest run src/lib/ai-pipeline/generator.test.ts  # Run a single test file
+npm run eval         # Run evaluation suite (tsx scripts in tests/eval/)
 
 npm run db:generate  # Generate Drizzle migrations from schema changes
 npm run db:migrate   # Apply migrations to the database
@@ -38,6 +39,7 @@ Copy `.env.example` to `.env` and fill in:
 | `REVIEW_THRESHOLD` | Score threshold (0–100) below which refine triggers (default: 75) |
 | `ENABLE_MULTI_PAGE` | Set to `"true"` to enable multi-page auto-expansion after index generation |
 | `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` | Optional LLM observability (Langfuse); gracefully no-ops if unset |
+| `NEXT_PUBLIC_UMAMI_URL` / `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | Optional web analytics (Umami) |
 
 ## Architecture
 
@@ -68,6 +70,7 @@ Copy `.env.example` to `.env` and fill in:
 **`websites` table key columns:**
 - `pages` (JSONB) — primary HTML store: `{ "index": "<html>...", "about": "<html>..." }`. Updated atomically via `jsonb_set`.
 - `chatHistory` (JSONB) — per-page message log: `{ "index": [...messages], "about": [...] }`.
+- `slug` (TEXT) — URL-safe identifier, unique per user; used in public viewer routes.
 - `htmlContent` (TEXT) — legacy fallback only; new code reads `pages` first.
 - `sourceNoteId` (TEXT) — optional link to a source note that generated this website.
 - `status` — `draft | published | archived`.
@@ -115,20 +118,15 @@ The editor auto-generates on mount when the page has no HTML and `initialPrompt`
 
 ### API Routes
 
-Beyond the routes already documented:
-- `GET /api/websites/[id]` — fetch a single website (auth + ownership check)
-- `PATCH /api/websites/[id]` — update website fields (name, status, pages, chatHistory)
-- `GET /api/websites/[id]/export` — download all pages as a ZIP archive of `.html` files
-
-### Image Upload
-
-`POST /api/upload/image` — accepts `multipart/form-data` with a `file` field. Validates auth, image MIME type, and 5MB max size. Uploads to Supabase Storage bucket `website-images` under `{userId}/{timestamp}-{filename}`. Returns `{ url }` of the public URL.
-
-### API Routes
-
-- `POST /api/ai/extract-name` — AI-driven website name extraction from a prompt
+- `POST /api/ai/generate-html` — SSE streaming generation pipeline (see above)
+- `POST /api/ai/extract-name` — AI-driven website name extraction from a prompt (uses `gpt-4o-mini`)
 - `GET /api/websites` — list websites for authenticated user
 - `POST /api/websites` — create new website
+- `GET /api/websites/[id]` — fetch a single website (auth + ownership check)
+- `PATCH /api/websites/[id]` — update website fields (name, status, slug, pages, chatHistory)
+- `DELETE /api/websites/[id]` — delete a website (auth + ownership check)
+- `GET /api/websites/[id]/export` — download all pages as a ZIP archive of `.html` files
+- `POST /api/upload/image` — accepts `multipart/form-data` with a `file` field; validates image MIME + 5MB max; uploads to Supabase Storage bucket `website-images` under `{userId}/{timestamp}-{filename}`; returns `{ url }`
 
 ### UI Components
 
@@ -136,4 +134,4 @@ Custom shadcn-style components live in `src/components/ui/`. Use `cn()` from `@/
 
 ### Tests
 
-Tests are colocated with source files (`*.test.ts` next to `*.ts`). The `tests/` root directory holds integration-style tests (e.g., `tests/slugify.test.ts`) and an empty `tests/eval/` for future eval scripts.
+Tests are colocated with source files (`*.test.ts` next to `*.ts`). The `tests/` root directory holds integration-style tests (e.g., `tests/slugify.test.ts`) and `tests/eval/` for pipeline evaluation scripts.

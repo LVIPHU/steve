@@ -3,10 +3,25 @@ import type { ValidationResult } from "./types";
 // Rule-based JS validator — no LLM, fast and reliable.
 // Detects and auto-fixes common AI generation bugs.
 
-export function validateAndFix(html: string): ValidationResult {
+export function validateAndFix(html: string, isSinglePage = false): ValidationResult {
   const fixes: string[] = [];
   const warnings: string[] = [];
   let result = html;
+
+  // Fix 0 (single-page only): Convert bare page-name hrefs to anchor links.
+  // e.g. href="introduction" → href="#introduction"
+  // Skips: href="#...", href="http...", href="/...", href="./...", href=""
+  if (isSinglePage) {
+    const bareHrefRe = /href="([a-z][a-z0-9-]*)"/g;
+    const converted: string[] = [];
+    result = result.replace(bareHrefRe, (_match, page) => {
+      converted.push(page);
+      return `href="#${page}"`;
+    });
+    if (converted.length > 0) {
+      fixes.push(`Links: converted ${converted.length} bare page href(s) to anchor links: ${converted.join(", ")}`);
+    }
+  }
 
   // Fix 1: Tailwind class names used as CSS properties
   // e.g. "justify-center: center" → "justify-content: center"

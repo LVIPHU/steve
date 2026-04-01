@@ -9,16 +9,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const USERNAME_REGEX = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
-const RESERVED_USERNAMES = [
-  "dashboard", "editor", "api", "login", "register",
-  "settings", "pricing", "about", "admin",
-];
-
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,30 +22,18 @@ export default function RegisterPage() {
     setError(null);
     setLoading(true);
 
-    if (!USERNAME_REGEX.test(username)) {
-      setError("Tên người dùng không hợp lệ. Chỉ dùng chữ thường, số và dấu gạch ngang.");
-      setLoading(false);
-      return;
-    }
-    if (RESERVED_USERNAMES.includes(username)) {
-      setError("Tên người dùng này không khả dụng.");
-      setLoading(false);
-      return;
-    }
-
     const { error: err } = await authClient.signUp.email({
       name,
       email,
       password,
-      username,
-      callbackURL: "/dashboard",
+      callbackURL: "/onboarding",
     });
     setLoading(false);
     if (err) {
       setError(err.message ?? "Đăng ký thất bại. Vui lòng thử lại.");
       return;
     }
-    router.push("/dashboard");
+    router.push("/onboarding");
     router.refresh();
   };
 
@@ -83,23 +64,6 @@ export default function RegisterPage() {
               onChange={(e) => setName(e.target.value)}
               required
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="register-username">Tên người dùng</Label>
-            <Input
-              id="register-username"
-              type="text"
-              placeholder="vd: nguyen-van-a"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              minLength={3}
-              maxLength={30}
-              pattern="[a-z0-9][a-z0-9\-]{1,28}[a-z0-9]"
-            />
-            <p className="text-xs text-muted-foreground">
-              Chỉ chữ thường, số và dấu gạch ngang. Không thể thay đổi sau này.
-            </p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="register-email">Email</Label>

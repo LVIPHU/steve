@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ReviewResult } from "./types";
 import fs from "fs";
 import path from "path";
+import { logPipelineStep } from "@/lib/pipeline-logger";
 
 let _openai: OpenAI | null = null;
 function getOpenAI(): OpenAI {
@@ -59,13 +60,15 @@ function appendCalibrationLog(prompt: string, result: ReviewResult): void {
 }
 
 export async function reviewHtml(prompt: string, html: string): Promise<ReviewResult> {
+  const userMessage = `User prompt:\n${prompt}\n\nHTML to review:\n${html}`;
+  const t0 = Date.now();
   try {
     const completion = await getOpenAI().chat.completions.parse(
       {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: REVIEWER_SYSTEM_PROMPT },
-          { role: "user", content: `User prompt:\n${prompt}\n\nHTML to review:\n${html}` },
+          { role: "user", content: userMessage },
         ],
         response_format: zodResponseFormat(ReviewResultSchema, "review_result"),
       },
@@ -73,6 +76,15 @@ export async function reviewHtml(prompt: string, html: string): Promise<ReviewRe
     );
     const result = completion.choices[0].message.parsed ?? FALLBACK_REVIEW;
     appendCalibrationLog(prompt, result);
+    logPipelineStep({
+      timestamp: new Date().toISOString(),
+      step: "review",
+      model: "gpt-4o-mini",
+      systemPrompt: REVIEWER_SYSTEM_PROMPT,
+      userMessage,
+      response: JSON.stringify(result),
+      latencyMs: Date.now() - t0,
+    });
     return result;
   } catch {
     return FALLBACK_REVIEW;
