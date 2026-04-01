@@ -54,15 +54,6 @@ export const auth = betterAuth({
   experimental: {
     joins: true,
   },
-  user: {
-    additionalFields: {
-      username: {
-        type: "string",
-        required: false,
-        input: true,
-      },
-    },
-  },
   databaseHooks: {
     user: {
       create: {
