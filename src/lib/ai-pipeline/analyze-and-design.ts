@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { z } from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { AnalysisResult, DesignResult } from "./types";
+import { logPipelineStep } from "@/lib/pipeline-logger";
 
 let _openai: OpenAI | null = null;
 function getOpenAI(): OpenAI {
@@ -69,6 +70,7 @@ export async function analyzeAndDesign(prompt: string): Promise<{
   analysis: AnalysisResult;
   design: DesignResult;
 }> {
+  const t0 = Date.now();
   const completion = await getOpenAI().chat.completions.parse(
     {
       model: "gpt-4o-mini",
@@ -99,6 +101,16 @@ export async function analyzeAndDesign(prompt: string): Promise<{
     heroStyle: parsed.heroStyle,
     density: parsed.density,
   };
+
+  logPipelineStep({
+    timestamp: new Date().toISOString(),
+    step: "analyze_and_design",
+    model: "gpt-4o-mini",
+    systemPrompt: SYSTEM_PROMPT,
+    userMessage: prompt,
+    response: JSON.stringify({ analysis, design }),
+    latencyMs: Date.now() - t0,
+  });
 
   return { analysis, design };
 }

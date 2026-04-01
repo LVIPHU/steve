@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import type { AnalysisResult } from "./types";
+import { logPipelineStep } from "@/lib/pipeline-logger";
 
 const openai = new OpenAI();
 
@@ -19,6 +20,7 @@ const SYSTEM_PROMPT = `You are a web app intent analyzer. Given a user's prompt,
 Respond with ONLY valid JSON. No markdown, no explanation.`;
 
 export async function analyzePrompt(prompt: string): Promise<AnalysisResult> {
+  const t0 = Date.now();
   const completion = await openai.chat.completions.create(
     {
       model: "gpt-4o-mini",
@@ -34,10 +36,22 @@ export async function analyzePrompt(prompt: string): Promise<AnalysisResult> {
   const raw = completion.choices[0].message.content ?? "{}";
   const parsed = JSON.parse(raw) as Partial<AnalysisResult>;
 
-  return {
+  const result: AnalysisResult = {
     type: parsed.type ?? "generic",
     sections: parsed.sections ?? [],
     features: parsed.features ?? [],
     structured_data: parsed.structured_data ?? "",
   };
+
+  logPipelineStep({
+    timestamp: new Date().toISOString(),
+    step: "analyze",
+    model: "gpt-4o-mini",
+    systemPrompt: SYSTEM_PROMPT,
+    userMessage: prompt,
+    response: raw,
+    latencyMs: Date.now() - t0,
+  });
+
+  return result;
 }

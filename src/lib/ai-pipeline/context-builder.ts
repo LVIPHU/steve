@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { buildSystemPrompt, stripMarkdownFences } from "@/lib/html-prompts";
 import type { AnalysisResult, DesignResult, ReviewResult } from "./types";
 import type { ComponentSnippet } from "@/lib/component-library/types";
+import { logPipelineStep } from "@/lib/pipeline-logger";
 
 let _openai: OpenAI | null = null;
 function getOpenAI(): OpenAI {
@@ -69,7 +70,8 @@ ${sections}
 ${prompt}
 
 ## Navigation Convention — CRITICAL
-This is a MULTI-PAGE website. Navigation buttons and links in the navbar, hero, feature cards, and footer MUST link to OTHER PAGES using relative hrefs WITHOUT .html extension.
+${otherPagesContext
+  ? `This is a MULTI-PAGE website. Navigation buttons and links in the navbar, hero, feature cards, and footer MUST link to OTHER PAGES using relative hrefs WITHOUT .html extension.
 
 CORRECT examples:
   <a href="vocabulary">Browse Vocabulary</a>
@@ -79,10 +81,29 @@ CORRECT examples:
 
 WRONG — do NOT use anchor links for features that deserve their own page:
   <a href="#vocabulary">Browse Vocabulary</a>  ← WRONG, this just scrolls
-  <a href="#quiz">Take Quiz</a>                ← WRONG, this just scrolls
 
-Only use anchor links (#section) for scrolling within the SAME page (e.g. a "scroll to features" button on the same page).
-For distinct features (flashcards, quiz, scores, vocabulary list, add content, about, contact) → ALWAYS create a separate page link.`];
+Only use anchor links (#section) for scrolling within the SAME page.
+For distinct features → ALWAYS create a separate page link.`
+  : `This is a SINGLE-PAGE website. ALL links and navigation buttons MUST use anchor links pointing to sections on THIS page using id attributes.
+
+Add id="" to every major section, then link with href="#section-id".
+
+CORRECT examples:
+  <section id="introduction">...</section>
+  <section id="pricing">...</section>
+  <section id="register">...</section>
+  <a href="#introduction">Introduction</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#register">Register</a>
+  <button onclick="document.getElementById('register').scrollIntoView()">Sign Up</button>
+
+WRONG — do NOT use page-name hrefs, they will cause 404 errors:
+  <a href="introduction">...</a>  ← WRONG, page does not exist
+  <a href="pricing">...</a>       ← WRONG, page does not exist
+  <a href="about">...</a>         ← WRONG, page does not exist
+
+Footer links to "About", "Contact", "Terms", "Privacy" should also use anchor links (#about, #contact, etc.) or be removed if the section doesn't exist on this page.`
+}`];
 
   if (otherPagesContext) {
     parts.push(`## Design Context From Existing Pages\nMatch the visual design from these pages for consistency:\n${otherPagesContext}`);
@@ -131,16 +152,31 @@ export async function refineHtml(html: string, reviewResult: ReviewResult): Prom
     .map((issue, i) => `${i + 1}. ${issue}`)
     .join("\n");
   const userMessage = `Fix the following issues in the HTML:\n\n${mustFixList}\n\nCurrent HTML:\n${html}`;
+  const systemPrompt = buildSystemPrompt();
+  const t0 = Date.now();
 
   const completion = await getOpenAI().chat.completions.create(
     {
       model: "gpt-4o",
       messages: [
-        { role: "system", content: buildSystemPrompt() },
+        { role: "system", content: systemPrompt },
         { role: "user", content: userMessage },
       ],
     },
     { signal: AbortSignal.timeout(60000) }
   );
-  return stripMarkdownFences(completion.choices[0].message.content ?? html);
+  const refined = stripMarkdownFences(completion.choices[0].message.content ?? html);
+
+  logPipelineStep({
+    timestamp: new Date().toISOString(),
+    step: "refine",
+    model: "gpt-4o",
+    systemPrompt,
+    userMessage,
+    response: refined,
+    latencyMs: Date.now() - t0,
+    metadata: { must_fix_count: reviewResult.must_fix.length },
+  });
+
+  return refined;
 }
