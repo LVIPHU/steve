@@ -42,8 +42,23 @@ const SYSTEM_PROMPT = `You are a web design expert. Given a user's website promp
 
 Return a JSON object with:
 - type: landing | portfolio | dashboard | blog | generic
-- sections: array of UI sections needed (navbar, hero, features, pricing, testimonials, faq, footer, etc.)
-- features: array of JS/CSS features needed (dark-mode, animations, flip-cards, chart, localStorage, timer, etc.)
+  Type classification rules (STRICT):
+  - landing: product/service/startup/company page — purpose is MARKETING (hero+CTA+features+pricing+testimonials)
+  - dashboard: interactive tool/app — purpose is FUNCTIONALITY (quiz, flashcard, vocabulary, calculator, tracker, todo, form, game)
+  - IMPORTANT: flashcard / vocabulary / quiz / learning / language apps are ALWAYS "dashboard", NEVER "landing"
+  - portfolio: personal site, CV, freelance showcase
+  - blog: content reading site, articles, recipes, tutorials, docs
+  - generic: anything else that doesn't fit above
+- sections: array of UI sections needed
+  For dashboard apps use specific section names:
+  - Flashcard/vocabulary: ["navbar", "flip-cards", "progress-bar", "add-vocab-form", "footer"]
+  - Quiz/test: ["navbar", "quiz-panel", "score-board", "footer"]
+  - Calculator/tracker: ["navbar", "calculator", "history-panel", "footer"]
+  For landing pages: navbar, hero, features, pricing, testimonials, faq, footer, etc.
+- features: array of JS/CSS features needed
+  For flashcard/vocabulary apps always include: ["flip-animation", "prev-next-nav", "localStorage"]
+  For quiz apps always include: ["quiz", "timer", "localStorage"]
+  Other features: dark-mode, animations, chart, search, drag
 - structured_data: extracted tabular/structured data from prompt as JSON string, or ""
 - preset: bold-dark | warm-organic | clean-minimal | playful-bright | professional-blue
 - palette: { primary, secondary, accent, bg } — hex colors matching the preset
@@ -56,7 +71,7 @@ Return a JSON object with:
 Preset guidelines:
 - bold-dark: fitness, gaming, sports, night clubs — dark backgrounds, neon/vivid colors
 - warm-organic: food, cooking, wellness, nature — warm earthy tones (amber, orange, green)
-- playful-bright: education, learning, kids, creativity — bright cheerful colors
+- playful-bright: education, learning, vocabulary, flashcard, quiz, language learning, kids, creativity — bright cheerful colors
 - professional-blue: SaaS, tech, business, finance — trustworthy blues and grays
 - clean-minimal: personal, portfolio, wedding, most others — neutral/white with subtle accent
 

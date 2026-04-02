@@ -136,6 +136,8 @@ Rules:
 - Do NOT use any external images or fonts that require authentication
 - Use the Design Brief from the user message to set CSS custom properties (--color-primary, --color-secondary, --color-accent, --color-bg) and Google Fonts @import at the top of your <style> block
 - Adapt the Component References from the user message as structural inspiration — do not copy them verbatim
+- When the user requests a specific number of items (e.g. "50 vocabulary words", "20 quiz questions", "30 flashcards"), you MUST include ALL of them — never truncate with "...", never use placeholder comments like "// add more items here" or "// repeat for remaining items"
+- For vocabulary/flashcard apps: define all words as a JavaScript array (e.g. const VOCAB = [{word, pronunciation, meaning, example}, ...]) and render cards from that array
 - Output ONLY the raw HTML — no explanation, no markdown, no commentary
 - Start your response with <!DOCTYPE html>
 - Use semantic HTML5 elements: <header>, <nav>, <main>, <section>, <article>, <footer>
@@ -192,6 +194,7 @@ JavaScript rules:
 - NEVER use Alpine.js
 - NEVER use alert(), confirm(), or prompt() — use Preline modal (data-hs-overlay) instead
 - For Chart.js: use <canvas> elements and initialize charts in a DOMContentLoaded handler
+- DATA COMPLETENESS — CRITICAL: When the user requests N items (50 words, 20 questions, 30 cards), you MUST write ALL N items in the JavaScript array. Do NOT use placeholder comments like "/* add X more */", "// ... rest of items", or "// add more here". The array must be complete and functional as-is. For vocabulary/flashcard: write all words as const cards = [{front: "Word /ipa/", back: "Meaning. Example."}, ...] with exactly N entries.
 
 CSS rules — common mistakes to avoid:
 - NEVER mix Tailwind utility names with CSS property syntax (wrong: "justify-center: center"; correct CSS: "justify-content: center")
