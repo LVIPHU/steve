@@ -227,8 +227,22 @@ export async function runMultiPageExpansion({
         : `${issues.length} issues: ${issues.slice(0, 3).join("; ")}`,
     });
 
-    // ─── All Complete ────────────────────────────────────────────────
+    // ─── Patch index navbar with sub-page links (deterministic) ─────
     const generatedPageNames = Object.keys(generatedPages).filter((n) => n !== "index");
+    if (generatedPageNames.length > 0 && generatedPages.index) {
+      const patchedIndex = patchIndexNavLinks(generatedPages.index, generatedPageNames);
+      if (patchedIndex !== generatedPages.index) {
+        generatedPages.index = patchedIndex;
+        await db.execute(
+          sql`UPDATE websites
+              SET pages = jsonb_set(COALESCE(pages, '{}'), ARRAY['index'], to_jsonb(${patchedIndex}::text)),
+                  updated_at = NOW()
+              WHERE id = ${websiteId}`
+        );
+      }
+    }
+
+    // ─── All Complete ────────────────────────────────────────────────
     onEvent({
       step: "all-complete",
       status: "done",
@@ -245,6 +259,56 @@ export async function runMultiPageExpansion({
     });
     return generatedPages;
   }
+}
+
+/**
+ * Patch index page navbar to include links to generated sub-pages.
+ * 1. Replace href="#pageName" anchor links with href="pageName" relative links.
+ * 2. Inject any still-missing sub-page links before closing </nav>.
+ */
+function patchIndexNavLinks(indexHtml: string, subPageNames: string[]): string {
+  let patched = indexHtml;
+
+  // Step 1: Replace anchor links that look like page names
+  for (const name of subPageNames) {
+    // href="#quiz" → href="quiz"
+    patched = patched.replace(
+      new RegExp(`href=["']#${name}["']`, "gi"),
+      `href="${name}"`
+    );
+    // href="#quiz-section" or "#quiz-tab" → href="quiz"
+    patched = patched.replace(
+      new RegExp(`href=["']#${name}-[a-z-]+["']`, "gi"),
+      `href="${name}"`
+    );
+  }
+
+  // Step 2: Find nav block and detect which sub-pages are already linked
+  const navMatch = patched.match(/<nav[\s\S]*?<\/nav>/i);
+  if (!navMatch) return patched;
+
+  const navContent = navMatch[0];
+  const existingHrefs = [...navContent.matchAll(/href=["']([^"']+)["']/g)].map((m) => m[1]);
+
+  const missingPages = subPageNames.filter(
+    (name) => !existingHrefs.some((h) => h === name || h.endsWith(`/${name}`))
+  );
+
+  if (missingPages.length === 0) return patched;
+
+  // Step 3: Inject missing page links before closing </nav>
+  const injectedLinks = missingPages
+    .map((name) => {
+      const label = name
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+      return `<a href="${name}" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-medium transition-colors px-3 py-2">${label}</a>`;
+    })
+    .join("\n");
+
+  patched = patched.replace("</nav>", `\n${injectedLinks}\n</nav>`);
+  return patched;
 }
 
 /** Fallback design system when LLM call fails */

@@ -79,20 +79,26 @@ Copy `.env.example` to `.env` and fill in:
 
 `POST /api/ai/generate-html` streams SSE events to the client via `runGenerationPipeline()` in `src/lib/ai-pipeline/index.ts`.
 
-**Fresh generation steps:** analyze → components → design → generate → (review → refine if `ENABLE_REFINE=true`) → validate → complete
+**Fresh generation steps:** analyze+design (merged single LLM call via `analyze-and-design.ts`) → components → generate → (review → refine if `ENABLE_REFINE=true`) → validate → complete
 
 **Edit mode** (when `currentHtml` is provided): skips design/review/refine — only analyze, components, generate, validate.
 
 **Multi-page expansion** (when `ENABLE_MULTI_PAGE=true`): after the index page is generated, `multi-page-orchestrator.ts` runs a 7-agent pipeline to plan and generate additional pages: BA agent → design-system agent → data-architect agent → PM agent → parallel page generation → consistency-checker. `maxDuration` for the endpoint is 300s to accommodate this.
 
 Pipeline modules in `src/lib/ai-pipeline/`:
-- `analyzer.ts` — classifies prompt into type (`landing|portfolio|dashboard|blog|generic`), extracts sections/features
+- `analyze-and-design.ts` — merged analyze+design in one LLM call (fresh mode only)
+- `analyzer.ts` — classifies prompt into type (`landing|portfolio|dashboard|blog|generic`), extracts sections/features (used standalone in edit mode)
 - `design-agent.ts` — picks a visual preset + color palette + fonts
 - `generator.ts` — calls OpenAI to produce raw HTML using the design + selected component snippets
 - `reviewer.ts` — scores HTML 0–100 across visual/content/technical dimensions
 - `context-builder.ts` — assembles the user message / edit message / refine prompt
 - `validator.ts` — post-processes HTML, applies fixes, returns warnings
-- `langfuse.ts` — wraps pipeline calls with optional Langfuse traces; no-ops when keys are absent
+
+`src/lib/langfuse.ts` — wraps pipeline steps with optional Langfuse traces via `traceStep()`; no-ops when keys are absent.
+
+`src/lib/html-prompts.ts` — system prompts for fresh generation and edit mode (CDN includes, dark mode script, etc.).
+
+**Pipeline logging:** each prompt+response is appended to `.pipeline-logs.jsonl` (NDJSON) in the project root. Authenticated users can download the full log via `GET /api/logs/export`.
 
 After successful generation the API auto-saves `pages[pageName]` to DB via atomic `jsonb_set` before sending the `complete` event.
 
@@ -127,6 +133,7 @@ The editor auto-generates on mount when the page has no HTML and `initialPrompt`
 - `DELETE /api/websites/[id]` — delete a website (auth + ownership check)
 - `GET /api/websites/[id]/export` — download all pages as a ZIP archive of `.html` files
 - `POST /api/upload/image` — accepts `multipart/form-data` with a `file` field; validates image MIME + 5MB max; uploads to Supabase Storage bucket `website-images` under `{userId}/{timestamp}-{filename}`; returns `{ url }`
+- `GET /api/logs/export` — download `.pipeline-logs.jsonl` (requires auth)
 
 ### UI Components
 

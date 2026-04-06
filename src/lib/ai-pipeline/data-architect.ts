@@ -15,7 +15,7 @@ function getOpenAI(): OpenAI {
 
 const DataContractsSchema = z.object({
   stores: z.array(z.object({
-    key: z.string().describe("localStorage key name, e.g. 'appgen-vocab-list'"),
+    key: z.string().describe("localStorage key name using appgen- prefix, e.g. 'appgen-vocab', 'appgen-quiz-scores', 'appgen-flashcard-seen'"),
     schema: z.string().describe("JSON schema description, e.g. 'Array of {word: string, meaning: string, learned: boolean}'"),
     readBy: z.array(z.string()).describe("Page names that read this store"),
     writtenBy: z.array(z.string()).describe("Page names that write to this store"),
@@ -36,13 +36,23 @@ Your tasks:
 4. Map data flows between pages
 
 Rules:
-- Use consistent key naming: 'appgen-{feature}-{type}' e.g. 'appgen-quiz-scores', 'appgen-vocab-list'
+- Use consistent key naming: 'appgen-{feature}' for primary stores, 'appgen-{feature}-{qualifier}' for secondary stores. Examples: 'appgen-vocab' (primary vocabulary store), 'appgen-quiz-scores' (score history), 'appgen-flashcard-seen' (seen card IDs). Do NOT append '-list' or '-data' as generic suffixes — use the exact key names the index page already established
 - All values stored as JSON strings in localStorage
 - Keep schemas simple — arrays of objects or single objects
 - If a page has no data requirements (e.g. static "about" page), don't create unnecessary stores
 - Include an 'appgen-user-settings' store if dark mode or preferences are used
 - For quiz/learning apps: track scores with timestamps for history
-- Return empty stores/flows arrays if the website is purely static (no interactive data)`;
+- Return empty stores/flows arrays if the website is purely static (no interactive data)
+
+## Vocabulary/Flashcard App Rules (CRITICAL):
+- The primary vocabulary store (e.g. 'appgen-vocab') MUST have 'index' in writtenBy (index page seeds it)
+- 'flashcards' page: ALWAYS in readBy for the primary vocab store + writtenBy for 'appgen-flashcard-seen'
+- 'quiz' page: ALWAYS in readBy for the primary vocab store + writtenBy for 'appgen-quiz-scores'
+- 'review' page: ALWAYS in readBy for the primary vocab store + readBy for 'appgen-flashcard-seen'. Review pages cycle through vocabulary cards — they MUST read the vocab store
+- 'vocabulary' page: ALWAYS in readBy AND writtenBy for the primary vocab store (users can edit/delete words)
+- 'add-vocab' page: ALWAYS in writtenBy for the primary vocab store
+- 'scores' page: ALWAYS in readBy for 'appgen-quiz-scores'
+- Never leave 'review', 'flashcards', or 'quiz' pages out of the vocabulary store's readBy list`;
 
 export async function designDataContracts(
   pagePlan: PagePlan,

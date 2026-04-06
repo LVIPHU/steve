@@ -120,10 +120,15 @@ With this toggle script at the end of <body>:
   </div>
 </section>
 
-Multi-page navigation:
-- This website will have MULTIPLE pages. Navigation links in navbar, hero, feature cards, and footer should use relative page links (e.g. href="quiz", href="vocabulary", href="scores", href="about") — NOT anchor links (#section).
-- Only use href="#section" for scrolling within the CURRENT page.
-- The navbar should include links to the main pages of the website.
+Multi-page navigation — CRITICAL RULE:
+- This website will have MULTIPLE pages served as separate HTML files. NEVER use href="#section" for main navbar links.
+- ALL navbar links MUST use relative page names WITHOUT .html: href="quiz", href="vocabulary", href="scores", href="about", href="index"
+- href="#anchor" is ONLY allowed for in-page scroll (e.g. a FAQ accordion on the same page)
+- Common page names by app type:
+  - Flashcard/vocabulary app: index (home), quiz, flashcards, vocabulary, scores, add-vocab, review
+  - Landing page: index, features, pricing, about, contact
+  - Portfolio: index, projects, about, contact
+- The navbar must link to all main pages of the website using these relative hrefs
 
 Rules:
 - Mobile-first responsive design

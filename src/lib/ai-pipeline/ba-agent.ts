@@ -38,11 +38,12 @@ Your tasks:
 ## Domain-specific page planning:
 
 **Education/Learning apps** (flashcard, quiz, vocabulary, language learning):
-- quiz: Interactive quiz with multiple-choice questions, progress bar, score at end
-- scores: Personal score history (chart + table), best scores, accuracy stats, day streak
-- flashcards: Flip-card study interface with word/meaning, mark as learned, next/prev navigation
-- add-vocab: Form to add new vocabulary (word, meaning, example sentence), save to localStorage
-- vocabulary: Full vocabulary list with search, filter by learned/unlearned, delete
+- quiz: Interactive quiz with multiple-choice questions, progress bar, timer per question, score at end
+- scores: Personal score history (line chart + table), best scores, accuracy stats, day streak counter
+- flashcards: Flip-card study interface with word/meaning/pronunciation, mark as learned, next/prev navigation, show unlearned cards first
+- add-vocab: Form to add new vocabulary (word, pronunciation, meaning, example sentence), save to localStorage; bulk-import textarea for pasting word lists
+- vocabulary: Full vocabulary list with search, filter by learned/unlearned/all, delete, progress bar showing % learned
+- review: Spaced repetition review session — cycles through cards by last-seen timestamp; text-to-speech using Web Speech API (window.speechSynthesis). Use priority 3.
 
 **SaaS/Product landing pages:**
 - features: Detailed feature showcase with icons, descriptions, comparison table
@@ -70,10 +71,10 @@ Your tasks:
 
 ## Data flow planning for interactive apps:
 For apps with user data (quiz, flashcard, tracker, todo, etc.), specify localStorage contracts:
-- Key naming: 'appgen-{feature}-{type}' (e.g. 'appgen-quiz-scores', 'appgen-vocab-list')
-- Data schema: describe the JSON structure for each key
-- Which pages READ and which WRITE each key
-- This enables pages to share data seamlessly
+- Key naming: 'appgen-{feature}' for primary stores, 'appgen-{feature}-{qualifier}' for secondary stores. Examples: 'appgen-vocab', 'appgen-quiz-scores', 'appgen-flashcard-seen'
+- IMPORTANT: Scan the index page HTML for existing localStorage usage. Look for patterns: localStorage.getItem('key'), localStorage.setItem('key', ...), and localStorage['key']. Extract the EXACT key names already used. Sub-pages MUST use these exact same key names — never invent new key names for data the index already stores
+- In each page's dataRequirements field: list the EXACT key names this page reads (from index), the exact key names this page writes, and the JSON structure for each
+- Example dataRequirements: "READS localStorage['appgen-vocab'] (Array of {word, meaning, learned}). WRITES localStorage['appgen-quiz-scores'] (Array of {score, total, timestamp})"
 
 ## Rules:
 - Page names: lowercase, only letters, numbers, and hyphens (e.g. "quiz", "scores", "add-vocab")

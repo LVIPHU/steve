@@ -35,6 +35,16 @@ export function buildPageSpecs(input: PMInput): PageSpec[] {
 
   const { globalTokens, sharedComponents } = designSystem;
 
+  // Detect N-item requirement from original prompt
+  const nItemMatches = originalPrompt.match(
+    /(\d+)\s*(words?|vocabulary|vocabularies|questions?|flashcards?|items?|từ|câu hỏi|thẻ)/gi
+  );
+  const nItemReminder = nItemMatches && nItemMatches.length > 0
+    ? `## DATA COMPLETENESS — CRITICAL REQUIREMENT
+The user's original request specifies: "${nItemMatches.join(", ")}"
+You MUST include ALL of them in this page. Do NOT truncate with "...", do NOT use placeholder comments like "// add more items here". Define all items as a JavaScript array and render from that array.`
+    : "";
+
   // Build the global design brief (shared across all pages)
   const googleFontsImport = buildGoogleFontsImport(globalTokens.fonts);
 
@@ -117,13 +127,55 @@ Key components: ${pageDesign.keyComponents.join(", ")}`
       (s) => s.readBy.includes(page.name) || s.writtenBy.includes(page.name)
     );
     const pageDataSection = pageDataStores.length > 0
-      ? `## Data for This Page
+      ? `## Data for This Page — MANDATORY IMPLEMENTATION
 ${pageDataStores.map((s) => {
   const actions = [];
   if (s.writtenBy.includes(page.name)) actions.push("WRITE");
   if (s.readBy.includes(page.name)) actions.push("READ");
   return `- ${actions.join("+")} localStorage["${s.key}"]: ${s.schema}`;
-}).join("\n")}`
+}).join("\n")}
+
+⚠️ LOCALSTORAGE INTEGRATION — CRITICAL (DO NOT IGNORE):
+- You MUST load ALL data from localStorage on DOMContentLoaded — NEVER define vocabulary words, quiz questions, scores, or any user data as hardcoded static arrays
+- If localStorage is empty on first visit, seed with 5–10 sensible default entries, save them back to localStorage, then render
+- Required pattern:
+  document.addEventListener('DOMContentLoaded', function() {
+    var data = JSON.parse(localStorage.getItem('KEY') || '[]');
+    if (!data.length) { data = [/* 5-10 defaults */]; localStorage.setItem('KEY', JSON.stringify(data)); }
+    render(data);
+  });
+- Every READ store listed above MUST be populated from localStorage — NOT from a const/let array defined above the function`
+      : "";
+
+    // Page-specific critical instructions
+    const isQuizPage = page.name === "quiz" || page.features.some(f => f.toLowerCase().includes("quiz"));
+    const isReviewPage = page.name === "review" || page.features.some(f => f.toLowerCase().includes("spaced") || f.toLowerCase().includes("review"));
+    const isFlashcardsPage = page.name === "flashcards" || page.features.some(f => f.toLowerCase().includes("flip") || f.toLowerCase().includes("flashcard"));
+
+    const pageTypeHint = isQuizPage
+      ? `## Quiz Page — CRITICAL IMPLEMENTATION RULES
+- Score counter: declare \`var score = 0, total = 0\` at top, update both vars + DOM on every answer click
+- When user clicks an answer button: (1) evaluate correct/wrong immediately, (2) score += 1 if correct, (3) update #score-display or equivalent DOM element RIGHT AWAY, (4) disable ALL answer buttons for this question, (5) after 1s delay show next question
+- NEVER leave score at 0 — it must visually increment when correct answers are clicked
+- After last question: show results screen with final score (e.g. "You scored 8/10!")
+- Save result to localStorage when quiz ends: localStorage.setItem('appgen-quiz-scores', JSON.stringify([...existing, {score, total, timestamp: new Date().toISOString()}]))`
+      : isReviewPage
+      ? `## Review Page — CRITICAL IMPLEMENTATION RULES
+- Load vocabulary from localStorage['appgen-vocab'] on DOMContentLoaded
+- If no vocab in localStorage, seed with 5–10 default A1-A2 English words and save them
+- Show one card at a time with word on front, meaning/pronunciation on back
+- Flip animation on click: card rotates 180deg to show back
+- Track seen cards in localStorage['appgen-flashcard-seen'] (array of word strings already reviewed)
+- "Next" button advances to next card; prioritize unseen cards first
+- Card front MUST show the actual word text — never leave it blank`
+      : isFlashcardsPage
+      ? `## Flashcard Page — CRITICAL IMPLEMENTATION RULES
+- Load vocabulary from localStorage['appgen-vocab'] on DOMContentLoaded
+- If no vocab in localStorage, seed with 5–10 default A1-A2 English words and save them
+- Flip card on click: word on front, meaning + example on back (CSS 3D transform)
+- Card front MUST show actual word text — never leave it blank
+- "Mark as Learned" button: toggle learned flag, save back to localStorage['appgen-vocab']
+- Progress counter: "X / total learned" updated in real time`
       : "";
 
     // Shared nav with active state
@@ -153,6 +205,8 @@ Required features: ${page.features.join(", ")}
 
 Generate ALL sections listed above with REAL, meaningful content. Do not use placeholder text like "Lorem ipsum".
 For interactive features (quiz, flashcard, form): include full working JavaScript.`,
+      nItemReminder,
+      pageTypeHint,
       navWithActive,
       footerSection,
       pageDataSection,
