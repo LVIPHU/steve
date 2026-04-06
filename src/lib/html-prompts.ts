@@ -70,10 +70,9 @@ With this toggle script at the end of <body>:
 - Body text: text-lg text-gray-600 dark:text-gray-400
 
 **Components:**
-- Cards: rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300, bg-white dark:bg-gray-800
-- Buttons: rounded-lg px-6 py-3 font-medium, transition-colors duration-200; primary CTA px-8 py-4 text-lg
 - Images: use https://images.unsplash.com/photo-{ID}?w=800&h=600&fit=crop (browse unsplash for relevant IDs)
 - Icons: use inline SVG (Heroicons 24x24 outline style) — NO icon font libraries
+- Let the Design Preset (from Design Brief) drive card shape, button style, and shadow intensity — do not apply the same card/button style to every preset
 
 **Color Application:**
 - Primary color → CTA buttons, key links, active states
@@ -86,61 +85,61 @@ With this toggle script at the end of <body>:
 - Split layouts: grid-cols-1 lg:grid-cols-2 gap-12 items-center
 - Always mobile-first
 
-## Modern UI Patterns — USE THESE
+## Design Preset Intent — LET THE PRESET DRIVE THE VISUAL LANGUAGE
 
-**Hero Section:**
-<section class="min-h-[80vh] flex items-center bg-gradient-to-br from-{primary-50} to-white dark:from-gray-900 dark:to-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <span class="inline-block px-4 py-1 rounded-full bg-{primary-100} text-{primary-700} text-sm font-medium mb-6">
-      Badge text
-    </span>
-    <h1 class="text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">
-      Main headline with <span class="text-{primary}">highlight</span>
-    </h1>
-    <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">Subheadline</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="features" class="px-8 py-4 bg-{primary} text-white rounded-lg font-semibold hover:bg-{primary-dark} transition-colors">
-        Primary CTA
-      </a>
-      <a href="about" class="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:border-{primary} transition-colors">
-        Secondary
-      </a>
-    </div>
-  </div>
-</section>
+The Design Brief (from user message) specifies a preset. Use it to decide layout structure, component shapes, animation style, and mood. Do NOT apply the same visual template to every preset.
 
-**Navbar:**
-<nav class="sticky top-0 z-50 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-700">
+**bold-dark** (fitness, gaming, sports, tech, nightlife):
+- Hero: full-bleed dark background, oversized headline (text-7xl+), single bold CTA — no badge, no soft gradient
+- Layout: asymmetric, high contrast, dramatic. Use sharp angles or diagonal section dividers
+- Cards: dark bg with colored accent borders or neon glow (box-shadow with primary color)
+- Buttons: large, sharp-cornered or pill, bold weight — no subtle outlines
+- Typography: heavy (font-black), tight tracking (tracking-tight or tracking-tighter)
+- Animation: fast, punchy — slide-in from left/right, not gentle fade-up
 
-**Feature Card:**
-<div class="group p-8 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300">
-  <div class="w-12 h-12 rounded-lg bg-{primary-100} flex items-center justify-center mb-6">
-    <!-- SVG icon -->
-  </div>
-  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Title</h3>
-  <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Description</p>
-</div>
+**warm-organic** (food, cooking, wellness, nature, lifestyle):
+- Hero: warm background tones, handcrafted feel — consider offset image + text split layout
+- Layout: avoid rigid perfect grids — use varied card sizes, overlapping elements
+- Cards: soft rounded corners, warm shadow (shadow colored with accent), earthy tones
+- Buttons: rounded-full pill style, warm colors — no hard edges
+- Typography: humanist serif for headings if possible via Google Fonts, generous line-height
+- Animation: slow, gentle fade-in — nothing snappy or aggressive
 
-**CTA Section:**
-<section class="py-24 bg-{primary}">
-  <div class="max-w-4xl mx-auto px-4 text-center">
-    <h2 class="text-4xl font-bold text-white mb-6">Strong CTA headline</h2>
-    <p class="text-xl text-{primary-100} mb-10">Supporting text</p>
-    <a href="#" class="px-10 py-4 bg-white text-{primary-700} rounded-lg font-bold hover:bg-gray-50 transition-colors text-lg">
-      Action button
-    </a>
-  </div>
-</section>
+**playful-bright** (education, kids, vocabulary, learning apps, games):
+- Hero: vibrant background, fun illustration or emoji-style icons, bouncy headline
+- Layout: colorful section backgrounds alternating, lots of visual energy
+- Cards: rounded-full or rounded-2xl, solid bright fills (not white with border), colorful icons
+- Buttons: rounded-full, bright fills, add hover:scale-105 bounce effect
+- Typography: rounded font (e.g. Nunito, Poppins), slightly larger body text
+- Animation: bouncy (cubic-bezier elastic), stagger delays on card grids, scale pulse on icons
 
-**Entrance animations (for hero, cards, stats — use CSS @keyframes):**
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-fade-in { animation: fadeInUp 0.5s ease forwards; }
-  /* Stagger card grids: add style="animation-delay: Xms" on each card (100ms apart) */
+**professional-blue** (SaaS, B2B, finance, legal, enterprise):
+- Hero: split layout (text left, screenshot/mockup right) OR centered with social proof logos below
+- Layout: structured grid, lots of whitespace, trust signals (customer logos, stats, testimonials)
+- Cards: subtle border, minimal shadow — no color fills on cards
+- Buttons: solid primary or outline — no pill shapes, moderate border-radius (rounded-lg)
+- Typography: clean sans-serif, regular weight body — avoid decorative fonts
+- Animation: subtle and professional — gentle opacity fade only, no movement
 
-**Micro-interactions:**
-- Button click: add active:scale-95 transition-transform duration-100
-- Card hover lift: hover:-translate-y-1 transition-transform duration-200
-- Icon on hover: group-hover:scale-110 transition-transform duration-200
+**clean-minimal** (portfolio, personal, wedding, agency, luxury):
+- Hero: typography-first — large headline dominates, minimal or no hero image
+- Layout: maximum whitespace, strict alignment, nothing decorative
+- Cards: borderless or ultra-thin border (border-gray-100), no shadow — let whitespace separate
+- Buttons: outline or ghost style for secondary; filled minimal for primary — no gradients
+- Typography: elegant (e.g. Playfair Display for headings, Inter for body), generous letter-spacing
+- Animation: slow, refined — opacity fade only, no movement unless very subtle
+
+## Animation Technique (apply according to preset speed above)
+Use CSS @keyframes — no JS animation libraries:
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+  /* Apply: style="animation: fadeInUp 0.4s ease forwards; animation-delay: Xms" */
+  /* Stagger card grids: 0ms, 80ms, 160ms, 240ms delays */
+
+Micro-interactions (always include these regardless of preset):
+- Buttons: active:scale-95 transition-transform duration-100
+- Cards: hover:-translate-y-1 transition-transform duration-200 (skip for clean-minimal)
+- Interactive icons: group-hover:scale-110 transition-transform duration-200
 
 Multi-page navigation — CRITICAL RULE:
 - This website will have MULTIPLE pages served as separate HTML files. NEVER use href="#section" for main navbar links.
