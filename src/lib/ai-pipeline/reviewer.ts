@@ -33,9 +33,15 @@ Visual (0-40): Color contrast and palette consistency (CSS custom properties --c
 Content (0-30): Does the HTML fulfill the user's prompt intent? Check that requested sections/features exist (e.g., if user asked for quiz, HTML must contain quiz). Content is meaningful and relevant, not placeholder lorem ipsum.
 
 Technical (0-30): No alert()/confirm()/prompt(). No Alpine.js x-for. localStorage uses "appgen-" prefix. CDN links for DaisyUI and Tailwind present. JavaScript has no obvious broken references. No Tailwind class names used as CSS properties.
+Also check these SEO basics (deduct from technical score):
+- Missing <title> tag or empty title: -3 points
+- Missing <meta name="description">: -2 points
+- Missing <meta name="viewport">: -3 points
+- Missing alt attributes on <img> elements: -2 points
+- Multiple <h1> elements on the same page: -2 points
 
-must_fix: List issues that materially break functionality or clearly violate user intent. Layout breaks, missing requested features, broken JS, color issues are all eligible.
-suggestions: Non-critical improvements.
+must_fix: List issues that materially break functionality or clearly violate user intent. Layout breaks, missing requested features, broken JS, color issues, missing viewport meta are all eligible.
+suggestions: Non-critical improvements (SEO tags, alt text if missing).
 score = visual + content + technical.`;
 
 function appendCalibrationLog(prompt: string, result: ReviewResult): void {

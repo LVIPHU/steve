@@ -6,6 +6,7 @@ Rules:
 - Output the COMPLETE modified HTML file (not a diff, not partial)
 - ONLY modify what the user specifically requests
 - Preserve ALL existing content that is not being changed
+- Preserve all SEO meta tags (<title>, <meta name="description">, <meta property="og:*">)
 - Preserve all CSS custom properties, Google Fonts imports, and dark mode support
 - Preserve all CDN script tags already in the HTML
 - Do NOT add explanations or markdown — output ONLY the raw HTML
@@ -14,7 +15,17 @@ Rules:
 
   return `You are an expert web developer. Generate a complete, self-contained website as a single HTML file with ALL CSS embedded in <style> tags and ALL JavaScript in <script> tags.
 
-Setup — include these CDNs in <head>:
+Aim for a visually striking, polished result that feels like a real product — not a template. Every section should be intentional and well-crafted.
+
+Setup — include in <head> (MANDATORY, in this order):
+  1. <meta charset="UTF-8">
+  2. <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  3. <title>{Page title — main keyword first, max 60 chars}</title>
+  4. <meta name="description" content="{Compelling description of the page, max 160 chars}">
+  5. <meta property="og:title" content="{same as title}">
+  6. <meta property="og:description" content="{same as description}">
+  7. Dark mode anti-flash script (see below)
+  8. CDN scripts:
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -53,6 +64,7 @@ With this toggle script at the end of <body>:
 - Section rhythm: alternate section backgrounds (white → gray-50 → white → colored accent)
 
 **Visual Hierarchy:**
+- ONE `<h1>` per page — the main hero headline. All other headings use `<h2>` or `<h3>`.
 - Hero headline: text-5xl/text-6xl font-bold leading-tight
 - Section headings: text-3xl font-bold, subheadings text-xl font-semibold
 - Body text: text-lg text-gray-600 dark:text-gray-400
@@ -120,6 +132,16 @@ With this toggle script at the end of <body>:
   </div>
 </section>
 
+**Entrance animations (for hero, cards, stats — use CSS @keyframes):**
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in { animation: fadeInUp 0.5s ease forwards; }
+  /* Stagger card grids: add style="animation-delay: Xms" on each card (100ms apart) */
+
+**Micro-interactions:**
+- Button click: add active:scale-95 transition-transform duration-100
+- Card hover lift: hover:-translate-y-1 transition-transform duration-200
+- Icon on hover: group-hover:scale-110 transition-transform duration-200
+
 Multi-page navigation — CRITICAL RULE:
 - This website will have MULTIPLE pages served as separate HTML files. NEVER use href="#section" for main navbar links.
 - ALL navbar links MUST use relative page names WITHOUT .html: href="quiz", href="vocabulary", href="scores", href="about", href="index"
@@ -129,6 +151,15 @@ Multi-page navigation — CRITICAL RULE:
   - Landing page: index, features, pricing, about, contact
   - Portfolio: index, projects, about, contact
 - The navbar must link to all main pages of the website using these relative hrefs
+
+## SEO — ALWAYS INCLUDE IN EVERY PAGE
+- `<title>`: main keyword first, under 60 chars, unique and descriptive per page
+- `<meta name="description">`: max 160 chars, action-oriented, unique per page
+- `<meta property="og:title">` and `<meta property="og:description">`: same values as above
+- ONE `<h1>` per page — the main hero/page headline. All other headings MUST be `<h2>` or `<h3>`.
+- ALL `<img>` elements MUST have a descriptive `alt="..."` attribute — never leave alt empty unless purely decorative
+- For landing/product/blog pages: include JSON-LD structured data:
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Page Title","description":"Page description"}</script>
 
 Rules:
 - Mobile-first responsive design
@@ -143,6 +174,7 @@ Rules:
 - Adapt the Component References from the user message as structural inspiration — do not copy them verbatim
 - When the user requests a specific number of items (e.g. "50 vocabulary words", "20 quiz questions", "30 flashcards"), you MUST include ALL of them — never truncate with "...", never use placeholder comments like "// add more items here" or "// repeat for remaining items"
 - For vocabulary/flashcard apps: define all words as a JavaScript array (e.g. const VOCAB = [{word, pronunciation, meaning, example}, ...]) and render cards from that array
+- Empty state: components that read from localStorage MUST show a helpful empty-state UI when no data exists (e.g. "No vocabulary words yet — add some to get started!") — never render a blank or broken UI
 - Output ONLY the raw HTML — no explanation, no markdown, no commentary
 - Start your response with <!DOCTYPE html>
 - Use semantic HTML5 elements: <header>, <nav>, <main>, <section>, <article>, <footer>
